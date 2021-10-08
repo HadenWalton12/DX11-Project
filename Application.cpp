@@ -1,5 +1,30 @@
 #include "Application.h"
 
+//Class Constructor - Initalizes pointer values used to Initialize/create DX11 Application
+Application::Application()
+{
+    _hInst = nullptr;
+    _hWnd = nullptr;
+    _driverType = D3D_DRIVER_TYPE_NULL;
+    _featureLevel = D3D_FEATURE_LEVEL_11_0;
+    _pd3dDevice = nullptr;
+    _pImmediateContext = nullptr;
+    _pSwapChain = nullptr;
+    _pRenderTargetView = nullptr;
+    _pVertexShader = nullptr;
+    _pPixelShader = nullptr;
+    _pVertexLayout = nullptr;
+    _pVertexBuffer = nullptr;
+    _pIndexBuffer = nullptr;
+    _pConstantBuffer = nullptr;
+}
+
+//Application destructor - Calls to cleanup to destruct pointer values.
+Application::~Application()
+{
+    Cleanup();
+}
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
@@ -23,28 +48,84 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-Application::Application()
+//Initializes our window - 
+HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
 {
-	_hInst = nullptr;
-	_hWnd = nullptr;
-	_driverType = D3D_DRIVER_TYPE_NULL;
-	_featureLevel = D3D_FEATURE_LEVEL_11_0;
-	_pd3dDevice = nullptr;
-	_pImmediateContext = nullptr;
-	_pSwapChain = nullptr;
-	_pRenderTargetView = nullptr;
-	_pVertexShader = nullptr;
-	_pPixelShader = nullptr;
-	_pVertexLayout = nullptr;
-	_pVertexBuffer = nullptr;
-	_pIndexBuffer = nullptr;
-	_pConstantBuffer = nullptr;
+    // Register class
+    //WNDCLASSEX is the structure that contains the relevant members to registre our window , each member is seen below ,creating and designing our window to our needs 
+    WNDCLASSEX wcex;
+    wcex.cbSize = sizeof(WNDCLASSEX);
+    wcex.style = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc = WndProc;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = 0;
+    wcex.hInstance = hInstance;
+    wcex.hIcon = LoadIcon(hInstance, (LPCTSTR)IDI_TUTORIAL1);
+    wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcex.lpszMenuName = nullptr;
+    wcex.lpszClassName = L"TutorialWindowClass";
+    wcex.hIconSm = LoadIcon(wcex.hInstance, (LPCTSTR)IDI_TUTORIAL1);
+    if (!RegisterClassEx(&wcex))
+        return E_FAIL;
+
+    // Creates window instance
+    _hInst = hInstance;
+    RECT rc = { 0, 0, 640, 480 };
+    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
+    _hWnd = CreateWindow(L"TutorialWindowClass", L"DX11 Framework", WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
+        nullptr);
+    if (!_hWnd)
+        return E_FAIL;
+
+    ShowWindow(_hWnd, SW_SHOW);
+
+    return S_OK;
 }
 
-Application::~Application()
+
+
+
+void Application::Draw()
 {
-	Cleanup();
+    //
+    // Clear the back buffer
+    //
+
+    float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f }; // red,green,blue,alpha
+    _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
+
+    XMMATRIX world = XMLoadFloat4x4(&_world);
+    XMMATRIX view = XMLoadFloat4x4(&_view);
+    XMMATRIX projection = XMLoadFloat4x4(&_projection);
+
+    //
+    // Update variables
+    //
+    ConstantBuffer cb;
+    cb.mWorld = XMMatrixTranspose(world);
+    cb.mView = XMMatrixTranspose(view);
+    cb.mProjection = XMMatrixTranspose(projection);
+
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+
+    //
+    // Renders a triangle
+    //
+    _pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
+    _pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
+    _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
+    _pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
+    _pImmediateContext->DrawIndexed(6, 0, 0);
+
+    //
+    // Present our back buffer to our front buffer
+    //
+    _pSwapChain->Present(0, 0);
 }
+
+
 
 HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 {
@@ -68,8 +149,8 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	// Initialize the world matrix
 	XMStoreFloat4x4(&_world, XMMatrixIdentity());
 
-    // Initialize the view matrix
-	XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f);
+    // Initialize the view matrix - Will determine our view projection when projection matrix is applied
+	XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
 	XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
@@ -208,39 +289,7 @@ HRESULT Application::InitIndexBuffer()
 	return S_OK;
 }
 
-HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
-{
-    // Register class
-    WNDCLASSEX wcex;
-    wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.style = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc = WndProc;
-    wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
-    wcex.hInstance = hInstance;
-    wcex.hIcon = LoadIcon(hInstance, (LPCTSTR)IDI_TUTORIAL1);
-    wcex.hCursor = LoadCursor(NULL, IDC_ARROW );
-    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wcex.lpszMenuName = nullptr;
-    wcex.lpszClassName = L"TutorialWindowClass";
-    wcex.hIconSm = LoadIcon(wcex.hInstance, (LPCTSTR)IDI_TUTORIAL1);
-    if (!RegisterClassEx(&wcex))
-        return E_FAIL;
 
-    // Create window
-    _hInst = hInstance;
-    RECT rc = {0, 0, 640, 480};
-    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-    _hWnd = CreateWindow(L"TutorialWindowClass", L"DX11 Framework", WS_OVERLAPPEDWINDOW,
-                         CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
-                         nullptr);
-    if (!_hWnd)
-		return E_FAIL;
-
-    ShowWindow(_hWnd, nCmdShow);
-
-    return S_OK;
-}
 
 HRESULT Application::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
 {
@@ -427,38 +476,8 @@ void Application::Update()
 	XMStoreFloat4x4(&_world, XMMatrixRotationZ(t));
 }
 
-void Application::Draw()
-{
-    //
-    // Clear the back buffer
-    //
-    float ClearColor[4] = {0.0f, 0.125f, 0.3f, 1.0f}; // red,green,blue,alpha
-    _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
 
-	XMMATRIX world = XMLoadFloat4x4(&_world);
-	XMMATRIX view = XMLoadFloat4x4(&_view);
-	XMMATRIX projection = XMLoadFloat4x4(&_projection);
-    //
-    // Update variables
-    //
-    ConstantBuffer cb;
-	cb.mWorld = XMMatrixTranspose(world);
-	cb.mView = XMMatrixTranspose(view);
-	cb.mProjection = XMMatrixTranspose(projection);
 
-	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
 
-    //
-    // Renders a triangle
-    //
-	_pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
-	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
-    _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
-	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
-	_pImmediateContext->DrawIndexed(6, 0, 0);        
 
-    //
-    // Present our back buffer to our front buffer
-    //
-    _pSwapChain->Present(0, 0);
-}
+

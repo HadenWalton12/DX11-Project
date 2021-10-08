@@ -1,5 +1,7 @@
 #include "Application.h"
 
+//Section creates declaration of DX11 , setting up our window for execution and DX11
+
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
