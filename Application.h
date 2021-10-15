@@ -61,30 +61,31 @@ private:
 	
 	//ID3D11Buffer* - This is a buffer interface that allows to access a buffer resource, this being unstructured memory , these buffers will allow us to store vertex or index data
 	ID3D11Buffer*           _pVertexBuffer; //Will store Vertex Data
-	
 	// Will store Index Data
 	ID3D11Buffer*           _pIndexBuffer; 
-
 	 //Will store Constant Data
 	ID3D11Buffer*           _pConstantBuffer;
 	
 											  
 											  
-											  
+	//Depth/Stencil Buffers - Used to create perception of depth between overlapping objects
+	ID3D11DepthStencilView* _depthStencilView;
+	
+	//We can use this as texture render target or depth stencil resource , in this case a depth stencil resource
+	ID3D11Texture2D* _depthStencilBuffer;
+
 											  
 											  
     //XMFLOAT4X4  - Structure that creates a 4*4 Floating Point Matrix ,
 	//we can then use this to create the relevant world,view,projection matrices that we need.
-	XMFLOAT4X4              _world;
+	XMFLOAT4X4              _world , _world2;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
 
 private:
 
 
-	//HRESULT - WINDOWS DATATYPE THAT IS USED TO DESCRIBE ERROR OR WARNING 
-	
-	
+	//HRESULT - WINDOWS DATATYPE THAT IS USED TO DESCRIBE ERROR OR WARNING - Making this our function type allows us to return error/warning messages , previously not possible without such type 
 	//Intialises our Windows Application
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	

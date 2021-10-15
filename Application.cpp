@@ -127,38 +127,52 @@ HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
 
 void Application::Draw()
 {
-    //
-    // Clear the back buffer
-    //
-    float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f }; // red,green,blue,alpha
-    _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
+    //Create Constant Buffer variable , in reference to struct
+    ConstantBuffer constantbuff;
 
-    XMMATRIX world = XMLoadFloat4x4(&_world );
-    XMMATRIX view = XMLoadFloat4x4(&_view);
-    XMMATRIX projection = XMLoadFloat4x4(&_projection);
-
-    //
-    // Update variables
-    //
-    ConstantBuffer cb;
-    cb.mWorld = XMMatrixTranspose(world);
-    cb.mView = XMMatrixTranspose(view);
-    cb.mProjection = XMMatrixTranspose(projection);
-
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-
-    //
     // Renders a triangle
-    //
     _pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
     _pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
     _pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
+
+
+
+
+    XMMATRIX view = XMLoadFloat4x4(&_view);
+    XMMATRIX projection = XMLoadFloat4x4(&_projection);
+    XMMATRIX world = XMLoadFloat4x4(&_world);
+
+
+    // Clear the back buffer  
+    float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f }; // red,green,blue,alpha
+    _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
+    _pImmediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+    
+
+   
+    
+  
+    constantbuff.mWorld = XMMatrixTranspose(world);
+    constantbuff.mView  =  XMMatrixTranspose(view);
+    constantbuff.mProjection = XMMatrixTranspose(projection);
+    
+
+
+
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuff, 0, 0);
+
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
-    //
+
+
+    world = XMLoadFloat4x4(&_world2);
+    constantbuff.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuff, 0, 0);
+    
+    _pImmediateContext->DrawIndexed(36, 0, 0);
+
     // Present our back buffer to our front buffer
-    //
     _pSwapChain->Present(0, 0);
 }
 
@@ -310,23 +324,27 @@ HRESULT Application::CreateIndexBuffer()
     WORD indices[] =
     {
       
-        0,1,2, //Face 1 
+        0,1,2, //Front
         2,1,3,
 
-        3,2,4, //Face 2
-        4,5,3, 
+
+
+         //Left
+        3,2,4,
+        4,5,3,
         
-        3,5,1, //Face 3 
-        1,5,6,
+        //Right
+ 
+     
        
-        6,5,4,//Face 4
-        4,7,6,
+        //Top
+       
         
-        6,7,1,//Face 5 
-        1,7,0,
+        //Bottom
         
-        4,7,0,//Face 6 
-        0,2,4,
+        
+        //Back
+        
         
         
        
@@ -396,6 +414,7 @@ HRESULT Application::CreateDevice()
     createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
+
     D3D_DRIVER_TYPE driverTypes[] =
     {
         D3D_DRIVER_TYPE_HARDWARE,
@@ -428,6 +447,7 @@ HRESULT Application::CreateDevice()
     sd.SampleDesc.Quality = 0;
     sd.Windowed = TRUE;
 
+
     for (UINT driverTypeIndex = 0; driverTypeIndex < numDriverTypes; driverTypeIndex++)
     {
         _driverType = driverTypes[driverTypeIndex];
@@ -440,12 +460,30 @@ HRESULT Application::CreateDevice()
     if (FAILED(hr))
         return hr;
 
+    D3D11_TEXTURE2D_DESC depthStencilDesc;
+
+    depthStencilDesc.Width = _WindowWidth;
+    depthStencilDesc.Height = _WindowHeight;
+    depthStencilDesc.MipLevels = 1;
+    depthStencilDesc.ArraySize = 1;
+    depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depthStencilDesc.SampleDesc.Count = 1;
+    depthStencilDesc.SampleDesc.Quality = 0;
+    depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+    depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    depthStencilDesc.CPUAccessFlags = 0;
+    depthStencilDesc.MiscFlags = 0;
+
+    _pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &_depthStencilBuffer);
+    _pd3dDevice->CreateDepthStencilView(_depthStencilBuffer, nullptr, &_depthStencilView);
     // Create a render target view
     ID3D11Texture2D* pBackBuffer = nullptr;
     hr = _pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
 
     if (FAILED(hr))
+    {
         return hr;
+    }
 
     hr = _pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &_pRenderTargetView);
     pBackBuffer->Release();
@@ -454,8 +492,9 @@ HRESULT Application::CreateDevice()
     {
         return hr;
     }
-    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, nullptr);
 
+    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _depthStencilView);
+   
     //D3D11_VIEWPORT - Viewport Structre - Allows us to define the dimensions for our viewport
     D3D11_VIEWPORT viewport;
     viewport.Width = (FLOAT)_WindowWidth;
@@ -466,8 +505,10 @@ HRESULT Application::CreateDevice()
     viewport.TopLeftY = 0;
     _pImmediateContext->RSSetViewports(1, &viewport);
 
-	CreateShadersAndInputLayout();
 
+
+
+	CreateShadersAndInputLayout();
 	CreateVertexBuffer();
 
     // Set vertex buffer
@@ -479,9 +520,9 @@ HRESULT Application::CreateDevice()
 
     // Set index buffer
     _pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-
     // Set primitive topology - 
     _pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 
 	// Create the constant buffer
 	D3D11_BUFFER_DESC bd;
@@ -492,8 +533,13 @@ HRESULT Application::CreateDevice()
 	bd.CPUAccessFlags = 0;
     hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pConstantBuffer);
 
+
+
     if (FAILED(hr))
         return hr;
+
+
+
 
     return S_OK;
 }
@@ -512,6 +558,8 @@ void Application::Cleanup()
     if (_pSwapChain) _pSwapChain->Release();
     if (_pImmediateContext) _pImmediateContext->Release();
     if (_pd3dDevice) _pd3dDevice->Release();
+    if (_depthStencilView) _depthStencilView->Release();
+    if (_depthStencilBuffer) _depthStencilBuffer->Release();
 }
 
 
@@ -541,6 +589,7 @@ void Application::Update()
     //
     
 	XMStoreFloat4x4(&_world, XMMatrixRotationY(t) );
+    XMStoreFloat4x4(&_world2, XMMatrixTranslation(2.0f , 0.0f  , 0.0f));
 }
 
 
