@@ -1,12 +1,18 @@
 #include "Application.h"
 
-//Class Constructor - Initalizes pointer values used to Initialize/create DX11 Application
+//Class Constructor - Initalizes pointer values used to initialize/create DX11 Application
 Application::Application()
 {
+    //Intialise Window Variables
     _hInst = nullptr;
     _hWnd = nullptr;
-    _driverType = D3D_DRIVER_TYPE_NULL;
+ 
+    
+    //D3D_DRIVER_TYPE - Paramater used to determine the choice of primary rendering device for application
+    _driverType = D3D_DRIVER_TYPE_HARDWARE;
     _featureLevel = D3D_FEATURE_LEVEL_11_0;
+    
+    
     _pd3dDevice = nullptr;
     _pImmediateContext = nullptr;
     _pSwapChain = nullptr;
@@ -25,16 +31,28 @@ Application::~Application()
     Cleanup();
 }
 
+
+/*
+All windows based applications are event-driven , waiting for data to be passed from the system into the windows application
+
+
+
+
+*/
+//Application defining function , processes messages sent to the window
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    PAINTSTRUCT ps;
+{  
+
+    //Used to paint the client area of a window owned by application.
+    PAINTSTRUCT paint;
+    //Used for windows based application graphics
     HDC hdc;
 
     switch (message)
     {
         case WM_PAINT:
-            hdc = BeginPaint(hWnd, &ps);
-            EndPaint(hWnd, &ps);
+            hdc = BeginPaint(hWnd, &paint);
+            EndPaint(hWnd, &paint);
             break;
 
         case WM_DESTROY:
@@ -53,32 +71,52 @@ HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
 {
     // Register class
     //WNDCLASSEX is the structure that contains the relevant members to registre our window , each member is seen below ,creating and designing our window to our needs 
-    WNDCLASSEX wcex;
-    wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.style = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc = WndProc;
-    wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
-    wcex.hInstance = hInstance;
-    wcex.hIcon = LoadIcon(hInstance, (LPCTSTR)IDI_TUTORIAL1);
-    wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wcex.lpszMenuName = nullptr;
-    wcex.lpszClassName = L"TutorialWindowClass";
-    wcex.hIconSm = LoadIcon(wcex.hInstance, (LPCTSTR)IDI_TUTORIAL1);
-    if (!RegisterClassEx(&wcex))
+    
+    
+    LPCWSTR p_class_name = L"ClassNameHere";
+    WNDCLASSEX win_class = { 0 };
+    
+    
+    
+    
+    win_class.cbSize = sizeof(WNDCLASSEX);
+    win_class.style = CS_HREDRAW | CS_VREDRAW;
+    win_class.lpfnWndProc = WndProc;
+    win_class.cbClsExtra = 0;
+    win_class.cbWndExtra = 0;
+    win_class.hInstance = hInstance;
+    win_class.hIcon = LoadIcon(hInstance, (LPCTSTR)IDI_TUTORIAL1);
+    win_class.hCursor = LoadCursor(NULL, IDC_ARROW);
+    win_class.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    win_class.lpszMenuName = nullptr;
+    win_class.lpszClassName = p_class_name;
+    win_class.hIconSm = LoadIcon(win_class.hInstance, (LPCTSTR)IDI_TUTORIAL1);
+   
+   
+    if (!RegisterClassEx(&win_class))
+    {
         return E_FAIL;
-
+    }
+    
+    
     // Creates window instance
     _hInst = hInstance;
-    RECT rc = { 0, 0, 640, 480 };
-    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-    _hWnd = CreateWindow(L"TutorialWindowClass", L"DX11 Framework", WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
-        nullptr);
-    if (!_hWnd)
-        return E_FAIL;
 
+
+    //Creates Window
+    _hWnd = CreateWindow(p_class_name, L"DX11 Framework",
+        WS_OVERLAPPEDWINDOW|
+        CW_USEDEFAULT| CW_USEDEFAULT, 600, 400,  640,  480 , nullptr, nullptr, hInstance,
+        nullptr);
+    
+    
+    //Error Method - Checks if Window was created 
+    if (!_hWnd)
+    {
+        return E_FAIL;
+    }
+    
+    
     ShowWindow(_hWnd, SW_SHOW);
 
     return S_OK;
@@ -92,7 +130,6 @@ void Application::Draw()
     //
     // Clear the back buffer
     //
-
     float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f }; // red,green,blue,alpha
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
 
@@ -139,7 +176,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _WindowWidth = rc.right - rc.left;
     _WindowHeight = rc.bottom - rc.top;
 
-    if (FAILED(InitDevice()))
+    if (FAILED(CreateDevice()))
     {
         Cleanup();
 
@@ -162,7 +199,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	return S_OK;
 }
 
-HRESULT Application::InitShadersAndInputLayout()
+HRESULT Application::CreateShadersAndInputLayout()
 {
 	HRESULT hr;
 
@@ -227,21 +264,23 @@ HRESULT Application::InitShadersAndInputLayout()
 	return hr;
 }
 
-HRESULT Application::InitVertexBuffer()
+
+//Creates Application Vertex Buffer - (Vertex Buffer)
+HRESULT Application::CreateVertexBuffer()
 {
     HRESULT hr;
 
-    // Create vertex buffer
+    // Create Vertex Data - Will be Stored in buffer
     SimpleVertex vertices[] =
-    {
-        { XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) }, // 0
-        { XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) }, // 1 
-        { XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) }, // 2 
-        { XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) }, // 3
-        { XMFLOAT3(-1.0f, -1.0f, 2.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) }, // 4
-        { XMFLOAT3(1.0f, -1.0f, 2.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) }, // 5 
-        { XMFLOAT3(1.0f, 1.0f, 2.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) }, // 6
-        { XMFLOAT3(-1.0f, 1.0f, 2.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) }, // 7
+    {     // Vertex/Point Desc        //Colour decsription for point
+        { XMFLOAT3(-1.0f,1.0f,0.0f)  ,XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },   // 0
+        { XMFLOAT3(1.0f,1.0f,0.0f)  , XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },   // 1 
+        { XMFLOAT3(-1.0f,-1.0f,0.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },   // 2 
+        { XMFLOAT3(1.0f,-1.0f,0.0f) , XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },   // 3
+        { XMFLOAT3(-1.0f,-1.0f,2.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },   // 4
+        { XMFLOAT3(1.0f,-1.0f,2.0f) , XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },   // 5 
+        { XMFLOAT3(1.0f,1.0f,2.0f)  , XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },   // 6
+        { XMFLOAT3(-1.0f, 1.0f,2.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },   // 7
     };
 
     D3D11_BUFFER_DESC bd;
@@ -263,7 +302,7 @@ HRESULT Application::InitVertexBuffer()
 	return S_OK;
 }
 
-HRESULT Application::InitIndexBuffer()
+HRESULT Application::CreateIndexBuffer()
 {
 	HRESULT hr;
 
@@ -271,22 +310,22 @@ HRESULT Application::InitIndexBuffer()
     WORD indices[] =
     {
       
-        0,1,2,
-        2 , 1, 3 ,
+        0,1,2, //Face 1 
+        2,1,3,
 
-        3 , 2 ,4 , 
-        4 , 5 , 3 , 
+        3,2,4, //Face 2
+        4,5,3, 
         
-        3 , 5 , 1, 
-        1 , 5 , 6,
+        3,5,1, //Face 3 
+        1,5,6,
        
-        6,5,4,
+        6,5,4,//Face 4
         4,7,6,
         
-        6,7,1,
+        6,7,1,//Face 5 
         1,7,0,
         
-        4,7,0,
+        4,7,0,//Face 6 
         0,2,4,
         
         
@@ -307,7 +346,7 @@ HRESULT Application::InitIndexBuffer()
     InitData.pSysMem = indices;
     hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
 
-    if (FAILED(hr))
+    if (FAILED (hr) )
         return hr;
 
 	return S_OK;
@@ -347,7 +386,7 @@ HRESULT Application::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoin
     return S_OK;
 }
 
-HRESULT Application::InitDevice()
+HRESULT Application::CreateDevice()
 {
     HRESULT hr = S_OK;
 
@@ -411,36 +450,37 @@ HRESULT Application::InitDevice()
     hr = _pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &_pRenderTargetView);
     pBackBuffer->Release();
 
-    if (FAILED(hr))
+    if (FAILED  (hr) )
+    {
         return hr;
-
+    }
     _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, nullptr);
 
-    // Setup the viewport
-    D3D11_VIEWPORT vp;
-    vp.Width = (FLOAT)_WindowWidth;
-    vp.Height = (FLOAT)_WindowHeight;
-    vp.MinDepth = 0.0f;
-    vp.MaxDepth = 1.0f;
-    vp.TopLeftX = 0;
-    vp.TopLeftY = 0;
-    _pImmediateContext->RSSetViewports(1, &vp);
+    //D3D11_VIEWPORT - Viewport Structre - Allows us to define the dimensions for our viewport
+    D3D11_VIEWPORT viewport;
+    viewport.Width = (FLOAT)_WindowWidth;
+    viewport.Height = (FLOAT)_WindowHeight;
+    viewport.MinDepth = 0.0f;
+    viewport.MaxDepth = 1.0f;
+    viewport.TopLeftX = 0;
+    viewport.TopLeftY = 0;
+    _pImmediateContext->RSSetViewports(1, &viewport);
 
-	InitShadersAndInputLayout();
+	CreateShadersAndInputLayout();
 
-	InitVertexBuffer();
+	CreateVertexBuffer();
 
     // Set vertex buffer
     UINT stride = sizeof(SimpleVertex);
     UINT offset = 0;
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
 
-	InitIndexBuffer();
+	CreateIndexBuffer();
 
     // Set index buffer
     _pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
-    // Set primitive topology
+    // Set primitive topology - 
     _pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// Create the constant buffer
@@ -458,10 +498,10 @@ HRESULT Application::InitDevice()
     return S_OK;
 }
 
+//Clears all values upon termination
 void Application::Cleanup()
 {
     if (_pImmediateContext) _pImmediateContext->ClearState();
-
     if (_pConstantBuffer) _pConstantBuffer->Release();
     if (_pVertexBuffer) _pVertexBuffer->Release();
     if (_pIndexBuffer) _pIndexBuffer->Release();
@@ -474,6 +514,8 @@ void Application::Cleanup()
     if (_pd3dDevice) _pd3dDevice->Release();
 }
 
+
+//
 void Application::Update()
 {
     // Update our time
