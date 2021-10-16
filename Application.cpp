@@ -15,7 +15,7 @@ Application::Application()
     
     _pd3dDevice = nullptr;
     _pImmediateContext = nullptr;
-    _pSwapChain = nullptr;
+    _swapchain = nullptr;
     _pRenderTargetView = nullptr;
     _pVertexShader = nullptr;
     _pPixelShader = nullptr;
@@ -173,7 +173,7 @@ void Application::Draw()
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
     // Present our back buffer to our front buffer
-    _pSwapChain->Present(0, 0);
+    _swapchain->Present(0, 0);
 }
 
 
@@ -287,14 +287,14 @@ HRESULT Application::CreateVertexBuffer()
     // Create Vertex Data - Will be Stored in buffer
     SimpleVertex vertices[] =
     {     // Vertex/Point Desc        //Colour decsription for point
-        { XMFLOAT3(-1.0f,1.0f,0.0f)  ,XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },   // 0
-        { XMFLOAT3(1.0f,1.0f,0.0f)  , XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },   // 1 
-        { XMFLOAT3(-1.0f,-1.0f,0.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },   // 2 
-        { XMFLOAT3(1.0f,-1.0f,0.0f) , XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },   // 3
+        { XMFLOAT3(-1.0f,1.0f,0.0f)  ,XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)  },   // 0
+        { XMFLOAT3(1.0f,1.0f,0.0f)  , XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) },   // 1 
+        { XMFLOAT3(-1.0f,-1.0f,0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)  },   // 2 
+        { XMFLOAT3(1.0f,-1.0f,0.0f) , XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) },   // 3
         { XMFLOAT3(-1.0f,-1.0f,2.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },   // 4
-        { XMFLOAT3(1.0f,-1.0f,2.0f) , XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },   // 5 
+        { XMFLOAT3(1.0f,-1.0f,2.0f) , XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) },   // 5 
         { XMFLOAT3(1.0f,1.0f,2.0f)  , XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },   // 6
-        { XMFLOAT3(-1.0f, 1.0f,2.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },   // 7
+        { XMFLOAT3(-1.0f, 1.0f,2.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) },   // 7
     };
 
     D3D11_BUFFER_DESC bd;
@@ -326,29 +326,21 @@ HRESULT Application::CreateIndexBuffer()
       
         0,1,2, //Front
         2,1,3,
-
-
-
-         //Left
-        3,2,4,
-        4,5,3,
-        
-        //Right
- 
-     
-       
-        //Top
-       
-        
-        //Bottom
-        
-        
-        //Back
-        
-        
-        
-       
-
+       //Left
+        3,1,6,
+        3,6,5,
+       //Right
+        0,2,4,
+        0,4,7,      
+       //Top
+        1,0,7,
+        1,7,6,
+       //Bottom
+        2,3,5,
+        2,5,4,        
+       //Back
+        5,6,7,
+        5,7,4
     };
 
 	D3D11_BUFFER_DESC bd;
@@ -452,7 +444,7 @@ HRESULT Application::CreateDevice()
     {
         _driverType = driverTypes[driverTypeIndex];
         hr = D3D11CreateDeviceAndSwapChain(nullptr, _driverType, nullptr, createDeviceFlags, featureLevels, numFeatureLevels,
-                                           D3D11_SDK_VERSION, &sd, &_pSwapChain, &_pd3dDevice, &_featureLevel, &_pImmediateContext);
+                                           D3D11_SDK_VERSION, &sd, &_swapchain, &_pd3dDevice, &_featureLevel, &_pImmediateContext);
         if (SUCCEEDED(hr))
             break;
     }
@@ -478,7 +470,7 @@ HRESULT Application::CreateDevice()
     _pd3dDevice->CreateDepthStencilView(_depthStencilBuffer, nullptr, &_depthStencilView);
     // Create a render target view
     ID3D11Texture2D* pBackBuffer = nullptr;
-    hr = _pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+    hr = _swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
 
     if (FAILED(hr))
     {
@@ -536,8 +528,9 @@ HRESULT Application::CreateDevice()
 
 
     if (FAILED(hr))
+    {
         return hr;
-
+    }
 
 
 
@@ -555,15 +548,13 @@ void Application::Cleanup()
     if (_pVertexShader) _pVertexShader->Release();
     if (_pPixelShader) _pPixelShader->Release();
     if (_pRenderTargetView) _pRenderTargetView->Release();
-    if (_pSwapChain) _pSwapChain->Release();
+    if (_swapchain) _swapchain->Release();
     if (_pImmediateContext) _pImmediateContext->Release();
     if (_pd3dDevice) _pd3dDevice->Release();
     if (_depthStencilView) _depthStencilView->Release();
     if (_depthStencilBuffer) _depthStencilBuffer->Release();
 }
 
-
-//
 void Application::Update()
 {
     // Update our time
@@ -584,12 +575,9 @@ void Application::Update()
         t = (dwTimeCur - dwTimeStart) / 1000.0f;
     }
     
-    //
-    // Animate the cube
-    //
-    
-	XMStoreFloat4x4(&_world, XMMatrixRotationY(t) );
-    XMStoreFloat4x4(&_world2, XMMatrixTranslation(2.0f , 0.0f  , 0.0f));
+     //Update Cube Positions
+	XMStoreFloat4x4(&_world, XMMatrixRotationY(t) * XMMatrixRotationZ(t));
+    XMStoreFloat4x4(&_world2, XMMatrixTranslation(-5.0f , 1.0f  , 5.0f));
 }
 
 
