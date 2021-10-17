@@ -53,7 +53,8 @@ private:
 	//Virtual Representation of your video adapter(virtual representation of graphics card)
 	ID3D11Device*           _pd3dDevice;
 
-	//Applied as a device context that allows us to generate rendering commands to our device. Allowing us to manage our GPU and via that the rendering pipeline.
+	//Applied as a device context that allows us to generate rendering commands to our device. Allowing us to manage our GPU and via that the rendering pipeline
+	//Further used to manage all content relating to execution and creation of things to be executed onto our device
 	ID3D11DeviceContext*    _pImmediateContext;
 	
 	//A series of buffers that allow us to take turn on buffers to render on , this variable is a pointer that references this process
@@ -67,7 +68,6 @@ private:
 			Objects related to controlling "Interfacing" data related to application ,
 			controlling executed stages on  pipeline
 	*/
-
 	// Interfaces/manages vertex shader  that controls vertex-shader stage (stage on pipeline)
 	ID3D11VertexShader*     _pVertexShader;
 									   
@@ -94,6 +94,7 @@ private:
 	ID3D11Texture2D* _pDepthStencilBuffer;
 							  
 	//we can then use this to create the relevant world,view,projection matrices that we need.
+	//We store this data in 4x4 Matrix to transpose/ mathmatically apply matrix mathmatic too.
 	XMFLOAT4X4              _world , _world2;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
@@ -105,7 +106,9 @@ private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT CreateDevice();
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
+
 	HRESULT CreateShadersAndInputLayout();
+
 	HRESULT CreateVertexBuffer();
 	HRESULT CreateIndexBuffer();
 
@@ -118,10 +121,13 @@ private:
 public:
 	Application();
 	~Application();
+
 	//Initalises windows application
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
+	
 	//Update Application real time
 	void Update();
+	
 	//Drawing Method of application
 	void Draw();
 };
