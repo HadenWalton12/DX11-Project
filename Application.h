@@ -16,7 +16,9 @@
 using namespace DirectX;
 
 //XMFLOAT3 - Describes 3DVector , Consisting of Three Points (x,y ,z)
-//XMFLOAT4 - Describes 4DVector , Consisting of Four Points (x )
+//XMFLOAT4 - Describes 4DVector , Consisting of Four Points (x)
+//XMFLOAT4X4  - Structure that creates 4*4 Floating Point Matrix - Can be used to store XMMATRIX DATA
+//and relevant matrix data within DX11
 
 
 //Intialise Data Entries - Will be stored/referenced on Vertex Buffer
@@ -38,6 +40,7 @@ struct ConstantBuffer
 class Application
 {
 private:
+
 	//Used to initialize our window 
 	HINSTANCE               _hInst;
 	HWND                    _hWnd;
@@ -52,54 +55,61 @@ private:
 
 	//Applied as a device context that allows us to generate rendering commands to our device. Allowing us to manage our GPU and via that the rendering pipeline.
 	ID3D11DeviceContext*    _pImmediateContext;
+	
 	//A series of buffers that allow us to take turn on buffers to render on , this variable is a pointer that references this process
-	IDXGISwapChain*         _swapchain;
+	IDXGISwapChain*         _pSwapChain;
 	
 
 	//In order to render our application , we need to target our renderer , this is done so we can maintain the location in video memory to render into
 	ID3D11RenderTargetView* _pRenderTargetView;
 	
-	//Interfaces to relevant context , controls the specfic stage it is bound too
-	ID3D11VertexShader*     _pVertexShader;// Manages our vertex shader, controls vertex-shader stage
-	ID3D11PixelShader*      _pPixelShader; //Managers our Pixel Shader , controlling pixel-shader stage
+	/* Interface Management
+			Objects related to controlling "Interfacing" data related to application ,
+			controlling executed stages on  pipeline
+	*/
+
+	// Interfaces/manages vertex shader  that controls vertex-shader stage (stage on pipeline)
+	ID3D11VertexShader*     _pVertexShader;
+									   
+	//Interfaces/manages the pixel shader that controls pixel-shader stage (Stage on PipeLine) 
+	ID3D11PixelShader*      _pPixelShader;
+	
+	//Input Layout holds definition of how to feed vertex data laid out in memory (Buffers)into input-assembler stage
 	ID3D11InputLayout*      _pVertexLayout;
 	
 	//ID3D11Buffer* - This is a buffer interface that allows to access a buffer resource, this being unstructured memory
 	//These buffers will allow us to store vertex or index data
 	
 	//Will store Vertex Data
-	ID3D11Buffer*           _pVertexBuffer; 
-    
+	ID3D11Buffer*           _pVertexBuffer;   
 	// Will store Index Data
 	ID3D11Buffer*           _pIndexBuffer; 
-	
 	//Will store Constant Data
 	ID3D11Buffer*           _pConstantBuffer;
 											  
 	//Depth/Stencil Buffers - Used to create perception of depth between overlapping objects
-	ID3D11DepthStencilView* _depthStencilView;
+	ID3D11DepthStencilView* _pDepthStencilView;
 
 	//We can use this as texture render target or depth stencil resource , in this case a depth stencil resource
-	ID3D11Texture2D* _depthStencilBuffer;
+	ID3D11Texture2D* _pDepthStencilBuffer;
 							  
-    //XMFLOAT4X4  - Structure that creates a 4*4 Floating Point Matrix ,
 	//we can then use this to create the relevant world,view,projection matrices that we need.
-	XMFLOAT4X4              _world , _world2 , _world3 , _world4;
+	XMFLOAT4X4              _world , _world2;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
 
 private:
-	//HRESULT - WINDOWS DATATYPE THAT IS USED TO DESCRIBE ERROR OR WARNING - Making this our function type allows us to return error/warning messages , 
-	//previously not possible without such type
-	//Intialises our Windows Application
+	/*HRESULT - WINDOWS DATATYPE THAT IS USED TO DESCRIBE ERROR OR WARNING - Making this our function type allows us to return error/warning messages
+	previously not possible without such type
+	Intialises our Windows Application*/
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT CreateDevice();
-	void Cleanup();
-	
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 	HRESULT CreateShadersAndInputLayout();
 	HRESULT CreateVertexBuffer();
 	HRESULT CreateIndexBuffer();
+
+	void Cleanup();
 
 	//Defines Window Size
 	UINT _WindowHeight;
