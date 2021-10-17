@@ -6,8 +6,7 @@ Application::Application()
     //Intialise Window Variables
     _hInst = nullptr;
     _hWnd = nullptr;
- 
-    
+   
     //D3D_DRIVER_TYPE - Paramater used to determine the choice of primary rendering device for application
     _driverType = D3D_DRIVER_TYPE_HARDWARE;
     _featureLevel = D3D_FEATURE_LEVEL_11_0;
@@ -15,7 +14,7 @@ Application::Application()
     
     _pd3dDevice = nullptr;
     _pImmediateContext = nullptr;
-    _swapchain = nullptr;
+    _pSwapChain = nullptr;
     _pRenderTargetView = nullptr;
     _pVertexShader = nullptr;
     _pPixelShader = nullptr;
@@ -31,13 +30,8 @@ Application::~Application()
     Cleanup();
 }
 
-
 /*
 All windows based applications are event-driven , waiting for data to be passed from the system into the windows application
-
-
-
-
 */
 //Application defining function , processes messages sent to the window
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -48,6 +42,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     //Used for windows based application graphics
     HDC hdc;
 
+    //Determines theoutput of specific window queue messages.
     switch (message)
     {
         case WM_PAINT:
@@ -71,8 +66,6 @@ HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
 {
     // Register class
     //WNDCLASSEX is the structure that contains the relevant members to registre our window , each member is seen below ,creating and designing our window to our needs 
-    
-    
     LPCWSTR p_class_name = L"ClassNameHere";
     WNDCLASSEX win_class = { 0 };
     
@@ -102,7 +95,6 @@ HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
     // Creates window instance
     _hInst = hInstance;
 
-
     //Creates Window
     _hWnd = CreateWindow(p_class_name, L"DX11 Framework",
         WS_OVERLAPPEDWINDOW|
@@ -119,67 +111,68 @@ HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
     
     ShowWindow(_hWnd, SW_SHOW);
 
+    //Return Correct Error Method
     return S_OK;
 }
 
 
 
-
+//Drawing Method  - Calls upon filled values 
+// - Specify Buffers To Execute
+// - 
 void Application::Draw()
 {
     //Create Constant Buffer variable , in reference to struct
     ConstantBuffer constantbuff;
 
-    // Renders a triangle
+    // Renders a triangle - Calls upon ConstantBuffers(Stores View/Projection/World Matrix - Used for transformation pipeline) 
+    //Calls Vertex/Pixel Shaders - Using stored data to translate with ^^ to render triangle
     _pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
     _pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
     _pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
 
-
-
-
+    //Initalize Local View,Projection & World Matrixes to make them equal the adjacent ones - For drawing purposes , using drawn values passed into global versions to be further processed
     XMMATRIX view = XMLoadFloat4x4(&_view);
     XMMATRIX projection = XMLoadFloat4x4(&_projection);
     XMMATRIX world = XMLoadFloat4x4(&_world);
 
 
-    // Clear the back buffer  
+    // Clear the back buffer  - Ready to perform and redraw next frame in sequence
     float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f }; // red,green,blue,alpha
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
-    _pImmediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-    
-
-   
-    
-  
+    //Initalizes and creates our depth stencil view , simulating depth among 3D scene
+    _pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+        
+    //Call reference to constbuff , Passing Local Represents of these variables (makes constbuff members equal adjacent local versions) , transposing each matrix
     constantbuff.mWorld = XMMatrixTranspose(world);
     constantbuff.mView  =  XMMatrixTranspose(view);
     constantbuff.mProjection = XMMatrixTranspose(projection);
     
 
 
-
+    //
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuff, 0, 0);
-
+    //Calls upon number of Indicies need drawing
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
 
-
+    //Creates / Initlizaes , Draws and renders our second cube object using same vertex data 
     world = XMLoadFloat4x4(&_world2);
     constantbuff.mWorld = XMMatrixTranspose(world);
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuff, 0, 0);
-    
+
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
     // Present our back buffer to our front buffer
-    _swapchain->Present(0, 0);
+    _pSwapChain->Present(0, 0);
 }
 
 
-
+//Intialise 
 HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 {
+
     if (FAILED(InitWindow(hInstance, nCmdShow)))
 	{
         return E_FAIL;
@@ -197,27 +190,29 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         return E_FAIL;
     }
 
-	// Initialize the world matrix
-	XMStoreFloat4x4(&_world, XMMatrixIdentity());
+	
 
     // Initialize the view matrix - Will determine our view projection when projection matrix is applied
 	XMVECTOR Eye = XMVectorSet(0.0f, 0.0f,-5.0f, 0.0f);
 	XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
+    //Creates the view matrix - Determining our "camera" origin , storing the "eye , at , up" data in our 4x4 _view matrix
 	XMStoreFloat4x4(&_view, XMMatrixLookAtLH(Eye, At, Up));
 
-    // Initialize the projection matrix
+    // Initialize the projection matrix - Changing this with give us different projection
 	XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT) _WindowHeight, 0.01f, 100.0f));
 
 	return S_OK;
 }
 
+//Do not know its current purpose
 HRESULT Application::CreateShadersAndInputLayout()
 {
 	HRESULT hr;
 
-    // Compile the vertex shader
+
+    //ID3DBlob Returns Data of a length - In our case we use this to comile the vertex shader , to create , we do this with pixel shader aswell
     ID3DBlob* pVSBlob = nullptr;
     hr = CompileShaderFromFile(L"DX11 Framework.fx", "VS", "vs_4_0", &pVSBlob);
 
@@ -228,7 +223,8 @@ HRESULT Application::CreateShadersAndInputLayout()
         return hr;
     }
 
-	// Create the vertex shader
+	// Create the vertex shader - Used to process and and manipulate our vertexes stored in the buffer
+    //The vertex shader takes data from vertex buffer , inputting and outputting a vertex, each vertex is pumped threw the vertex shader.
 	hr = _pd3dDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &_pVertexShader);
 
 	if (FAILED(hr))
@@ -255,7 +251,7 @@ HRESULT Application::CreateShadersAndInputLayout()
     if (FAILED(hr))
         return hr;
 
-    // Define the input layout
+    // Defines the input layout for data we wish to input into the input-assembler (This can be seen as a reference in vertex buffer )
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -264,7 +260,7 @@ HRESULT Application::CreateShadersAndInputLayout()
 
 	UINT numElements = ARRAYSIZE(layout);
 
-    // Create the input layout
+    // Create the input layout - The layout of the data inputted into input_assembler - the be outputted
 	hr = _pd3dDevice->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(),
                                         pVSBlob->GetBufferSize(), &_pVertexLayout);
 	pVSBlob->Release();
@@ -285,7 +281,7 @@ HRESULT Application::CreateVertexBuffer()
     HRESULT hr;
 
     // Create Vertex Data - Will be Stored in buffer
-    SimpleVertex vertices[] =
+    SimpleVertex VertexStruct[] =
     {     // Vertex/Point Desc        //Colour decsription for point
         { XMFLOAT3(-1.0f,1.0f,0.0f)  ,XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)  },   // 0
         { XMFLOAT3(1.0f,1.0f,0.0f)  , XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) },   // 1 
@@ -297,34 +293,42 @@ HRESULT Application::CreateVertexBuffer()
         { XMFLOAT3(-1.0f, 1.0f,2.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) },   // 7
     };
 
-    D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
-    bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(SimpleVertex) * 8;
-    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = 0;
 
+    //A struct that describes Buffer Resource - Our case describing Vertex Buffer
+    D3D11_BUFFER_DESC bufferdescription;
+	ZeroMemory(&bufferdescription, sizeof(bufferdescription));
+   
+    //Describe Vertex Buffer
+    bufferdescription.Usage = D3D11_USAGE_DEFAULT;
+    bufferdescription.ByteWidth = sizeof(SimpleVertex) * 8;
+    bufferdescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    bufferdescription.CPUAccessFlags = 0;
+
+    //Specifies data being used - Used in the process of creating buffers
     D3D11_SUBRESOURCE_DATA InitData;
 	ZeroMemory(&InitData, sizeof(InitData));
-    InitData.pSysMem = vertices;
+    InitData.pSysMem = VertexStruct;
 
-    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
+    //Call Our Device to create our vertex buffer , passing bufferdesc , intializing vetex buffer , then passing our vertexbuffer pointer (will store and manage our data)
+    hr = _pd3dDevice->CreateBuffer(&bufferdescription, &InitData, &_pVertexBuffer);
 
+    //Fail Check Method
     if (FAILED(hr))
         return hr;
 
 	return S_OK;
 }
 
+//This Creates Applications IndexBuffer - Same process of , describing , init and creating is same process as vertex buffer (reference comments inside "CreateVertexBuffer" to see similar process)
 HRESULT Application::CreateIndexBuffer()
 {
 	HRESULT hr;
 
-    // Create index buffer
+    // Create index buffer , stores reference to vertex points from "VertexData" Struct
     WORD indices[] =
     {
-      
-        0,1,2, //Front
+      //Front
+        0,1,2,
         2,1,3,
        //Left
         3,1,6,
@@ -343,25 +347,26 @@ HRESULT Application::CreateIndexBuffer()
         5,7,4
     };
 
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
+	D3D11_BUFFER_DESC bufferdescription;
+	ZeroMemory(&bufferdescription, sizeof(bufferdescription));
 
-    bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(WORD) * 36;     
-    bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	bd.CPUAccessFlags = 0;
+    bufferdescription.Usage = D3D11_USAGE_DEFAULT;
+    bufferdescription.ByteWidth = sizeof(WORD) * 36;
+    bufferdescription.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    bufferdescription.CPUAccessFlags = 0;
+
+
 
 	D3D11_SUBRESOURCE_DATA InitData;
 	ZeroMemory(&InitData, sizeof(InitData));
     InitData.pSysMem = indices;
-    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
+    hr = _pd3dDevice->CreateBuffer(&bufferdescription, &InitData, &_pIndexBuffer);
 
     if (FAILED (hr) )
         return hr;
 
 	return S_OK;
 }
-
 
 
 HRESULT Application::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
@@ -444,7 +449,7 @@ HRESULT Application::CreateDevice()
     {
         _driverType = driverTypes[driverTypeIndex];
         hr = D3D11CreateDeviceAndSwapChain(nullptr, _driverType, nullptr, createDeviceFlags, featureLevels, numFeatureLevels,
-                                           D3D11_SDK_VERSION, &sd, &_swapchain, &_pd3dDevice, &_featureLevel, &_pImmediateContext);
+                                           D3D11_SDK_VERSION, &sd, &_pSwapChain, &_pd3dDevice, &_featureLevel, &_pImmediateContext);
         if (SUCCEEDED(hr))
             break;
     }
@@ -466,11 +471,11 @@ HRESULT Application::CreateDevice()
     depthStencilDesc.CPUAccessFlags = 0;
     depthStencilDesc.MiscFlags = 0;
 
-    _pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &_depthStencilBuffer);
-    _pd3dDevice->CreateDepthStencilView(_depthStencilBuffer, nullptr, &_depthStencilView);
+    _pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &_pDepthStencilBuffer);
+    _pd3dDevice->CreateDepthStencilView(_pDepthStencilBuffer, nullptr, &_pDepthStencilView);
     // Create a render target view
     ID3D11Texture2D* pBackBuffer = nullptr;
-    hr = _swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+    hr = _pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
 
     if (FAILED(hr))
     {
@@ -485,7 +490,7 @@ HRESULT Application::CreateDevice()
         return hr;
     }
 
-    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _depthStencilView);
+    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);
    
     //D3D11_VIEWPORT - Viewport Structre - Allows us to define the dimensions for our viewport
     D3D11_VIEWPORT viewport;
@@ -548,11 +553,11 @@ void Application::Cleanup()
     if (_pVertexShader) _pVertexShader->Release();
     if (_pPixelShader) _pPixelShader->Release();
     if (_pRenderTargetView) _pRenderTargetView->Release();
-    if (_swapchain) _swapchain->Release();
+    if (_pSwapChain) _pSwapChain->Release();
     if (_pImmediateContext) _pImmediateContext->Release();
     if (_pd3dDevice) _pd3dDevice->Release();
-    if (_depthStencilView) _depthStencilView->Release();
-    if (_depthStencilBuffer) _depthStencilBuffer->Release();
+    if (_pDepthStencilView) _pDepthStencilView->Release();
+    if (_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
 }
 
 void Application::Update()
@@ -577,7 +582,7 @@ void Application::Update()
     
      //Update Cube Positions
 	XMStoreFloat4x4(&_world, XMMatrixRotationY(t) * XMMatrixRotationZ(t));
-    XMStoreFloat4x4(&_world2, XMMatrixTranslation(-5.0f , 1.0f  , 5.0f));
+    XMStoreFloat4x4(&_world2, XMMatrixTranslation(-5.0f , 1.0f  , 5.0f) + XMMatrixRotationZ(t));
 }
 
 
