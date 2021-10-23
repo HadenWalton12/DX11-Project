@@ -92,10 +92,13 @@ private:
 
 	//We can use this as texture render target or depth stencil resource , in this case a depth stencil resource
 	ID3D11Texture2D* _pDepthStencilBuffer;
-							  
+							
+
+	ID3D11RasterizerState* _wireFrame;
 	//we can then use this to create the relevant world,view,projection matrices that we need.
 	//We store this data in 4x4 Matrix to transpose/ mathmatically apply matrix mathmatic too.
-	XMFLOAT4X4              _world , _world2;
+	XMFLOAT4X4 _world , _world2, _world3, _world4 , _world5, _world6, _world7;
+	XMFLOAT4X4 astroidbelt[100];
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
 
@@ -126,7 +129,7 @@ public:
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
 	
 	//Update Application real time
-	void Update();
+	HRESULT Update();
 	
 	//Drawing Method of application
 	void Draw();

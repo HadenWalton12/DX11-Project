@@ -13,7 +13,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	{
 		return -1;
 	}
-
+    
     // Main message loop
     MSG msg = {0};
 

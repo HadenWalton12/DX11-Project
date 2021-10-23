@@ -1,4 +1,5 @@
 #include "Application.h"
+#include <xpolymorphic_allocator.h>
 
 //Class Constructor - Initalizes pointer values used to initialize/create DX11 Application
 Application::Application()
@@ -36,7 +37,7 @@ All windows based applications are event-driven , waiting for data to be passed 
 //Application defining function , processes messages sent to the window
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {  
-
+  
     //Used to paint the client area of a window owned by application.
     PAINTSTRUCT paint;
     //Used for windows based application graphics
@@ -53,7 +54,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case WM_DESTROY:
             PostQuitMessage(0);
             break;
+        case WM_KEYUP:
 
+            break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
     }
@@ -164,6 +167,41 @@ void Application::Draw()
 
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
+    world = XMLoadFloat4x4(&_world3);
+    constantbuff.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuff, 0, 0);
+    _pImmediateContext->DrawIndexed(36, 0, 0);
+
+    world = XMLoadFloat4x4(&_world4);
+    constantbuff.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuff, 0, 0);
+    _pImmediateContext->DrawIndexed(36, 0, 0);
+
+    world = XMLoadFloat4x4(&_world5);
+    constantbuff.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuff, 0, 0);
+    _pImmediateContext->DrawIndexed(36, 0, 0);
+
+    world = XMLoadFloat4x4(&_world6);
+    constantbuff.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuff, 0, 0);
+    _pImmediateContext->DrawIndexed(36, 0, 0);
+
+
+    world = XMLoadFloat4x4(&_world7);
+    constantbuff.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuff, 0, 0);
+    _pImmediateContext->DrawIndexed(36, 0, 0);
+    
+    for (int i = 0; i < 100; i++)
+    {
+        world = XMLoadFloat4x4(&astroidbelt[i]);
+        constantbuff.mWorld = XMMatrixTranspose(world);
+        _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuff, 0, 0);
+        _pImmediateContext->DrawIndexed(36, 0, 0);
+    }
+    
+    
     // Present our back buffer to our front buffer
     _pSwapChain->Present(0, 0);
 }
@@ -193,7 +231,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	
 
     // Initialize the view matrix - Will determine our view projection when projection matrix is applied
-	XMVECTOR Eye = XMVectorSet(0.0f, 0.0f,-5.0f, 0.0f);
+	XMVECTOR Eye = XMVectorSet(0.0f, 0.0f,-10.0f, 0.0f);
 	XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
@@ -459,6 +497,8 @@ HRESULT Application::CreateDevice()
 
     D3D11_TEXTURE2D_DESC depthStencilDesc;
 
+
+
     depthStencilDesc.Width = _WindowWidth;
     depthStencilDesc.Height = _WindowHeight;
     depthStencilDesc.MipLevels = 1;
@@ -473,6 +513,8 @@ HRESULT Application::CreateDevice()
 
     _pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &_pDepthStencilBuffer);
     _pd3dDevice->CreateDepthStencilView(_pDepthStencilBuffer, nullptr, &_pDepthStencilView);
+
+
     // Create a render target view
     ID3D11Texture2D* pBackBuffer = nullptr;
     hr = _pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
@@ -538,6 +580,21 @@ HRESULT Application::CreateDevice()
     }
 
 
+    //Will describe conditions for rasterizer stage of pipeline
+    D3D11_RASTERIZER_DESC rastDesc;
+
+    ZeroMemory(&rastDesc, sizeof(D3D11_RASTERIZER_DESC));
+    rastDesc.FillMode = D3D11_FILL_WIREFRAME;
+    rastDesc.CullMode = D3D11_CULL_NONE;
+    hr = _pd3dDevice->CreateRasterizerState(&rastDesc, &_wireFrame);
+
+    _pImmediateContext->RSSetState(_wireFrame);
+
+    if (GetAsyncKeyState(VK_DOWN))
+    {
+        rastDesc.FillMode = D3D11_FILL_SOLID;
+    }
+
 
     return S_OK;
 }
@@ -558,16 +615,19 @@ void Application::Cleanup()
     if (_pd3dDevice) _pd3dDevice->Release();
     if (_pDepthStencilView) _pDepthStencilView->Release();
     if (_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
+    if (_wireFrame) _wireFrame->Release();
 }
 
-void Application::Update()
+HRESULT Application::Update()
 {
+    HRESULT hr = S_OK;
+
     // Update our time
     static float t = 0.0f;
 
     if (_driverType == D3D_DRIVER_TYPE_REFERENCE)
     {
-        t += (float) XM_PI * 0.125f;
+    
     }
     else
     {
@@ -579,10 +639,50 @@ void Application::Update()
 
         t = (dwTimeCur - dwTimeStart) / 1000.0f;
     }
+        
+
     
      //Update Cube Positions
-	XMStoreFloat4x4(&_world, XMMatrixRotationY(t) * XMMatrixRotationZ(t));
-    XMStoreFloat4x4(&_world2, XMMatrixTranslation(-5.0f , 1.0f  , 5.0f) + XMMatrixRotationZ(t));
+	XMStoreFloat4x4(&_world, XMMatrixRotationY(t) * XMMatrixTranslation(0.0f , 0.0f ,0.0f));
+   
+    XMStoreFloat4x4(&_world2, XMMatrixScaling(0.5f, 0.5f, 0.5f) * XMMatrixRotationX(t)*  XMMatrixTranslation(0.0f - cos(t) * 5, 0.0f - sin(t) * 5 , 0.0f));
+    XMStoreFloat4x4(&_world3, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(-1.2f - cos(t) * 5, 0.0f - sin(t) * 5, 0.0f));
+
+    XMStoreFloat4x4(&_world4, XMMatrixScaling(0.75f, 0.75f, 0.75f) * XMMatrixRotationX(t) * XMMatrixTranslation(0.0f, 1.2f + cos(t) * 5, 0.0f + sin(t) * 5));
+
+    float num = rand() % -1 + 1 ;
+
+    XMStoreFloat4x4(&_world5, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(0.0f, -1.2f + cos(t) * 5, 0.0f + sin(t) * 5));
+    
+    
+    for (int i = 0; i < 100; i++)
+    {
+        XMStoreFloat4x4(&astroidbelt[i], XMMatrixScaling(0.15f, 0.15f, 0.15f) * XMMatrixRotationX(t) * XMMatrixTranslation(rand() % 2 - cos(t) * 5 , 2 - sin(t) * 5, 1));
+        
+    }
+    D3D11_RASTERIZER_DESC rastDesc;
+
+
+
+
+    if (GetAsyncKeyState(VK_DOWN))
+    {
+        ZeroMemory(&rastDesc, sizeof(D3D11_RASTERIZER_DESC));
+        rastDesc.FillMode = D3D11_FILL_SOLID;
+        rastDesc.CullMode = D3D11_CULL_NONE;
+        hr = _pd3dDevice->CreateRasterizerState(&rastDesc, &_wireFrame);
+    }
+    else if (GetAsyncKeyState(VK_UP))
+    {
+        ZeroMemory(&rastDesc, sizeof(D3D11_RASTERIZER_DESC));
+        rastDesc.FillMode = D3D11_FILL_WIREFRAME;
+        rastDesc.CullMode = D3D11_CULL_NONE;
+        hr = _pd3dDevice->CreateRasterizerState(&rastDesc, &_wireFrame);
+
+
+    }
+    _pImmediateContext->RSSetState(_wireFrame);
+    return S_OK;
 }
 
 
