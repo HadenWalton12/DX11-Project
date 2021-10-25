@@ -28,6 +28,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
         {
 			theApp->Update();
             theApp->Draw();
+           
         }
     }
 

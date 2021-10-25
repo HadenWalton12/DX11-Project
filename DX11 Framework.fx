@@ -4,19 +4,16 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 //--------------------------------------------------------------------------------------
 
-
-
-//This file will contain the relevant Shader Data that we use for vertex and pixel shaders
-
-
 //--------------------------------------------------------------------------------------
 // Constant Buffer Variables
 //--------------------------------------------------------------------------------------
 cbuffer ConstantBuffer : register( b0 )
 {
-	matrix World;
-	matrix View;
-	matrix Projection;
+    matrix World;
+    matrix View;
+    matrix Projection;
+
+    float gTime;
 }
 
 //--------------------------------------------------------------------------------------
@@ -29,12 +26,14 @@ struct VS_OUTPUT
 //--------------------------------------------------------------------------------------
 // Vertex Shader
 //--------------------------------------------------------------------------------------
-VS_OUTPUT VS( float4 Pos : POSITION, float4 Color : COLOR )
+VS_OUTPUT VS( float4 Pos : POSITION, float4 Color : COLOR)
 {
     VS_OUTPUT output = (VS_OUTPUT)0;
-    output.Pos = mul( Pos, World );
-    output.Pos = mul( output.Pos, View );
-    output.Pos = mul( output.Pos, Projection );
+    Pos.xy += 0.5f * sin(Pos.x) * sin(3.0f * gTime);
+    Pos.z *= 0.6f + 0.4f * sin(2.0f * gTime);
+    output.Pos = mul(Pos, World);
+    output.Pos = mul(output.Pos, View);
+    output.Pos = mul(output.Pos, Projection);
     output.Color = Color;
     return output;
 }
