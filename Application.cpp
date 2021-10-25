@@ -642,8 +642,6 @@ void Application::Draw()
     constantbuffer.mProjection = XMMatrixTranspose(projection);
     constantbuffer.gTime = _gTime;
 
-
-
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
 
 
