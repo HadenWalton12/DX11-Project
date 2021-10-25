@@ -20,7 +20,6 @@ using namespace DirectX;
 //XMFLOAT4X4  - Structure that creates 4*4 Floating Point Matrix - Can be used to store XMMATRIX DATA
 //and relevant matrix data within DX11
 
-
 //Intialise Data Entries - Will be stored/referenced on Vertex Buffer
 struct SimpleVertex
 {
@@ -31,7 +30,6 @@ struct SimpleVertex
 
 //Constant Buffer - This allows you to supply shader constants data to pipeline , data we want to continously supply 
 //We store these within since our matrices update in realtime  as game state changes , our view as we may move around the screen
-
 struct ConstantBuffer
 {
 	XMMATRIX mWorld;
@@ -64,9 +62,10 @@ private:
 			Objects related to controlling "Interfacing" data related to application ,
 			controlling executed stages on  pipeline
 	*/
+
+
 	// Interfaces/manages vertex shader  that controls vertex-shader stage (stage on pipeline)
-	ID3D11VertexShader*     _pVertexShader;
-									   
+	ID3D11VertexShader*     _pVertexShader;			   
 	//Interfaces/manages the pixel shader that controls pixel-shader stage (Stage on PipeLine) 
 	ID3D11PixelShader*      _pPixelShader;
 	
@@ -75,13 +74,8 @@ private:
 	
 	//ID3D11Buffer* - This is a buffer interface that allows to access a buffer resource, this being unstructured memory
 	//These buffers will allow us to store vertex or index data
-	
-	//Will store Vertex Data
 	ID3D11Buffer* _pCubeVertexBuffer;
-
 	ID3D11Buffer* _pTriangleVertexBuffer;
-
-	// Will store Index Data
 	ID3D11Buffer*           _pCubeIndexBuffer; 
 	ID3D11Buffer*			_pTriangleIndexBuffer;
 	//Will store Constant Data
@@ -93,49 +87,38 @@ private:
 	//We can use this as texture render target or depth stencil resource , in this case a depth stencil resource
 	ID3D11Texture2D* _pDepthStencilBuffer;
 							
-
+	//Can maniuplate rasterizerstate with pointer
 	ID3D11RasterizerState* _wireFrame;
-	//we can then use this to create the relevant world,view,projection matrices that we need.
+	//We can then use this to create the relevant world,view,projection matrices that we need.
 	//We store this data in 4x4 Matrix to transpose/ mathmatically apply matrix mathmatic too.
-	XMFLOAT4X4 _world , _world2, _world3, _world4 , _world5, _world6, _world7;
-	XMFLOAT4X4 astroidbelt[100];
+	XMFLOAT4X4				_world , _world2, _world3, _world4 , _world5, _world6, _world7;
+	XMFLOAT4X4				astroidbelt[100];
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
-
-
 	float _gTime;
 
 private:
 	/*HRESULT - WINDOWS DATATYPE THAT IS USED TO DESCRIBE ERROR OR WARNING - Making this our function type allows us to return error/warning messages
 	previously not possible without such type
 	Intialises our Windows Application*/
+
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT CreateDevice();
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
-
-	
 	HRESULT CreateShadersAndInputLayout();
-
 	HRESULT CreateVertexBuffer();
 	HRESULT CreateIndexBuffer();
 
 	void Cleanup();
 
-	//Defines Window Size
 	UINT _WindowHeight;
 	UINT _WindowWidth;
 
 public:
 	Application();
 	~Application();
-
-	//Initalises windows application
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
-	
-	//Update Application real time
 	HRESULT Update();
-	
-	//Drawing Method of application
 	void Draw();
 };
 

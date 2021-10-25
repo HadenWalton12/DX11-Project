@@ -397,7 +397,7 @@ HRESULT Application::CreateDevice()
 #ifdef _DEBUG
     createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-
+    //Lists drivetypes (methods of communicating to application to hardware)
     D3D_DRIVER_TYPE driverTypes[] =
     {
         D3D_DRIVER_TYPE_HARDWARE,
@@ -407,20 +407,22 @@ HRESULT Application::CreateDevice()
 
     UINT numDriverTypes = ARRAYSIZE(driverTypes);
 
+    //Describes the DX11 versions used
     D3D_FEATURE_LEVEL featureLevels[] =
     {
         D3D_FEATURE_LEVEL_11_0,
         D3D_FEATURE_LEVEL_10_1,
         D3D_FEATURE_LEVEL_10_0,
     };
-    //Define depth/stencil buffer
 
 
     UINT numFeatureLevels = ARRAYSIZE(featureLevels);
 
-
+    //Create Swap Chain Description
     DXGI_SWAP_CHAIN_DESC sd;
     ZeroMemory(&sd, sizeof(sd));
+
+    //Describes Swap Chain
     sd.BufferCount = 1;
     sd.BufferDesc.Width = _WindowWidth;
     sd.BufferDesc.Height = _WindowHeight;
@@ -441,9 +443,10 @@ HRESULT Application::CreateDevice()
         if (SUCCEEDED(hr))
             break;
     }
-
+    //Creates Depth Stencil buffer descriptor
     D3D11_TEXTURE2D_DESC depthStencilDesc;
 
+    //Describing buffer descriptor
     depthStencilDesc.Width = _WindowWidth;
     depthStencilDesc.Height = _WindowHeight;
     depthStencilDesc.MipLevels = 1;
@@ -462,74 +465,73 @@ HRESULT Application::CreateDevice()
 
 
     if (FAILED(hr))
+    {
         return hr;
+    }
 
     // Create a render target view
     ID3D11Texture2D* pBackBuffer = nullptr;
     hr = _pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
 
     if (FAILED(hr))
+    {
         return hr;
-
+    }
+    //Describes back buffer
     hr = _pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &_pRenderTargetView);
     pBackBuffer->Release();
 
     if (FAILED(hr))
+    {
         return hr;
-
-    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);//Changed it from nullptr to "_depthStencilView" cause now there is a depth/stencil view.
+    }
+    //Changed it from nullptr to "_depthStencilView" cause now there is a depth/stencil view.
+    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);
 
     // Setup the viewport
-    D3D11_VIEWPORT vp;
-    vp.Width = (FLOAT)_WindowWidth;
-    vp.Height = (FLOAT)_WindowHeight;
-    vp.MinDepth = 0.0f;
-    vp.MaxDepth = 1.0f;
-    vp.TopLeftX = 0;
-    vp.TopLeftY = 0;
-    _pImmediateContext->RSSetViewports(1, &vp);
+    D3D11_VIEWPORT viewport;
+    viewport.Width = (FLOAT)_WindowWidth;
+    viewport.Height = (FLOAT)_WindowHeight;
+    viewport.MinDepth = 0.0f;
+    viewport.MaxDepth = 1.0f;
+    viewport.TopLeftX = 0;
+    viewport.TopLeftY = 0;
+    _pImmediateContext->RSSetViewports(1, &viewport);
 
+    //Passes such functions to Create device
     CreateShadersAndInputLayout();
-
     CreateVertexBuffer();
-
     CreateIndexBuffer();
 
-
-    // Set primitive topology
+    // Set primitive topology - Determines the format of how we draw primitives onto our DX11 Scene
     _pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     // Create the constant buffer
-    D3D11_BUFFER_DESC bd;
-    ZeroMemory(&bd, sizeof(bd));
-    bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(ConstantBuffer);
-    bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    bd.CPUAccessFlags = 0;
-    hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pConstantBuffer);
+    D3D11_BUFFER_DESC constantbufferdescription;
+    ZeroMemory(&constantbufferdescription, sizeof(constantbufferdescription));
 
-    //Wireframe
-    D3D11_RASTERIZER_DESC wfdesc;
-    ZeroMemory(&wfdesc, sizeof(D3D11_RASTERIZER_DESC));
-    wfdesc.FillMode = D3D11_FILL_WIREFRAME;
-    wfdesc.CullMode = D3D11_CULL_NONE;
-    hr = _pd3dDevice->CreateRasterizerState(&wfdesc, &_wireFrame);
+    //Describe Constant Buffer
+    constantbufferdescription.Usage = D3D11_USAGE_DEFAULT;
+    constantbufferdescription.ByteWidth = sizeof(ConstantBuffer);
+    constantbufferdescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    constantbufferdescription.CPUAccessFlags = 0;
+    hr = _pd3dDevice->CreateBuffer(&constantbufferdescription, nullptr, &_pConstantBuffer);
 
-    _pd3dDevice->CreateRasterizerState(&wfdesc, &_wireFrame);
+    //Create wireframe description
+    D3D11_RASTERIZER_DESC wireframe;
+    ZeroMemory(&wireframe, sizeof(D3D11_RASTERIZER_DESC));
 
+    //Describe Wireframe
+    wireframe.FillMode = D3D11_FILL_WIREFRAME;
+    wireframe.CullMode = D3D11_CULL_NONE;
 
-    //Normal
-    D3D11_RASTERIZER_DESC solidesc;
-    ZeroMemory(&solidesc, sizeof(D3D11_RASTERIZER_DESC));
-    solidesc.FillMode = D3D11_FILL_SOLID;
-    solidesc.CullMode = D3D11_CULL_BACK;
-
-
-
+    //Create wirefram rasterizer stage
+    hr = _pd3dDevice->CreateRasterizerState(&wireframe, &_wireFrame);
 
     if (FAILED(hr))
+    {
         return hr;
-
+    }
     return S_OK;
 }
 
@@ -596,6 +598,7 @@ HRESULT Application::Update()
 
     if (GetAsyncKeyState(VK_DOWN))
     {
+        //Changes rasterizer stage (how we visually convert world to 2D texels) to fill mode, showing full normal object
         ZeroMemory(&rastDesc, sizeof(D3D11_RASTERIZER_DESC));
         rastDesc.FillMode = D3D11_FILL_SOLID;
         rastDesc.CullMode = D3D11_CULL_NONE;
@@ -603,11 +606,11 @@ HRESULT Application::Update()
     }
     else if (GetAsyncKeyState(VK_UP))
     {
+        //Changes rasterizer state to wireframe mode
         ZeroMemory(&rastDesc, sizeof(D3D11_RASTERIZER_DESC));
         rastDesc.FillMode = D3D11_FILL_WIREFRAME;
         rastDesc.CullMode = D3D11_CULL_NONE;
         hr = _pd3dDevice->CreateRasterizerState(&rastDesc, &_wireFrame);
-
 
     }
     _pImmediateContext->RSSetState(_wireFrame);
@@ -617,70 +620,76 @@ HRESULT Application::Update()
 
 void Application::Draw()
 {
-
-    // Set vertex buffer
+    // Set vertex buffer  passed into input assembly stage
     UINT stride = sizeof(SimpleVertex);
     UINT offset = 0;
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_pTriangleVertexBuffer, &stride, &offset);
-
-    // Set index buffer
-    _pImmediateContext->IASetIndexBuffer(_pTriangleIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-    //
-    // Clear the back buffer
-    //
     float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f }; // red,green,blue,alpha
+    //Clears RenderView , current buffer, used for swap chain
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
+    //Clears current depthview , also used to update depth from next buffer in swapchain
     _pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0); //for the float value :Clear the depth buffer with this value. This value will be clamped between 0 and 1.
 
+    
     XMMATRIX world = XMLoadFloat4x4(&_world);
     XMMATRIX view = XMLoadFloat4x4(&_view);
     XMMATRIX projection = XMLoadFloat4x4(&_projection);
-    //
-    // Update variables
-    //
-    ConstantBuffer cb;
-    cb.mWorld = XMMatrixTranspose(world);
-    cb.mView = XMMatrixTranspose(view);
-    cb.mProjection = XMMatrixTranspose(projection);
-    cb.gTime = _gTime;
-
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
 
 
-    //
-    // Renders a triangle
-    //
+    //Create local constant buffer , making our constant buffer world/view/projection equal the local versions of above, which equal the global versions which were initalised in the "Initalised" function.
+    ConstantBuffer constantbuffer;
+    constantbuffer.mWorld = XMMatrixTranspose(world);
+    constantbuffer.mView = XMMatrixTranspose(view);
+    constantbuffer.mProjection = XMMatrixTranspose(projection);
+    constantbuffer.gTime = _gTime;
+
+
+
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
+
+
+    //Call VertexShader pointer, initalising the pointer used for Pipeline
     _pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
+    //Call ConstantShader pointer, initalising the pointer used to feed consant data into vertex shader
     _pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
+    //Call ConstantShader pointer, initalising the pointer used to feed consant data into pixel shader
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
+    //Call PixelShader pointer, initalising the pointer used for Pipeline
     _pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
+
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_pTriangleVertexBuffer, &stride, &offset);
+    // Set index buffer passed into input assembly stage
+    _pImmediateContext->IASetIndexBuffer(_pTriangleIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+
+     //Draw Triangle
     _pImmediateContext->DrawIndexed(18, 0, 0);
 
-    //Draws another cube
-    world = XMLoadFloat4x4(&_world2);
-    cb.mWorld = XMMatrixTranspose(world);
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-    _pImmediateContext->DrawIndexed(18, 0, 0);
-
+    //SImilar to above, update input buffers passed into InputAssembly Stage , will draw all objects below with this buffer data
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pCubeVertexBuffer, &stride, &offset);
-
-    // Set index buffer
     _pImmediateContext->IASetIndexBuffer(_pCubeIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+    
+
+    //Cube 1
+    world = XMLoadFloat4x4(&_world2);
+    constantbuffer.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
+    _pImmediateContext->DrawIndexed(36, 0, 0);
+
+    //Cube 2
     world = XMLoadFloat4x4(&_world3);
-    cb.mWorld = XMMatrixTranspose(world);
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+    constantbuffer.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
-    //New cube
+    //Cube 3
     world = XMLoadFloat4x4(&_world4);
-    cb.mWorld = XMMatrixTranspose(world);
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+    constantbuffer.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
-    //New cube
+    //Cube 4
     world = XMLoadFloat4x4(&_world5);
-    cb.mWorld = XMMatrixTranspose(world);
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+    constantbuffer.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
     //
