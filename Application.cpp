@@ -848,3 +848,5 @@ void Application::Draw()
     //
     _pSwapChain->Present(0, 0);
 }
+//https://www.quora.com/It-takes-me-a-lot-of-time-to-solve-programming-problems-How-do-I-get-faster
+//https://cpp.hotexamples.com/examples/-/GeometryGenerator/CreateGrid/cpp-geometrygenerator-creategrid-method-examples.html
