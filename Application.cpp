@@ -83,7 +83,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     XMStoreFloat4x4(&_world, XMMatrixIdentity());
 
     // Initialize values of view matrix - Defines values of 4x4 View matrix 
-    XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f);
+    XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -15.0f, 0.0f);
     XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
     XMVECTOR Up = XMVectorSet(0.0f, 3.0f, 0.0f, 0.0f);
 
@@ -191,6 +191,45 @@ HRESULT Application::CreateVertexBuffer()
          { XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f) }, // 4
     };
 
+    /* SimpleVertex GridStruct[16] =
+     {
+        { XMFLOAT3(0.0f,0.0f,0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)},     // 0
+         { XMFLOAT3(-1.0f ,0.0f,0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)},     // 1
+         { XMFLOAT3(-2.0f,0.0f,0.0f)  , XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},     // 2
+         { XMFLOAT3(-3.0f,0.0f,0.0f)  , XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},     // 3
+
+
+     };
+
+     float offsetx = 0.0f, offsety = 0.0f, offsetz = 0.0f;
+     for (int row = 4; row < 15 ; row++)
+     {
+         if (offsetx <= -3)
+         {
+             offsetx = 0;
+         }
+         if (offsety <= -3)
+         {
+             offsety = 0;
+         }
+         offsety = offsety - 1;
+         for (int col = 0; col < 4; col++)
+         {
+
+             GridStruct[row] = { XMFLOAT3(offsetx,offsety , 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) };
+
+             offsetx = offsetx - 1; row++;
+
+
+
+         }
+         row--;
+     }*/
+
+
+  /*  WORD Grid[2 * 3];
+
+    */
     //D3D11_BUFFER_DESC - Struct that allows us to describe a buffers resource
 
     //Pyramid Vertex Buffer Description
@@ -213,6 +252,8 @@ HRESULT Application::CreateVertexBuffer()
     Cubebufferdescription.CPUAccessFlags = 0;
 
 
+
+
     //Specifies data being used - Used in the process of creating buffers , calls reference to relevant vertex struct (InitData variable equals PyramidStruct)
     D3D11_SUBRESOURCE_DATA InitTriangleData;
     ZeroMemory(&InitTriangleData, sizeof(InitTriangleData));
@@ -223,9 +264,17 @@ HRESULT Application::CreateVertexBuffer()
     ZeroMemory(&InitCubeData, sizeof(InitCubeData));
     InitCubeData.pSysMem = CubeStruct;
 
+
+
+
     // Call device pointer , pass "CreateBuffer" function , parameter pass in relevant local data above (describe data and buffer resource) , then reference Buffer pointer
     hr = _pd3dDevice->CreateBuffer(&Cubebufferdescription, &InitCubeData, &_pCubeVertexBuffer);
     hr = _pd3dDevice->CreateBuffer(&Pyrmidbufferdescription, &InitTriangleData, &_pTriangleVertexBuffer);
+
+
+
+
+
 
     //Fail Check Method
     if (FAILED(hr))
@@ -235,6 +284,7 @@ HRESULT Application::CreateVertexBuffer()
 
     return S_OK;
 }
+
 //Describes Buffer Data , resources , then creates the buffers with data local in this
 HRESULT Application::CreateIndexBuffer()
 {
@@ -279,9 +329,11 @@ HRESULT Application::CreateIndexBuffer()
 
     };
 
+
+
     //D3D11_BUFFER_DESC - Struct that allows us to describe a buffers resource
 
-    //Pyramid Index Buffer Description
+//Pyramid Index Buffer Description
     D3D11_BUFFER_DESC Pyramidbufferdescription;
     ZeroMemory(&Pyramidbufferdescription, sizeof(Pyramidbufferdescription));
 
@@ -316,12 +368,91 @@ HRESULT Application::CreateIndexBuffer()
     // Call device pointer , pass "CreateBuffer" function , parameter pass in relevant local data above (describe data and buffer resource) , then reference Buffer pointer
     hr = _pd3dDevice->CreateBuffer(&Pyramidbufferdescription, &InitTriangleData, &_pTriangleIndexBuffer);
     hr = _pd3dDevice->CreateBuffer(&Cubebufferdescription, &InitCubeData, &_pCubeIndexBuffer);
+    
+    /*
+    MeshData grid;
+
+    CreateGrid(160.0f, 160.0f, 50, 50, grid);
+
+
+    //Cube Index Buffer Description
+    D3D11_BUFFER_DESC GridDesc;
+
+
+    GridDesc.Usage = D3D11_USAGE_DEFAULT;
+    GridDesc.ByteWidth = sizeof(SimpleVertex) * grid.Verticies.size();
+    GridDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    GridDesc.CPUAccessFlags = 0;
+    GridDesc.MiscFlags = 0;
+
+    D3D11_SUBRESOURCE_DATA GridDescData;
+
+    GridDescData.pSysMem = &grid.Verticies[0];
+    
+    
+    hr = _pd3dDevice->CreateBuffer(&GridDesc, &GridDescData, &_pGridVertexBuffer);
+
+    D3D11_BUFFER_DESC GridIndexDesc;
+
+    GridIndexDesc.Usage = D3D11_USAGE_IMMUTABLE;
+    GridIndexDesc.ByteWidth = sizeof(UINT) * grid.Indices.size();
+    GridIndexDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    GridIndexDesc.CPUAccessFlags = 0;
+    GridIndexDesc.MiscFlags = 0;
+
+    D3D11_SUBRESOURCE_DATA GridDescDataI;
+    GridDescData.pSysMem = &grid.Indices[0];
+
+    hr = _pd3dDevice->CreateBuffer(&GridIndexDesc, &GridDescDataI, &_pGridIndexBuffer);
+    */
     if (FAILED(hr))
         return hr;
 
     return S_OK;
 }
 
+/*
+void Application::CreateGrid(float width, float depth, UINT m, UINT n, MeshData& meshdata)
+{
+    UINT vertex_count = m * n;
+
+    UINT face_count = (m - 1) * (n - 1) * 2;
+
+    float halfwidth = 0.5f * width;
+    float halfdepth = 0.5f * depth;
+    float dx = width / (n - 1);
+    float dz = depth / (m - 1);
+
+
+    meshdata.Verticies.resize(vertex_count);
+    for (UINT i = 0; i < m; i++)
+    {
+        float z = halfdepth - i * dz;
+        for (UINT j = 0; j < n; j++)
+        {
+            float x = -halfwidth + j * dx;
+            meshdata.Verticies[i * n + j].Pos = XMFLOAT3(x, 0.0f, z);
+            
+        }
+    }
+    UINT k = 0;
+    for (UINT i = 0; i < m - 1; i++)
+    {
+        for (UINT j = 0; j < n - 1; i++)
+        {
+            meshdata.Indices[k] = i * n + j;
+            meshdata.Indices[k + 1] = i * n + j + 1;
+            meshdata.Indices[k + 2] = (i + 1) * n + j;
+            meshdata.Indices[k + 3] = (i + 1) * n + j;
+            meshdata.Indices[k + 4] = i * n + j + 1;
+            meshdata.Indices[k + 5] = (i + 1) * n + j + 1;
+            k += 6;
+
+
+        }
+    }
+}
+*/
 HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
 {
     // Register class
@@ -397,7 +528,7 @@ HRESULT Application::CreateDevice()
 #ifdef _DEBUG
     createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-    //Lists drivetypes (methods of communicating to application to hardware)
+
     D3D_DRIVER_TYPE driverTypes[] =
     {
         D3D_DRIVER_TYPE_HARDWARE,
@@ -407,22 +538,20 @@ HRESULT Application::CreateDevice()
 
     UINT numDriverTypes = ARRAYSIZE(driverTypes);
 
-    //Describes the DX11 versions used
     D3D_FEATURE_LEVEL featureLevels[] =
     {
         D3D_FEATURE_LEVEL_11_0,
         D3D_FEATURE_LEVEL_10_1,
         D3D_FEATURE_LEVEL_10_0,
     };
+    //Define depth/stencil buffer
 
 
     UINT numFeatureLevels = ARRAYSIZE(featureLevels);
 
-    //Create Swap Chain Description
+
     DXGI_SWAP_CHAIN_DESC sd;
     ZeroMemory(&sd, sizeof(sd));
-
-    //Describes Swap Chain
     sd.BufferCount = 1;
     sd.BufferDesc.Width = _WindowWidth;
     sd.BufferDesc.Height = _WindowHeight;
@@ -443,10 +572,9 @@ HRESULT Application::CreateDevice()
         if (SUCCEEDED(hr))
             break;
     }
-    //Creates Depth Stencil buffer descriptor
+
     D3D11_TEXTURE2D_DESC depthStencilDesc;
 
-    //Describing buffer descriptor
     depthStencilDesc.Width = _WindowWidth;
     depthStencilDesc.Height = _WindowHeight;
     depthStencilDesc.MipLevels = 1;
@@ -465,73 +593,74 @@ HRESULT Application::CreateDevice()
 
 
     if (FAILED(hr))
-    {
         return hr;
-    }
 
     // Create a render target view
     ID3D11Texture2D* pBackBuffer = nullptr;
     hr = _pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
 
     if (FAILED(hr))
-    {
         return hr;
-    }
-    //Describes back buffer
+
     hr = _pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &_pRenderTargetView);
     pBackBuffer->Release();
 
     if (FAILED(hr))
-    {
         return hr;
-    }
-    //Changed it from nullptr to "_depthStencilView" cause now there is a depth/stencil view.
-    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);
+
+    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);//Changed it from nullptr to "_depthStencilView" cause now there is a depth/stencil view.
 
     // Setup the viewport
-    D3D11_VIEWPORT viewport;
-    viewport.Width = (FLOAT)_WindowWidth;
-    viewport.Height = (FLOAT)_WindowHeight;
-    viewport.MinDepth = 0.0f;
-    viewport.MaxDepth = 1.0f;
-    viewport.TopLeftX = 0;
-    viewport.TopLeftY = 0;
-    _pImmediateContext->RSSetViewports(1, &viewport);
+    D3D11_VIEWPORT vp;
+    vp.Width = (FLOAT)_WindowWidth;
+    vp.Height = (FLOAT)_WindowHeight;
+    vp.MinDepth = 0.0f;
+    vp.MaxDepth = 1.0f;
+    vp.TopLeftX = 0;
+    vp.TopLeftY = 0;
+    _pImmediateContext->RSSetViewports(1, &vp);
 
-    //Passes such functions to Create device
     CreateShadersAndInputLayout();
+
     CreateVertexBuffer();
+
     CreateIndexBuffer();
 
-    // Set primitive topology - Determines the format of how we draw primitives onto our DX11 Scene
+
+    // Set primitive topology
     _pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     // Create the constant buffer
-    D3D11_BUFFER_DESC constantbufferdescription;
-    ZeroMemory(&constantbufferdescription, sizeof(constantbufferdescription));
+    D3D11_BUFFER_DESC bd;
+    ZeroMemory(&bd, sizeof(bd));
+    bd.Usage = D3D11_USAGE_DEFAULT;
+    bd.ByteWidth = sizeof(ConstantBuffer);
+    bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    bd.CPUAccessFlags = 0;
+    hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pConstantBuffer);
 
-    //Describe Constant Buffer
-    constantbufferdescription.Usage = D3D11_USAGE_DEFAULT;
-    constantbufferdescription.ByteWidth = sizeof(ConstantBuffer);
-    constantbufferdescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    constantbufferdescription.CPUAccessFlags = 0;
-    hr = _pd3dDevice->CreateBuffer(&constantbufferdescription, nullptr, &_pConstantBuffer);
+    //Wireframe
+    D3D11_RASTERIZER_DESC wfdesc;
+    ZeroMemory(&wfdesc, sizeof(D3D11_RASTERIZER_DESC));
+    wfdesc.FillMode = D3D11_FILL_WIREFRAME;
+    wfdesc.CullMode = D3D11_CULL_NONE;
+    hr = _pd3dDevice->CreateRasterizerState(&wfdesc, &_wireFrame);
 
-    //Create wireframe description
-    D3D11_RASTERIZER_DESC wireframe;
-    ZeroMemory(&wireframe, sizeof(D3D11_RASTERIZER_DESC));
+    _pd3dDevice->CreateRasterizerState(&wfdesc, &_wireFrame);
 
-    //Describe Wireframe
-    wireframe.FillMode = D3D11_FILL_WIREFRAME;
-    wireframe.CullMode = D3D11_CULL_NONE;
 
-    //Create wirefram rasterizer stage
-    hr = _pd3dDevice->CreateRasterizerState(&wireframe, &_wireFrame);
+    //Normal
+    D3D11_RASTERIZER_DESC solidesc;
+    ZeroMemory(&solidesc, sizeof(D3D11_RASTERIZER_DESC));
+    solidesc.FillMode = D3D11_FILL_SOLID;
+    solidesc.CullMode = D3D11_CULL_BACK;
+
+
+
 
     if (FAILED(hr))
-    {
         return hr;
-    }
+
     return S_OK;
 }
 
@@ -594,11 +723,31 @@ HRESULT Application::Update()
     XMStoreFloat4x4(&_world3, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(-1.2f - cos(t) * 5, 0.0f - sin(t) * 5, 0.0f));
     XMStoreFloat4x4(&_world5, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(0.0f, -1.2f + cos(t) * 5, 0.0f + sin(t) * 5));
 
+
+
+
+    float offsetx = 2.0f, offsety = 0.0f, offsetz = 0.0f;
+
+
+
+
+
+    XMStoreFloat4x4(&_grid, XMMatrixTranslation(offsetx, offsety, 4.0f));
+
+
+
+
+
+
+
+
+
+
+
     D3D11_RASTERIZER_DESC rastDesc;
 
     if (GetAsyncKeyState(VK_DOWN))
     {
-        //Changes rasterizer stage (how we visually convert world to 2D texels) to fill mode, showing full normal object
         ZeroMemory(&rastDesc, sizeof(D3D11_RASTERIZER_DESC));
         rastDesc.FillMode = D3D11_FILL_SOLID;
         rastDesc.CullMode = D3D11_CULL_NONE;
@@ -606,11 +755,11 @@ HRESULT Application::Update()
     }
     else if (GetAsyncKeyState(VK_UP))
     {
-        //Changes rasterizer state to wireframe mode
         ZeroMemory(&rastDesc, sizeof(D3D11_RASTERIZER_DESC));
         rastDesc.FillMode = D3D11_FILL_WIREFRAME;
         rastDesc.CullMode = D3D11_CULL_NONE;
         hr = _pd3dDevice->CreateRasterizerState(&rastDesc, &_wireFrame);
+
 
     }
     _pImmediateContext->RSSetState(_wireFrame);
@@ -618,78 +767,82 @@ HRESULT Application::Update()
     return S_OK;
 }
 
+
 void Application::Draw()
 {
-    // Set vertex buffer  passed into input assembly stage
+
+    // Set vertex buffer
     UINT stride = sizeof(SimpleVertex);
     UINT offset = 0;
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_pTriangleVertexBuffer, &stride, &offset);
+
+    // Set index buffer
+    _pImmediateContext->IASetIndexBuffer(_pTriangleIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+    //
+    // Clear the back buffer
+    //
     float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f }; // red,green,blue,alpha
-    //Clears RenderView , current buffer, used for swap chain
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
-    //Clears current depthview , also used to update depth from next buffer in swapchain
     _pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0); //for the float value :Clear the depth buffer with this value. This value will be clamped between 0 and 1.
 
-    
     XMMATRIX world = XMLoadFloat4x4(&_world);
     XMMATRIX view = XMLoadFloat4x4(&_view);
     XMMATRIX projection = XMLoadFloat4x4(&_projection);
+    //
+    // Update variables
+    //
+    ConstantBuffer cb;
+    cb.mWorld = XMMatrixTranspose(world);
+    cb.mView = XMMatrixTranspose(view);
+    cb.mProjection = XMMatrixTranspose(projection);
+    cb.gTime = _gTime;
+
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
 
 
-    //Create local constant buffer , making our constant buffer world/view/projection equal the local versions of above, which equal the global versions which were initalised in the "Initalised" function.
-    ConstantBuffer constantbuffer;
-    constantbuffer.mWorld = XMMatrixTranspose(world);
-    constantbuffer.mView = XMMatrixTranspose(view);
-    constantbuffer.mProjection = XMMatrixTranspose(projection);
-    constantbuffer.gTime = _gTime;
-
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
-
-
-    //Call VertexShader pointer, initalising the pointer used for Pipeline
+    //
+    // Renders a triangle
+    //
     _pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
-    //Call ConstantShader pointer, initalising the pointer used to feed consant data into vertex shader
     _pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
-    //Call ConstantShader pointer, initalising the pointer used to feed consant data into pixel shader
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
-    //Call PixelShader pointer, initalising the pointer used for Pipeline
     _pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
-
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_pTriangleVertexBuffer, &stride, &offset);
-    // Set index buffer passed into input assembly stage
-    _pImmediateContext->IASetIndexBuffer(_pTriangleIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-
-     //Draw Triangle
     _pImmediateContext->DrawIndexed(18, 0, 0);
 
-    //SImilar to above, update input buffers passed into InputAssembly Stage , will draw all objects below with this buffer data
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_pCubeVertexBuffer, &stride, &offset);
-    _pImmediateContext->IASetIndexBuffer(_pCubeIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-    
-
-    //Cube 1
+    //Draws another cube
     world = XMLoadFloat4x4(&_world2);
-    constantbuffer.mWorld = XMMatrixTranspose(world);
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
-    _pImmediateContext->DrawIndexed(36, 0, 0);
+    cb.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+    _pImmediateContext->DrawIndexed(18, 0, 0);
 
-    //Cube 2
+
     world = XMLoadFloat4x4(&_world3);
-    constantbuffer.mWorld = XMMatrixTranspose(world);
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
+    cb.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
-    //Cube 3
+    //New cube
     world = XMLoadFloat4x4(&_world4);
-    constantbuffer.mWorld = XMMatrixTranspose(world);
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
+    cb.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
-    //Cube 4
+    //New cube
     world = XMLoadFloat4x4(&_world5);
-    constantbuffer.mWorld = XMMatrixTranspose(world);
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
+    cb.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+    _pImmediateContext->DrawIndexed(36, 0, 0);
+    /*
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_pGridVertexBuffer, &stride, &offset);
+
+    // Set index buffer
+    _pImmediateContext->IASetIndexBuffer(_pGridIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+    world = XMLoadFloat4x4(&_grid);
+    cb.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
+    */
     //
     // Present our back buffer to our front buffer
     //
