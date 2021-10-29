@@ -24,7 +24,7 @@ using namespace DirectX;
 struct SimpleVertex
 {
 	XMFLOAT3 Pos;
-    XMFLOAT4 Color;
+    XMFLOAT3 Normal;
 
 };
 
@@ -35,7 +35,10 @@ struct ConstantBuffer
 	XMMATRIX mWorld;
 	XMMATRIX mView;
 	XMMATRIX mProjection;
-	float gTime;
+
+	XMFLOAT4 DiffuseMtrl;
+	XMFLOAT4 DiffuseLight;
+	XMFLOAT3 LightVecW;
 };
 
 class Application
@@ -95,6 +98,11 @@ private:
 	XMFLOAT4X4				astroidbelt[100];
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
+
+	XMFLOAT3 light_direction;
+	XMFLOAT4 diffuse_material;
+	XMFLOAT4 diffuse_light;
+
 	float _gTime;
 
 private:

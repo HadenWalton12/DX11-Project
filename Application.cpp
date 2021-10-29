@@ -144,7 +144,7 @@ HRESULT Application::CreateShadersAndInputLayout()
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
     };
 
     UINT numElements = ARRAYSIZE(layout);
@@ -173,22 +173,22 @@ HRESULT Application::CreateVertexBuffer()
 
     SimpleVertex CubeStruct[] =
     {     // Vertex/Point Desc        //Colour decsription for point
-        { XMFLOAT3(-1.0f ,1.0f,0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)},    // 0
-        { XMFLOAT3(1.0f,1.0f,0.0f)  , XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},    // 1 
-        { XMFLOAT3(-1.0f,-1.0f,0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)},    // 2 
-        { XMFLOAT3(1.0f,-1.0f,0.0f) , XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},    // 3
-        { XMFLOAT3(-1.0f,-1.0f,2.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)},    // 4
-        { XMFLOAT3(1.0f,-1.0f,2.0f) , XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},    // 5 
-        { XMFLOAT3(1.0f,1.0f,2.0f)  , XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)},    // 6
-        { XMFLOAT3(-1.0f, 1.0f,2.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},    // 7
+        { XMFLOAT3(-1.0f ,1.0f,0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},    // 0
+        { XMFLOAT3(1.0f,1.0f,0.0f)  , XMFLOAT3(0.0f, 0.0f, 2.0f)},      // 1 
+        { XMFLOAT3(-1.0f,-1.0f,0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)}, // 2 
+        { XMFLOAT3(1.0f,-1.0f,0.0f) , XMFLOAT3(0.0f, 0.0f, 0.0f)},      // 3
+        { XMFLOAT3(-1.0f,-1.0f,2.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},    // 4
+        { XMFLOAT3(1.0f,-1.0f,2.0f) , XMFLOAT3(0.0f, 0.0f, 0.0f)},     // 5 
+        { XMFLOAT3(1.0f,1.0f,2.0f)  ,XMFLOAT3(0.0f, 0.0f, 0.0f)},    // 6
+        { XMFLOAT3(-1.0f, 1.0f,2.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},  // 7
     };
     SimpleVertex PyramidStruct[] =
     {
-         { XMFLOAT3(0.0f , 0.0f , 2.0f), XMFLOAT4(1.0f , 0.0f , 0.0f , 0.0f) }, //0 
-         { XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f) }, // 1
-         { XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f) }, // 2
-         { XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f) }, // 3
-         { XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f) }, // 4
+         { XMFLOAT3(0.0f , 0.0f , 2.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},  //0 
+         { XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},  // 1
+         { XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},  // 2
+         { XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},  // 3
+         { XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},// 4
     };
 
     //D3D11_BUFFER_DESC - Struct that allows us to describe a buffers resource
@@ -245,7 +245,7 @@ HRESULT Application::CreateIndexBuffer()
     {
         //Front
           0,1,2,
-          2,1,3,
+          0,2,3,
 
           //Left
             3,1,6,
@@ -535,8 +535,6 @@ HRESULT Application::CreateDevice()
     return S_OK;
 }
 
-
-
 void Application::Cleanup()
 {
     if (_pImmediateContext) _pImmediateContext->ClearState();
@@ -586,14 +584,14 @@ HRESULT Application::Update()
 
 
     //Sun
-    XMStoreFloat4x4(&_world, XMMatrixRotationY(t) * XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+    //XMStoreFloat4x4(&_world, XMMatrixRotationY(t) * XMMatrixTranslation(0.0f, 0.0f, 0.0f));
     //Planets
-    XMStoreFloat4x4(&_world2, XMMatrixScaling(0.5f, 0.5f, 0.5f) * XMMatrixRotationX(t) * XMMatrixTranslation(0.0f - cos(t) * 5, 0.0f - sin(t) * 5, 0.0f));
-    XMStoreFloat4x4(&_world4, XMMatrixScaling(0.75f, 0.75f, 0.75f) * XMMatrixRotationX(t) * XMMatrixTranslation(0.0f, 1.2f + cos(t) * 5, 0.0f + sin(t) * 5));
+    //XMStoreFloat4x4(&_world2, XMMatrixScaling(0.5f, 0.5f, 0.5f) * XMMatrixRotationX(t) * XMMatrixTranslation(0.0f - cos(t) * 5, 0.0f - sin(t) * 5, 0.0f));
+    //XMStoreFloat4x4(&_world4, XMMatrixScaling(0.75f, 0.75f, 0.75f) * XMMatrixRotationX(t) * XMMatrixTranslation(0.0f, 1.2f + cos(t) * 5, 0.0f + sin(t) * 5));
     //Moons
-    XMStoreFloat4x4(&_world3, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(-1.2f - cos(t) * 5, 0.0f - sin(t) * 5, 0.0f));
-    XMStoreFloat4x4(&_world5, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(0.0f, -1.2f + cos(t) * 5, 0.0f + sin(t) * 5));
-
+    //XMStoreFloat4x4(&_world3, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(-1.2f - cos(t) * 5, 0.0f - sin(t) * 5, 0.0f));
+   // XMStoreFloat4x4(&_world5, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(0.0f, -1.2f + cos(t) * 5, 0.0f + sin(t) * 5));
+    XMStoreFloat4x4(&_world, XMMatrixRotationY(t) * XMMatrixRotationZ(t) * XMMatrixTranslation(0.0f, 0.0f ,0.0f));
     D3D11_RASTERIZER_DESC rastDesc;
 
     if (GetAsyncKeyState(VK_DOWN))
@@ -620,10 +618,17 @@ HRESULT Application::Update()
 
 void Application::Draw()
 {
+
+    light_direction = XMFLOAT3(0.25f, 0.5f, -1.0f);
+
+    diffuse_material = XMFLOAT4(0.8f , 0.5f , 0.5f , 1.0f);
+
+    diffuse_light = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
     // Set vertex buffer  passed into input assembly stage
     UINT stride = sizeof(SimpleVertex);
     UINT offset = 0;
-    float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f }; // red,green,blue,alpha
+    float ClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // red,green,blue,alpha
     //Clears RenderView , current buffer, used for swap chain
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
     //Clears current depthview , also used to update depth from next buffer in swapchain
@@ -640,8 +645,10 @@ void Application::Draw()
     constantbuffer.mWorld = XMMatrixTranspose(world);
     constantbuffer.mView = XMMatrixTranspose(view);
     constantbuffer.mProjection = XMMatrixTranspose(projection);
-    constantbuffer.gTime = _gTime;
-
+  
+    constantbuffer.LightVecW = light_direction;
+    constantbuffer.DiffuseLight = diffuse_light;
+    constantbuffer.DiffuseMtrl = diffuse_material;
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
 
 
@@ -653,7 +660,7 @@ void Application::Draw()
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
     //Call PixelShader pointer, initalising the pointer used for Pipeline
     _pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
-
+/*
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pTriangleVertexBuffer, &stride, &offset);
     // Set index buffer passed into input assembly stage
     _pImmediateContext->IASetIndexBuffer(_pTriangleIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
@@ -683,13 +690,17 @@ void Application::Draw()
     constantbuffer.mWorld = XMMatrixTranspose(world);
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
     _pImmediateContext->DrawIndexed(36, 0, 0);
-
+    */
     //Cube 4
-    world = XMLoadFloat4x4(&_world5);
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_pCubeVertexBuffer, &stride, &offset);
+    _pImmediateContext->IASetIndexBuffer(_pCubeIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+    _pImmediateContext->DrawIndexed(36, 0, 0);
+
+   /* world = XMLoadFloat4x4(&_world5);
     constantbuffer.mWorld = XMMatrixTranspose(world);
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
     _pImmediateContext->DrawIndexed(36, 0, 0);
-
+    */
     //
     // Present our back buffer to our front buffer
     //
