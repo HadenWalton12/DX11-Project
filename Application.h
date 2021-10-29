@@ -88,7 +88,9 @@ private:
 	//These buffers will allow us to store vertex or index data
 	ID3D11Buffer* _pCubeVertexBuffer;
 	ID3D11Buffer* _pTriangleVertexBuffer;
-	ID3D11Buffer*           _pCubeIndexBuffer; 
+	ID3D11Buffer* _pGridVertexBuffer;
+	ID3D11Buffer*           _pCubeIndexBuffer;
+	ID3D11Buffer* _pGridIndexBuffer;
 	ID3D11Buffer*			_pTriangleIndexBuffer;
 	//Will store Constant Data
 	ID3D11Buffer*           _pConstantBuffer;

@@ -192,17 +192,20 @@ HRESULT Application::CreateVertexBuffer()
          { XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},  // 3
          { XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},// 4
     };
-    SimpleVertex GridStruct[25] =
+    SimpleVertex GridStruct[625] =
     {
 
     };
-    
+
    
-    for (int row = 0; row < 5; row++)
+    for (int row = 0; row < 10; row++)
     {
+    
         for (int col = 0; col < 5; col++)
         {
-            GridStruct[row] = { XMFLOAT3((float)col , 0.0f , (float)row ), XMFLOAT3(0.0f , 1.0f ,0.0f) };
+            int index = row * 5 + col;
+            GridStruct[index] = { XMFLOAT3((float)col ,(float)row  , 0.0f), XMFLOAT3(0.0f , 1.0f ,0.0f) };
+        
         }
         
     }
@@ -223,10 +226,22 @@ HRESULT Application::CreateVertexBuffer()
     ZeroMemory(&Cubebufferdescription, sizeof(Cubebufferdescription));
 
     Cubebufferdescription.Usage = D3D11_USAGE_DEFAULT;
-    Cubebufferdescription.ByteWidth = sizeof(SimpleVertex) * 25;
+    Cubebufferdescription.ByteWidth = sizeof(SimpleVertex) * 8;
     Cubebufferdescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     Cubebufferdescription.CPUAccessFlags = 0;
 
+    //Cube Vertex  Buffer Description
+    D3D11_BUFFER_DESC Gridbufferdescription;
+    ZeroMemory(&Gridbufferdescription, sizeof(Gridbufferdescription));
+
+    Gridbufferdescription.Usage = D3D11_USAGE_DEFAULT;
+    Gridbufferdescription.ByteWidth = sizeof(SimpleVertex) * 25;
+    Gridbufferdescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    Gridbufferdescription.CPUAccessFlags = 0;
+   
+    D3D11_SUBRESOURCE_DATA InitGridData;
+    ZeroMemory(&InitGridData, sizeof(InitGridData));
+    InitGridData.pSysMem = GridStruct;
 
     //Specifies data being used - Used in the process of creating buffers , calls reference to relevant vertex struct (InitData variable equals PyramidStruct)
     D3D11_SUBRESOURCE_DATA InitTriangleData;
@@ -236,12 +251,12 @@ HRESULT Application::CreateVertexBuffer()
     //Specifies data being used - Used in the process of creating buffers , calls reference to relevant vertex struct (InitData variable equals CubeStruct)
     D3D11_SUBRESOURCE_DATA InitCubeData;
     ZeroMemory(&InitCubeData, sizeof(InitCubeData));
-    InitCubeData.pSysMem = GridStruct;
+    InitCubeData.pSysMem = CubeStruct;
 
     // Call device pointer , pass "CreateBuffer" function , parameter pass in relevant local data above (describe data and buffer resource) , then reference Buffer pointer
     hr = _pd3dDevice->CreateBuffer(&Cubebufferdescription, &InitCubeData, &_pCubeVertexBuffer);
     hr = _pd3dDevice->CreateBuffer(&Pyrmidbufferdescription, &InitTriangleData, &_pTriangleVertexBuffer);
-
+    hr = _pd3dDevice->CreateBuffer(&Gridbufferdescription, &InitGridData, &_pGridVertexBuffer);
     //Fail Check Method
     if (FAILED(hr))
     {
@@ -289,33 +304,36 @@ HRESULT Application::CreateIndexBuffer()
      4,2,1,
 
     };
-    WORD Grid[150];
-    unsigned int tri = 0;
-    for (unsigned int i = 0; i < 150; i += 3)
+
+    const int width = 5;
+    const int height = 5;
+
+    WORD Grid[(width - 1) * (height - 1) * 6];
+     int tri_index = 0;
+     int vertex_index = 0;
+    for ( int i = 0; i < height; i++)
     {
-        //Check Error Statement // Checks if points are less or higher than our unesscary values on grid
-        if (tri + 5 > 24 )
-        {
-            break;
-        }
-       
-        //Creates First Triangle
-        Grid[i + 0] = tri + 0;
-        Grid[i + 1] = tri + 1;
-        Grid[i + 2] = tri + 5;
-    
-        if (tri - 5 < 0)
-        {
-            break;
-        }        
-        //Creates Second Triangle
-        Grid[i + 3] = tri - 0;
-        Grid[i + 4] = (unsigned int)tri - 5;
-        Grid[i + 5] = tri + 1;
+            for (int j = 0; j < width; j++)
+            {
+                if (j < width - 1 && i < height - 1)
+                {
+                   
+                    //Check Error Statement // Checks if points are less or higher than our unesscary values on grid
+                    Grid[tri_index] = vertex_index;
+                    Grid[tri_index + 1] = vertex_index + width + 1;
+                    Grid[tri_index + 2] = vertex_index + width;
 
-        tri++;
+                    Grid[tri_index + 3] = vertex_index + width + 1;
+                    Grid[tri_index + 4] = vertex_index;
+                    Grid[tri_index + 5] = vertex_index + 1;
 
 
+                    tri_index += 6;
+                }
+                vertex_index++;
+            }
+              
+        
     }
     //D3D11_BUFFER_DESC - Struct that allows us to describe a buffers resource
 
@@ -333,11 +351,22 @@ HRESULT Application::CreateIndexBuffer()
     ZeroMemory(&Cubebufferdescription, sizeof(Cubebufferdescription));
 
     Cubebufferdescription.Usage = D3D11_USAGE_DEFAULT;
-    Cubebufferdescription.ByteWidth = sizeof(WORD) * 150;
+    Cubebufferdescription.ByteWidth = sizeof(WORD) * 36;
     Cubebufferdescription.BindFlags = D3D11_BIND_INDEX_BUFFER;
     Cubebufferdescription.CPUAccessFlags = 0;
 
+    //Cube Index Buffer Description
+    D3D11_BUFFER_DESC Gridbufferdescription;
+    ZeroMemory(&Gridbufferdescription, sizeof(Gridbufferdescription));
 
+    Gridbufferdescription.Usage = D3D11_USAGE_DEFAULT;
+    Gridbufferdescription.ByteWidth = sizeof(WORD) * 175;
+    Gridbufferdescription.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    Gridbufferdescription.CPUAccessFlags = 0;
+
+    D3D11_SUBRESOURCE_DATA GridCubeData;
+    ZeroMemory(&GridCubeData, sizeof(GridCubeData));
+    GridCubeData.pSysMem = Grid;
 
     //Specifies data being used - Used in the process of creating buffers , calls reference to relevant index struct (InitData variable equals TrianglePyramidIndex)
     D3D11_SUBRESOURCE_DATA InitTriangleData;
@@ -348,12 +377,13 @@ HRESULT Application::CreateIndexBuffer()
 
     D3D11_SUBRESOURCE_DATA InitCubeData;
     ZeroMemory(&InitCubeData, sizeof(InitCubeData));
-    InitCubeData.pSysMem = Grid;
+    InitCubeData.pSysMem = CubeIndex;
 
 
     // Call device pointer , pass "CreateBuffer" function , parameter pass in relevant local data above (describe data and buffer resource) , then reference Buffer pointer
     hr = _pd3dDevice->CreateBuffer(&Pyramidbufferdescription, &InitTriangleData, &_pTriangleIndexBuffer);
     hr = _pd3dDevice->CreateBuffer(&Cubebufferdescription, &InitCubeData, &_pCubeIndexBuffer);
+    hr = _pd3dDevice->CreateBuffer(&Gridbufferdescription, &GridCubeData, &_pGridIndexBuffer);
     if (FAILED(hr))
         return hr;
 
@@ -622,14 +652,14 @@ HRESULT Application::Update()
 
 
     //Sun
-    //XMStoreFloat4x4(&_world, XMMatrixRotationY(t) * XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+    XMStoreFloat4x4(&_world, XMMatrixRotationX(t) * XMMatrixTranslation(0.0f, 0.0f, 0.0f));
     //Planets
-    XMStoreFloat4x4(&_world2, XMMatrixScaling(0.5f, 0.5f, 0.5f) * XMMatrixRotationX(t) * XMMatrixTranslation(0.0f - cos(t) * 5, 0.0f - sin(t) * 5, 0.0f));
-    XMStoreFloat4x4(&_world4, XMMatrixScaling(0.75f, 0.75f, 0.75f) * XMMatrixRotationX(t) * XMMatrixTranslation(0.0f, 1.2f + cos(t) * 5, 0.0f + sin(t) * 5));
+   // XMStoreFloat4x4(&_world2, XMMatrixScaling(0.5f, 0.5f, 0.5f) * XMMatrixRotationX(t) * XMMatrixTranslation(0.0f - cos(t) * 5, 0.0f - sin(t) * 5, 0.0f));
+  //  XMStoreFloat4x4(&_world4, XMMatrixScaling(0.75f, 0.75f, 0.75f) * XMMatrixRotationX(t) * XMMatrixTranslation(0.0f, 1.2f + cos(t) * 5, 0.0f + sin(t) * 5));
     //Moons
-    XMStoreFloat4x4(&_world3, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(-1.2f - cos(t) * 5, 0.0f - sin(t) * 5, 0.0f));
-   XMStoreFloat4x4(&_world5, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(0.0f, -1.2f + cos(t) * 5, 0.0f + sin(t) * 5));
-    XMStoreFloat4x4(&_world, XMMatrixRotationY(t) * XMMatrixRotationZ(t) * XMMatrixTranslation(0.0f, 0.0f ,0.0f));
+   // XMStoreFloat4x4(&_world3, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(-1.2f - cos(t) * 5, 0.0f - sin(t) * 5, 0.0f));
+  // XMStoreFloat4x4(&_world5, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(0.0f, -1.2f + cos(t) * 5, 0.0f + sin(t) * 5));
+  //  XMStoreFloat4x4(&_world, XMMatrixRotationY(t) * XMMatrixRotationZ(t) * XMMatrixTranslation(0.0f, 0.0f ,0.0f));
     D3D11_RASTERIZER_DESC rastDesc;
 
     if (GetAsyncKeyState(VK_DOWN))
@@ -670,7 +700,7 @@ void Application::Draw()
     // Set vertex buffer  passed into input assembly stage
     UINT stride = sizeof(SimpleVertex);
     UINT offset = 0;
-    float ClearColor[4] = { 1.0f, 1.0f, 1.0f, 0.0f }; // red,green,blue,alpha
+    float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f }; // red,green,blue,alpha
     //Clears RenderView , current buffer, used for swap chain
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
     //Clears current depthview , also used to update depth from next buffer in swapchain
@@ -710,14 +740,14 @@ void Application::Draw()
     //Call PixelShader pointer, initalising the pointer used for Pipeline
     _pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
 
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_pTriangleVertexBuffer, &stride, &offset);
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_pGridVertexBuffer, &stride, &offset);
     // Set index buffer passed into input assembly stage
-    _pImmediateContext->IASetIndexBuffer(_pTriangleIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+    _pImmediateContext->IASetIndexBuffer(_pGridIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
      //Draw Triangle
-    _pImmediateContext->DrawIndexed(18, 0, 0);
+    _pImmediateContext->DrawIndexed(150, 0, 0);
 
-    //SImilar to above, update input buffers passed into InputAssembly Stage , will draw all objects below with this buffer data
+  /*  //SImilar to above, update input buffers passed into InputAssembly Stage , will draw all objects below with this buffer data
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pCubeVertexBuffer, &stride, &offset);
     _pImmediateContext->IASetIndexBuffer(_pCubeIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
     
@@ -749,7 +779,7 @@ void Application::Draw()
     constantbuffer.mWorld = XMMatrixTranspose(world);
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
     _pImmediateContext->DrawIndexed(36, 0, 0);
-    
+    */
     //
     // Present our back buffer to our front buffer
     //
