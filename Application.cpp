@@ -192,7 +192,20 @@ HRESULT Application::CreateVertexBuffer()
          { XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},  // 3
          { XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},// 4
     };
+    SimpleVertex GridStruct[25] =
+    {
 
+    };
+    
+   
+    for (int row = 0; row < 5; row++)
+    {
+        for (int col = 0; col < 5; col++)
+        {
+            GridStruct[row] = { XMFLOAT3((float)col , 0.0f , (float)row ), XMFLOAT3(0.0f , 1.0f ,0.0f) };
+        }
+        
+    }
     //D3D11_BUFFER_DESC - Struct that allows us to describe a buffers resource
 
     //Pyramid Vertex Buffer Description
@@ -210,7 +223,7 @@ HRESULT Application::CreateVertexBuffer()
     ZeroMemory(&Cubebufferdescription, sizeof(Cubebufferdescription));
 
     Cubebufferdescription.Usage = D3D11_USAGE_DEFAULT;
-    Cubebufferdescription.ByteWidth = sizeof(SimpleVertex) * 8;
+    Cubebufferdescription.ByteWidth = sizeof(SimpleVertex) * 25;
     Cubebufferdescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     Cubebufferdescription.CPUAccessFlags = 0;
 
@@ -223,7 +236,7 @@ HRESULT Application::CreateVertexBuffer()
     //Specifies data being used - Used in the process of creating buffers , calls reference to relevant vertex struct (InitData variable equals CubeStruct)
     D3D11_SUBRESOURCE_DATA InitCubeData;
     ZeroMemory(&InitCubeData, sizeof(InitCubeData));
-    InitCubeData.pSysMem = CubeStruct;
+    InitCubeData.pSysMem = GridStruct;
 
     // Call device pointer , pass "CreateBuffer" function , parameter pass in relevant local data above (describe data and buffer resource) , then reference Buffer pointer
     hr = _pd3dDevice->CreateBuffer(&Cubebufferdescription, &InitCubeData, &_pCubeVertexBuffer);
@@ -276,7 +289,34 @@ HRESULT Application::CreateIndexBuffer()
      4,2,1,
 
     };
+    WORD Grid[150];
+    unsigned int tri = 0;
+    for (unsigned int i = 0; i < 150; i += 3)
+    {
+        //Check Error Statement // Checks if points are less or higher than our unesscary values on grid
+        if (tri + 5 > 24 )
+        {
+            break;
+        }
+       
+        //Creates First Triangle
+        Grid[i + 0] = tri + 0;
+        Grid[i + 1] = tri + 1;
+        Grid[i + 2] = tri + 5;
+    
+        if (tri - 5 < 0)
+        {
+            break;
+        }        
+        //Creates Second Triangle
+        Grid[i + 3] = tri - 0;
+        Grid[i + 4] = (unsigned int)tri - 5;
+        Grid[i + 5] = tri + 1;
 
+        tri++;
+
+
+    }
     //D3D11_BUFFER_DESC - Struct that allows us to describe a buffers resource
 
     //Pyramid Index Buffer Description
@@ -293,7 +333,7 @@ HRESULT Application::CreateIndexBuffer()
     ZeroMemory(&Cubebufferdescription, sizeof(Cubebufferdescription));
 
     Cubebufferdescription.Usage = D3D11_USAGE_DEFAULT;
-    Cubebufferdescription.ByteWidth = sizeof(WORD) * 36;
+    Cubebufferdescription.ByteWidth = sizeof(WORD) * 150;
     Cubebufferdescription.BindFlags = D3D11_BIND_INDEX_BUFFER;
     Cubebufferdescription.CPUAccessFlags = 0;
 
@@ -308,7 +348,7 @@ HRESULT Application::CreateIndexBuffer()
 
     D3D11_SUBRESOURCE_DATA InitCubeData;
     ZeroMemory(&InitCubeData, sizeof(InitCubeData));
-    InitCubeData.pSysMem = CubeIndex;
+    InitCubeData.pSysMem = Grid;
 
 
     // Call device pointer , pass "CreateBuffer" function , parameter pass in relevant local data above (describe data and buffer resource) , then reference Buffer pointer
@@ -630,7 +670,7 @@ void Application::Draw()
     // Set vertex buffer  passed into input assembly stage
     UINT stride = sizeof(SimpleVertex);
     UINT offset = 0;
-    float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f }; // red,green,blue,alpha
+    float ClearColor[4] = { 1.0f, 1.0f, 1.0f, 0.0f }; // red,green,blue,alpha
     //Clears RenderView , current buffer, used for swap chain
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
     //Clears current depthview , also used to update depth from next buffer in swapchain

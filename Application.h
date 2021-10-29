@@ -106,7 +106,7 @@ private:
 	XMFLOAT4X4				_world , _world2, _world3, _world4 , _world5, _world6, _world7;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
-
+	XMFLOAT4X4				 _grid;
 	XMFLOAT3 light_direction;
 	XMFLOAT4 diffuse_material;
 	XMFLOAT4 diffuse_light;
