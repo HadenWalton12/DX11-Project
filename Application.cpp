@@ -175,14 +175,14 @@ HRESULT Application::CreateVertexBuffer()
 
     SimpleVertex CubeStruct[] =
     {     // Vertex/Point Desc        //Colour decsription for point
-        { XMFLOAT3(-1.0f ,1.0f,0.0f), XMFLOAT3(0.0f, 0.0f, 1.0f)},    // 0
-        { XMFLOAT3(1.0f,1.0f,0.0f)  , XMFLOAT3(0.0f, 0.0f, 1.0f)},      // 1 
-        { XMFLOAT3(-1.0f,-1.0f,0.0f), XMFLOAT3(-2.0f, -2.0f, 1.0f)}, // 2 
-        { XMFLOAT3(1.0f,-1.0f,0.0f) , XMFLOAT3(-2.0f, -2.0f, 1.0f)},      // 3
-        { XMFLOAT3(-1.0f,-1.0f,2.0f), XMFLOAT3(-2.0f, 2.0f, 1.0f)},    // 4
-        { XMFLOAT3(1.0f,-1.0f,2.0f) , XMFLOAT3(-2.0f, 2.0f, 1.0f)},     // 5 
-        { XMFLOAT3(1.0f,1.0f,2.0f)  , XMFLOAT3(-1.0f, -1.0f, 0.0f)},    // 6
-        { XMFLOAT3(-1.0f, 1.0f,2.0f), XMFLOAT3(-1.0f, -1.0f, 0.0f)},  // 7
+        { XMFLOAT3(1.0f ,1.0f,-1.0f), XMFLOAT3(0.333333f, 0.666667f, -0.666667f)},    // 0
+        { XMFLOAT3(-1.0f,1.0f,-1.0f)  , XMFLOAT3(-0.816497f, 0.408248f, -0.408248f)},      // 1 
+        { XMFLOAT3(-1.0f,1.0f,1.0f), XMFLOAT3(-0.333333f, 0.666667f, 0.666667f)}, // 2 
+        { XMFLOAT3(1.0f,1.0f,1.0f) , XMFLOAT3(0.816497f, 0.408248f, 0.408248f)},      // 3
+        { XMFLOAT3(1.0f,-1.0f,-1.0f), XMFLOAT3(0.666667f, -0.666667f, -0.333333f)},    // 4
+        { XMFLOAT3(-1.0f,-1.0f,-1.0f) , XMFLOAT3(-0.408248f, -0.408248f, -0.816497f)},     // 5 
+        { XMFLOAT3(-1.0f,-1.0f,-1.0f)  , XMFLOAT3(-0.666667f, -0.666667f, 0.333333f)},    // 6
+        { XMFLOAT3(1.0f, -1.0f,1.0f), XMFLOAT3(0.408248f, -0.408248f, 0.816497f)},  // 7
     };
     SimpleVertex PyramidStruct[] =
     {
@@ -249,25 +249,21 @@ HRESULT Application::CreateIndexBuffer()
           0,1,2,
           0,2,3,
 
-          //Left
-            3,1,6,
-            3,6,5,
+          0,4,5,
+          0,5,1,
 
-            //Right
-              0,2,4,
-              0,4,7,
+          1,5,1,
+          1,6,2,
 
-              //Top
-               1,0,7,
-               1,7,6,
+          2,6,7,
+          2,7,3,
 
-               //Bottom
-                2,3,5,
-                2,5,4,
+          3,7,4,
+          3,4,0,
 
-                //Back
-                 5,6,7,
-                 5,7,4
+          4,7,6,
+          4,6,5,
+         
     };
     WORD TrianglePyramidIndex[] =
     {
@@ -626,15 +622,15 @@ void Application::Draw()
     diffuse_light = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f);
 
     ambient_light = XMFLOAT4(0.2f , 0.2f, 0.2f, 1.0f);
-    ambient_material = XMFLOAT4(0.9f, 0.9f, 0.9f, 1.0f);
+    ambient_material = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
     specular_material = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
     specular_light = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-    specular_power = 10.0f;
+    specular_power = 2.0f;
     EyePosW = XMFLOAT4(0.0f, 0.0f, -5.0f, 0.0f);
     // Set vertex buffer  passed into input assembly stage
     UINT stride = sizeof(SimpleVertex);
     UINT offset = 0;
-    float ClearColor[4] = { 0.0f, 1.0f, 1.0f, 1.0f }; // red,green,blue,alpha
+    float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f }; // red,green,blue,alpha
     //Clears RenderView , current buffer, used for swap chain
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
     //Clears current depthview , also used to update depth from next buffer in swapchain
