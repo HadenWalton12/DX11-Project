@@ -38,6 +38,15 @@ struct ConstantBuffer
 
 	XMFLOAT4 DiffuseMtrl;
 	XMFLOAT4 DiffuseLight;
+
+	XMFLOAT4 AmbientMtrl;
+	XMFLOAT4 AmbientLight;
+
+	XMFLOAT4 SpecularMtrl;
+	XMFLOAT4 SpecularLight;
+	float SpecularPower;
+	XMFLOAT4 EyePosW;
+
 	XMFLOAT3 LightVecW;
 };
 
@@ -101,7 +110,12 @@ private:
 	XMFLOAT3 light_direction;
 	XMFLOAT4 diffuse_material;
 	XMFLOAT4 diffuse_light;
-
+	XMFLOAT4 specular_material;
+	XMFLOAT4 specular_light;
+	XMFLOAT4 ambient_material;
+	XMFLOAT4 ambient_light;
+	float specular_power;
+	XMFLOAT4 EyePosW;
 	float _gTime;
 
 private:
