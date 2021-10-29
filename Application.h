@@ -95,7 +95,6 @@ private:
 	//We can then use this to create the relevant world,view,projection matrices that we need.
 	//We store this data in 4x4 Matrix to transpose/ mathmatically apply matrix mathmatic too.
 	XMFLOAT4X4				_world , _world2, _world3, _world4 , _world5, _world6, _world7;
-	XMFLOAT4X4				astroidbelt[100];
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
 

@@ -173,14 +173,14 @@ HRESULT Application::CreateVertexBuffer()
 
     SimpleVertex CubeStruct[] =
     {     // Vertex/Point Desc        //Colour decsription for point
-        { XMFLOAT3(-1.0f ,1.0f,0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},    // 0
+        { XMFLOAT3(-1.0f ,1.0f,0.0f), XMFLOAT3(0.0f, 0.0f, 2.0f)},    // 0
         { XMFLOAT3(1.0f,1.0f,0.0f)  , XMFLOAT3(0.0f, 0.0f, 2.0f)},      // 1 
-        { XMFLOAT3(-1.0f,-1.0f,0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)}, // 2 
-        { XMFLOAT3(1.0f,-1.0f,0.0f) , XMFLOAT3(0.0f, 0.0f, 0.0f)},      // 3
-        { XMFLOAT3(-1.0f,-1.0f,2.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},    // 4
-        { XMFLOAT3(1.0f,-1.0f,2.0f) , XMFLOAT3(0.0f, 0.0f, 0.0f)},     // 5 
-        { XMFLOAT3(1.0f,1.0f,2.0f)  ,XMFLOAT3(0.0f, 0.0f, 0.0f)},    // 6
-        { XMFLOAT3(-1.0f, 1.0f,2.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},  // 7
+        { XMFLOAT3(-1.0f,-1.0f,0.0f), XMFLOAT3(-2.0f, -2.0f, 2.0f)}, // 2 
+        { XMFLOAT3(1.0f,-1.0f,0.0f) , XMFLOAT3(-2.0f, -2.0f, 2.0f)},      // 3
+        { XMFLOAT3(-1.0f,-1.0f,2.0f), XMFLOAT3(-2.0f, 2.0f, 2.0f)},    // 4
+        { XMFLOAT3(1.0f,-1.0f,2.0f) , XMFLOAT3(-2.0f, 2.0f, 2.0f)},     // 5 
+        { XMFLOAT3(1.0f,1.0f,2.0f)  , XMFLOAT3(-4.0f, -4.0f, 0.0f)},    // 6
+        { XMFLOAT3(-1.0f, 1.0f,2.0f), XMFLOAT3(-4.0f, -4.0f, 0.0f)},  // 7
     };
     SimpleVertex PyramidStruct[] =
     {
@@ -619,7 +619,7 @@ HRESULT Application::Update()
 void Application::Draw()
 {
 
-    light_direction = XMFLOAT3(0.25f, 0.5f, -1.0f);
+    light_direction = XMFLOAT3(2.5f, 0.0f, -1.0f);
 
     diffuse_material = XMFLOAT4(0.8f , 0.5f , 0.5f , 1.0f);
 
