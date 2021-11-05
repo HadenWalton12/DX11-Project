@@ -3,7 +3,8 @@
 //
 // Copyright (c) Microsoft Corporation. All rights reserved.
 //--------------------------------------------------------------------------------------
-
+Texture2D txDiffuse : register(t0);
+SamplerState samLinear : register(s0);
 //--------------------------------------------------------------------------------------
 // Constant Buffer Variables
 //--------------------------------------------------------------------------------------
@@ -26,51 +27,80 @@ cbuffer ConstantBuffer : register( b0 )
 
 }
 
-//--------------------------------------------------------------------------------------
-struct VS_OUTPUT
+struct VS_INPUT
 {
-    float4 Pos : SV_POSITION;
-    float3 normalW : NORMAL;
-    float4 Color : COLOR0;
+	
+	float4 Pos : POSITION;
+	float2 Tex : TEXCOORD0;
+	
+	
+};
+
+struct PS_INPUT
+{
+	float3 normalW : NORMAL;
+	float4 Pos : SV_POSITION;
+	float2 Tex : TEXCOORD0;
+	
+};
+//--------------------------------------------------------------------------------------
+	struct VS_OUTPUT
+	{
+		float4 Pos : SV_POSITION;
+		float3 normalW : NORMAL;
+		float3 PosW : POSITION;
+		float2 Tex : TEXCOORD0;
 };
 
 //--------------------------------------------------------------------------------------
 // Vertex Shader
 //--------------------------------------------------------------------------------------
-VS_OUTPUT VS( float4 Pos : POSITION, float3 NormalL : NORMAL )
-{
-    VS_OUTPUT output = (VS_OUTPUT)0;
+	VS_OUTPUT VS(float4 Pos : POSITION, float3 NormalL : NORMAL , float2 Tex : TEXCOORD0)
+	{
+		VS_OUTPUT output = (VS_OUTPUT) 0;
 
-    output.Pos = mul(Pos, World);
-    
-	float3 toEye = normalize(EyePosW - output.Pos.xyz);
-    
-    output.Pos = mul(output.Pos, View);
-    output.Pos = mul(output.Pos, Projection);
-    
-    // Convert from local space to world space
+		output.Pos = mul(Pos, World);
+		output.Pos = mul(output.Pos, View);
+		output.Pos = mul(output.Pos, Projection);
+		
+		output.PosW = mul(Pos, World);
+	
+	
+		// Convert from local space to world space
     // W component of vector is 0 as vectors cannot be translated
-    float3 normalW = mul(float4(NormalL, 0.0f), World).xyz;
-    normalW = normalize(normalW);
+		float3 normalW = mul(float4(NormalL, 0.0f), World).xyz;
+		normalW = normalize(normalW);
 
-	float3 r = reflect(-LightVecW, normalW);
-	float specularAmount = pow(max(dot(r, toEye), 0.0f), SpecularPower);
-    
-    float3 ambient = AmbientMtrl * AmbientLight;
-    float diffuseAmount = max(dot(LightVecW, normalW), 0.0f);
-	float3 specular = specularAmount * (SpecularMtrl * SpecularLight).rgb;
-    output.Color.rgb = diffuseAmount * (DiffuseMtrl * DiffuseLight).rgb;
-	output.Color.rgb = output.Color.rgb + ambient + specular;
-    output.Color.a = DiffuseMtrl.a;
+		
+		output.Tex = Tex;
+		return output;
+	}
 
-    return output;
-}
 
 
 //--------------------------------------------------------------------------------------
 // Pixel Shader
 //--------------------------------------------------------------------------------------
-float4 PS( VS_OUTPUT input ) : SV_Target
-{
-    return input.Color;
+
+	float4 PS(VS_OUTPUT input) : SV_Target
+	{
+	
+		float3 toEye = normalize(EyePosW - input.PosW.xyz);
+		float3 r = reflect(-LightVecW, input.normalW);
+		float specularAmount = pow(max(dot(r, toEye), 0.0f), SpecularPower);
+		float3 ambient = AmbientMtrl * AmbientLight;
+		float diffuseAmount = max(dot(LightVecW, input.normalW), 0.0f);
+		float3 specular = specularAmount * (SpecularMtrl * SpecularLight).rgb;
+		float4 Color;
+	
+	
+		Color.rgb = diffuseAmount * (DiffuseMtrl * DiffuseLight).rgb;
+	    Color.rgb = Color.rgb + ambient + specular;
+		Color.a = DiffuseMtrl.a;
+		
+		float4 textureColor = txDiffuse.Sample(samLinear, input.Tex);
+		return textureColor * Color;
+
+		
 }
+

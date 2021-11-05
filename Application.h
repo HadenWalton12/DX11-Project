@@ -11,7 +11,7 @@
 #include <directxmath.h>
 #include <directxcolors.h>
 #include "resource.h"
-
+#include "DDSTextureLoader.h"
 //Allows us to easily call reference upon our DX naming conventions
 using namespace DirectX;
 
@@ -25,6 +25,8 @@ struct SimpleVertex
 {
 	XMFLOAT3 Pos;
     XMFLOAT3 Normal;
+	//Only needs two Floats since we are only defining the U&V coordinate values
+	XMFLOAT2 TexC;
 
 };
 
@@ -41,13 +43,15 @@ struct ConstantBuffer
 
 	XMFLOAT4 AmbientMtrl;
 	XMFLOAT4 AmbientLight;
-
 	XMFLOAT4 SpecularMtrl;
 	XMFLOAT4 SpecularLight;
 	float SpecularPower;
+	XMFLOAT3 LightVecW;
 	XMFLOAT4 EyePosW;
 
-	XMFLOAT3 LightVecW;
+
+
+
 };
 
 class Application
@@ -70,6 +74,10 @@ private:
 	//In order to render our application , we need to target our renderer , this is done so we can maintain the location in video memory to render into
 	ID3D11RenderTargetView* _pRenderTargetView;
 	
+	ID3D11Texture2D* _pCubeTexture;
+	ID3D11ShaderResourceView* _pTextureRV = nullptr;
+	ID3D11SamplerState* _pSamplerLinear = nullptr;
+
 	/* Interface Management
 			Objects related to controlling "Interfacing" data related to application ,
 			controlling executed stages on  pipeline

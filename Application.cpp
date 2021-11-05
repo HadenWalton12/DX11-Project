@@ -147,6 +147,8 @@ HRESULT Application::CreateShadersAndInputLayout()
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD" , 0 , DXGI_FORMAT_R32G32_FLOAT , 0 , 24 , D3D11_INPUT_PER_VERTEX_DATA , 0},
+
     };
 
     UINT numElements = ARRAYSIZE(layout);
@@ -175,22 +177,22 @@ HRESULT Application::CreateVertexBuffer()
 
     SimpleVertex CubeStruct[] =
     {     // Vertex/Point Desc        //Colour decsription for point
-        { XMFLOAT3(1.0f ,1.0f,-1.0f), XMFLOAT3(0.333333f, 0.666667f , -0.666667f)},    // 0
-        { XMFLOAT3(-1.0f,1.0f,-1.0f)  , XMFLOAT3(-0.816497f, 0.408248f, -0.408248f)},      // 1 
-        { XMFLOAT3(-1.0f,1.0f,1.0f), XMFLOAT3(-0.333333f, 0.666667f, 0.666667f)}, // 2 
-        { XMFLOAT3(1.0f,1.0f,1.0f) , XMFLOAT3(0.816497f, 0.408248f, 0.408248f)},      // 3
-        { XMFLOAT3(1.0f,-1.0f,-1.0f), XMFLOAT3(0.666667f, -0.666667f, -0.333333f)},    // 4
-        { XMFLOAT3(-1.0f,-1.0f,-1.0f) , XMFLOAT3(-0.408248f, -0.408248f, -0.816497f)},     // 5 
-        { XMFLOAT3(-1.0f,-1.0f,1.0f)  , XMFLOAT3(-0.666667f, -0.666667f, 0.333333f)},    // 6
-        { XMFLOAT3(1.0f, -1.0f,1.0f), XMFLOAT3(0.408248f, -0.408248f, 0.816497f)},  // 7
+        { XMFLOAT3(1.0f ,1.0f,-1.0f), XMFLOAT3(0.333333f, 0.666667f , -0.666667f) , XMFLOAT2(0.0f , 0.1f )},    // 0
+        { XMFLOAT3(-1.0f,1.0f,-1.0f)  , XMFLOAT3(-0.816497f, 0.408248f, -0.408248f) ,  XMFLOAT2(1.0f , 1.0f)},      // 1 
+        { XMFLOAT3(-1.0f,1.0f,1.0f), XMFLOAT3(-0.333333f, 0.666667f, 0.666667f), XMFLOAT2(0.0f , 1.0f)}, // 2 
+        { XMFLOAT3(1.0f,1.0f,1.0f) , XMFLOAT3(0.816497f, 0.408248f, 0.408248f), XMFLOAT2(1.0f , 1.0f)},      // 3
+        { XMFLOAT3(1.0f,-1.0f,-1.0f), XMFLOAT3(0.666667f, -0.666667f, -0.333333f), XMFLOAT2(0.0f , 0.0f)},    // 4
+        { XMFLOAT3(-1.0f,-1.0f,-1.0f) , XMFLOAT3(-0.408248f, -0.408248f, -0.816497f), XMFLOAT2(1.0f , 0.0f)},     // 5 
+        { XMFLOAT3(-1.0f,-1.0f,1.0f)  , XMFLOAT3(-0.666667f, -0.666667f, 0.333333f), XMFLOAT2(0.0f , 0.0f)},    // 6
+        { XMFLOAT3(1.0f, -1.0f,1.0f), XMFLOAT3(0.408248f, -0.408248f, 0.816497f), XMFLOAT2(1.0f , 0.0f)},  // 7
     };
     SimpleVertex PyramidStruct[] =
     {
-         { XMFLOAT3(0.0f , 0.0f , 2.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},  //0 
-         { XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},  // 1
-         { XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},  // 2
-         { XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},  // 3
-         { XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},// 4
+         { XMFLOAT3(0.0f , 0.0f , 2.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f , 0.0f)},  //0 
+         { XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f , 0.0f)},  // 1
+         { XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f , 0.0f)},  // 2
+         { XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f , 0.0f)},  // 3
+         { XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f , 0.0f)},// 4
     };
 
     //D3D11_BUFFER_DESC - Struct that allows us to describe a buffers resource
@@ -442,9 +444,28 @@ HRESULT Application::CreateDevice()
         if (SUCCEEDED(hr))
             break;
     }
+
+    // Create the sample state
+
+    D3D11_SAMPLER_DESC sampDesc;
+
+    ZeroMemory(&sampDesc, sizeof(sampDesc));
+
+    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    sampDesc.MinLOD = 0;
+    sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+
+
+
+
+
     //Creates Depth Stencil buffer descriptor
     D3D11_TEXTURE2D_DESC depthStencilDesc;
-
     //Describing buffer descriptor
     depthStencilDesc.Width = _WindowWidth;
     depthStencilDesc.Height = _WindowHeight;
@@ -462,6 +483,7 @@ HRESULT Application::CreateDevice()
     _pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &_pDepthStencilBuffer);//Depth stencil buffer
     _pd3dDevice->CreateDepthStencilView(_pDepthStencilBuffer, nullptr, &_pDepthStencilView);//Depth stencil view
 
+  
 
     if (FAILED(hr))
     {
@@ -476,6 +498,14 @@ HRESULT Application::CreateDevice()
     {
         return hr;
     }
+
+    hr = CreateDDSTextureFromFile(_pd3dDevice, L"Crate_COLOR.dds", nullptr, &_pTextureRV);
+    if (FAILED(hr))
+    {
+        return hr;
+    }
+  
+    //
     //Describes back buffer
     hr = _pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &_pRenderTargetView);
     pBackBuffer->Release();
@@ -526,6 +556,15 @@ HRESULT Application::CreateDevice()
 
     //Create wirefram rasterizer stage
     hr = _pd3dDevice->CreateRasterizerState(&wireframe, &_wireFrame);
+  
+
+    _pd3dDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear);
+
+
+    if (FAILED(hr))
+    {
+        return hr;
+    }
 
     if (FAILED(hr))
     {
@@ -623,7 +662,6 @@ void Application::Draw()
     light_direction = XMFLOAT3(2.5f, 0.0f, 4.0f);
     diffuse_material = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
     diffuse_light = XMFLOAT4(0.2f, 0.2f, 0.2f, 0.5f);
-
     ambient_light = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
     ambient_material = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
     specular_material = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
@@ -638,7 +676,9 @@ void Application::Draw()
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
     //Clears current depthview , also used to update depth from next buffer in swapchain
     _pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0); //for the float value :Clear the depth buffer with this value. This value will be clamped between 0 and 1.
-
+   
+  
+    _pImmediateContext->PSSetSamplers(0, 1, &_pSamplerLinear);
     
     XMMATRIX world = XMLoadFloat4x4(&_world);
     XMMATRIX view = XMLoadFloat4x4(&_view);
@@ -666,17 +706,22 @@ void Application::Draw()
 
     //Call VertexShader pointer, initalising the pointer used for Pipeline
     _pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
+
     //Call ConstantShader pointer, initalising the pointer used to feed consant data into vertex shader
     _pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
     //Call ConstantShader pointer, initalising the pointer used to feed consant data into pixel shader
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
     //Call PixelShader pointer, initalising the pointer used for Pipeline
+  
     _pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
-
+    //_pImmediateContext->PSSetShaderResources(0, 1, &_pTextureRV);
     //SImilar to above, update input buffers passed into InputAssembly Stage , will draw all objects below with this buffer data
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pCubeVertexBuffer, &stride, &offset);
     _pImmediateContext->IASetIndexBuffer(_pCubeIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
     //Draw Triangle
+
+    _pImmediateContext->PSSetShaderResources(0, 1, &_pTextureRV);
+
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
 
@@ -710,6 +755,9 @@ void Application::Draw()
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
     _pImmediateContext->DrawIndexed(36, 0, 0);
     */
+
+    
+
     //
     // Present our back buffer to our front buffer
     //
