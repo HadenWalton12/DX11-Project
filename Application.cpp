@@ -206,7 +206,7 @@ HRESULT Application::CreateVertexBuffer()
         for (int col = 0; col < 5; col++)
         {
             int index = row * 5 + col;
-            GridStruct[index] = { XMFLOAT3((float)col , 0.0f , (float)row), XMFLOAT3(0.0f , 0.0f ,0.0f) };
+            GridStruct[index] = { XMFLOAT3((float)col , 0.0f , (float)row), XMFLOAT3(0.0f , 0.0f ,0.0f) , XMFLOAT2((float)row ,(float)col) };
 
         }
 
