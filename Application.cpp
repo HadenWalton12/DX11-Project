@@ -188,7 +188,7 @@ HRESULT Application::CreateVertexBuffer()
     };
     SimpleVertex PyramidStruct[] =
     {
-         { XMFLOAT3(0.0f , 0.0f , 2.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f , 0.0f)},  //0 
+         { XMFLOAT3(0.0f , 0.0f , 2.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f , 0.5f)},  //0 
          { XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f , 0.0f)},  // 1
          { XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f , 0.0f)},  // 2
          { XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f , 0.0f)},  // 3
