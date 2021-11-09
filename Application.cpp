@@ -195,6 +195,23 @@ HRESULT Application::CreateVertexBuffer()
          { XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f , 0.0f)},// 4
     };
 
+    SimpleVertex GridStruct[625] =
+    {
+
+    };
+
+
+    for (int row = 0; row < 10; row++)
+    {
+
+        for (int col = 0; col < 5; col++)
+        {
+            int index = row * 5 + col;
+            GridStruct[index] = { XMFLOAT3((float)col ,(float)row  , 0.0f), XMFLOAT3(0.0f , 1.0f ,0.0f) };
+
+        }
+
+    }
     //D3D11_BUFFER_DESC - Struct that allows us to describe a buffers resource
 
     //Pyramid Vertex Buffer Description
@@ -215,7 +232,18 @@ HRESULT Application::CreateVertexBuffer()
     Cubebufferdescription.ByteWidth = sizeof(SimpleVertex) * 25;
     Cubebufferdescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     Cubebufferdescription.CPUAccessFlags = 0;
+    
+    D3D11_BUFFER_DESC Gridbufferdescription;
+    ZeroMemory(&Gridbufferdescription, sizeof(Gridbufferdescription));
 
+    Gridbufferdescription.Usage = D3D11_USAGE_DEFAULT;
+    Gridbufferdescription.ByteWidth = sizeof(SimpleVertex) * 25;
+    Gridbufferdescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    Gridbufferdescription.CPUAccessFlags = 0;
+
+    D3D11_SUBRESOURCE_DATA InitGridData;
+    ZeroMemory(&InitGridData, sizeof(InitGridData));
+    InitGridData.pSysMem = GridStruct;
 
     //Specifies data being used - Used in the process of creating buffers , calls reference to relevant vertex struct (InitData variable equals PyramidStruct)
     D3D11_SUBRESOURCE_DATA InitTriangleData;
@@ -230,7 +258,7 @@ HRESULT Application::CreateVertexBuffer()
     // Call device pointer , pass "CreateBuffer" function , parameter pass in relevant local data above (describe data and buffer resource) , then reference Buffer pointer
     hr = _pd3dDevice->CreateBuffer(&Cubebufferdescription, &InitCubeData, &_pCubeVertexBuffer);
     hr = _pd3dDevice->CreateBuffer(&Pyrmidbufferdescription, &InitTriangleData, &_pTriangleVertexBuffer);
-
+    hr = _pd3dDevice->CreateBuffer(&Gridbufferdescription, &InitGridData, &_pGridVertexBuffer);
     //Fail Check Method
     if (FAILED(hr))
     {
@@ -265,7 +293,7 @@ HRESULT Application::CreateIndexBuffer()
 
           4,7,6,
           4,6,5,
-         
+
     };
     WORD TrianglePyramidIndex[] =
     {
@@ -279,48 +307,89 @@ HRESULT Application::CreateIndexBuffer()
 
     };
 
+    const int width = 5;
+    const int height = 5;
+
+    WORD Grid[(width - 1) * (height - 1) * 6];
+    int tri_index = 0;
+    int vertex_index = 0;
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            if (j < width - 1 && i < height - 1)
+            {
+
+                //Check Error Statement // Checks if points are less or higher than our unesscary values on grid
+                Grid[tri_index] = vertex_index;
+                Grid[tri_index + 1] = vertex_index + width + 1;
+                Grid[tri_index + 2] = vertex_index + width;
+
+                Grid[tri_index + 3] = vertex_index + width + 1;
+                Grid[tri_index + 4] = vertex_index;
+                Grid[tri_index + 5] = vertex_index + 1;
+
+
+                tri_index += 6;
+            }
+            vertex_index++;
+        }
+
+
     
-    //D3D11_BUFFER_DESC - Struct that allows us to describe a buffers resource
+        //D3D11_BUFFER_DESC - Struct that allows us to describe a buffers resource
 
-    //Pyramid Index Buffer Description
-    D3D11_BUFFER_DESC Pyramidbufferdescription;
-    ZeroMemory(&Pyramidbufferdescription, sizeof(Pyramidbufferdescription));
+        //Pyramid Index Buffer Description
+        D3D11_BUFFER_DESC Pyramidbufferdescription;
+        ZeroMemory(&Pyramidbufferdescription, sizeof(Pyramidbufferdescription));
 
-    Pyramidbufferdescription.Usage = D3D11_USAGE_DEFAULT;
-    Pyramidbufferdescription.ByteWidth = sizeof(WORD) * 18;
-    Pyramidbufferdescription.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    Pyramidbufferdescription.CPUAccessFlags = 0;
+        Pyramidbufferdescription.Usage = D3D11_USAGE_DEFAULT;
+        Pyramidbufferdescription.ByteWidth = sizeof(WORD) * 18;
+        Pyramidbufferdescription.BindFlags = D3D11_BIND_INDEX_BUFFER;
+        Pyramidbufferdescription.CPUAccessFlags = 0;
 
-    //Cube Index Buffer Description
-    D3D11_BUFFER_DESC Cubebufferdescription;
-    ZeroMemory(&Cubebufferdescription, sizeof(Cubebufferdescription));
+        //Cube Index Buffer Description
+        D3D11_BUFFER_DESC Cubebufferdescription;
+        ZeroMemory(&Cubebufferdescription, sizeof(Cubebufferdescription));
 
-    Cubebufferdescription.Usage = D3D11_USAGE_DEFAULT;
-    Cubebufferdescription.ByteWidth = sizeof(WORD) * 150;
-    Cubebufferdescription.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    Cubebufferdescription.CPUAccessFlags = 0;
+        Cubebufferdescription.Usage = D3D11_USAGE_DEFAULT;
+        Cubebufferdescription.ByteWidth = sizeof(WORD) * 150;
+        Cubebufferdescription.BindFlags = D3D11_BIND_INDEX_BUFFER;
+        Cubebufferdescription.CPUAccessFlags = 0;
+
+        D3D11_BUFFER_DESC Gridbufferdescription;
+        ZeroMemory(&Gridbufferdescription, sizeof(Gridbufferdescription));
+
+        Gridbufferdescription.Usage = D3D11_USAGE_DEFAULT;
+        Gridbufferdescription.ByteWidth = sizeof(WORD) * 175;
+        Gridbufferdescription.BindFlags = D3D11_BIND_INDEX_BUFFER;
+        Gridbufferdescription.CPUAccessFlags = 0;
+
+        D3D11_SUBRESOURCE_DATA GridCubeData;
+        ZeroMemory(&GridCubeData, sizeof(GridCubeData));
+        GridCubeData.pSysMem = Grid;
+
+        //Specifies data being used - Used in the process of creating buffers , calls reference to relevant index struct (InitData variable equals TrianglePyramidIndex)
+        D3D11_SUBRESOURCE_DATA InitTriangleData;
+        ZeroMemory(&InitTriangleData, sizeof(InitTriangleData));
+        InitTriangleData.pSysMem = TrianglePyramidIndex;
+
+        //Specifies data being used - Used in the process of creating buffers , calls reference to relevant index struct (InitData variable equals CubeIndex)
+
+        D3D11_SUBRESOURCE_DATA InitCubeData;
+        ZeroMemory(&InitCubeData, sizeof(InitCubeData));
+        InitCubeData.pSysMem = CubeIndex;
 
 
+        // Call device pointer , pass "CreateBuffer" function , parameter pass in relevant local data above (describe data and buffer resource) , then reference Buffer pointer
+        hr = _pd3dDevice->CreateBuffer(&Pyramidbufferdescription, &InitTriangleData, &_pTriangleIndexBuffer);
+        hr = _pd3dDevice->CreateBuffer(&Cubebufferdescription, &InitCubeData, &_pCubeIndexBuffer);
+        hr = _pd3dDevice->CreateBuffer(&Gridbufferdescription, &GridCubeData, &_pGridIndexBuffer);
+        if (FAILED(hr))
+            return hr;
 
-    //Specifies data being used - Used in the process of creating buffers , calls reference to relevant index struct (InitData variable equals TrianglePyramidIndex)
-    D3D11_SUBRESOURCE_DATA InitTriangleData;
-    ZeroMemory(&InitTriangleData, sizeof(InitTriangleData));
-    InitTriangleData.pSysMem = TrianglePyramidIndex;
-
-    //Specifies data being used - Used in the process of creating buffers , calls reference to relevant index struct (InitData variable equals CubeIndex)
-
-    D3D11_SUBRESOURCE_DATA InitCubeData;
-    ZeroMemory(&InitCubeData, sizeof(InitCubeData));
-    InitCubeData.pSysMem = CubeIndex;
-
-
-    // Call device pointer , pass "CreateBuffer" function , parameter pass in relevant local data above (describe data and buffer resource) , then reference Buffer pointer
-    hr = _pd3dDevice->CreateBuffer(&Pyramidbufferdescription, &InitTriangleData, &_pTriangleIndexBuffer);
-    hr = _pd3dDevice->CreateBuffer(&Cubebufferdescription, &InitCubeData, &_pCubeIndexBuffer);
-    if (FAILED(hr))
-        return hr;
-
-    return S_OK;
+        return S_OK;
+    }
 }
 
 HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
@@ -624,14 +693,14 @@ HRESULT Application::Update()
     //Sun
     XMStoreFloat4x4(&_world, XMMatrixRotationY(t) * XMMatrixTranslation(0.0f, 0.0f, 0.0f));
     //Planets
-    /*XMStoreFloat4x4(&_world2, XMMatrixScaling(0.5f, 0.5f, 0.5f) * XMMatrixRotationX(t) * XMMatrixTranslation(0.0f - cos(t) * 5, 0.0f - sin(t) * 5, 0.0f));
-    XMStoreFloat4x4(&_world4, XMMatrixScaling(0.75f, 0.75f, 0.75f) * XMMatrixRotationX(t) * XMMatrixTranslation(0.0f, 1.2f + cos(t) * 5, 0.0f + sin(t) * 5));
+    XMStoreFloat4x4(&_world2, XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+    //XMStoreFloat4x4(&_world4, XMMatrixScaling(0.75f, 0.75f, 0.75f) * XMMatrixRotationX(t) * XMMatrixTranslation(0.0f, 1.2f + cos(t) * 5, 0.0f + sin(t) * 5));
     //Moons
-    XMStoreFloat4x4(&_world3, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(-1.2f - cos(t) * 5, 0.0f - sin(t) * 5, 0.0f));
-   XMStoreFloat4x4(&_world5, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(0.0f, -1.2f + cos(t) * 5, 0.0f + sin(t) * 5));
-    XMStoreFloat4x4(&_world, XMMatrixRotationY(t) * XMMatrixRotationZ(t) * XMMatrixTranslation(0.0f, 0.0f ,0.0f));
+    //XMStoreFloat4x4(&_world3, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(-1.2f - cos(t) * 5, 0.0f - sin(t) * 5, 0.0f));
+   //XMStoreFloat4x4(&_world5, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(0.0f, -1.2f + cos(t) * 5, 0.0f + sin(t) * 5));
+    //XMStoreFloat4x4(&_world, XMMatrixRotationY(t) * XMMatrixRotationZ(t) * XMMatrixTranslation(0.0f, 0.0f ,0.0f));
     
-    */
+    
     D3D11_RASTERIZER_DESC rastDesc;
 
     if (GetAsyncKeyState(VK_DOWN))
@@ -724,15 +793,17 @@ void Application::Draw()
 
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
-
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_pGridVertexBuffer, &stride, &offset);
+    // Set index buffer passed into input assembly stage
+    _pImmediateContext->IASetIndexBuffer(_pGridIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
     
 
-/*    //Cube 1
+ //Cube 1
     world = XMLoadFloat4x4(&_world2);
     constantbuffer.mWorld = XMMatrixTranspose(world);
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
-    _pImmediateContext->DrawIndexed(36, 0, 0);
-
+    _pImmediateContext->DrawIndexed(150, 0, 0);
+/*
     //Cube 2
     world = XMLoadFloat4x4(&_world3);
     constantbuffer.mWorld = XMMatrixTranspose(world);
