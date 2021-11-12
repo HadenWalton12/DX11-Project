@@ -1,5 +1,16 @@
 #pragma once
-
+#include "Structure.h"
+#include "OBJLoader.h"
+//Libraries used to create application 
+//Makes it possible to create our window
+#include <windows.h>
+//Access to core DX functions 
+#include <d3d11_1.h>
+//Allows us to compile DX11 Code
+#include <d3dcompiler.h>
+//Math Library
+#include <directxmath.h>
+#include <directxcolors.h>
 //Libraries used to create application 
 //Makes it possible to create our window
 #include <windows.h>
@@ -11,6 +22,8 @@
 #include <directxmath.h>
 #include <directxcolors.h>
 #include "resource.h"
+
+
 #include "DDSTextureLoader.h"
 //Allows us to easily call reference upon our DX naming conventions
 using namespace DirectX;
@@ -20,39 +33,7 @@ using namespace DirectX;
 //XMFLOAT4X4  - Structure that creates 4*4 Floating Point Matrix - Can be used to store XMMATRIX DATA
 //and relevant matrix data within DX11
 
-//Intialise Data Entries - Will be stored/referenced on Vertex Buffer
-struct SimpleVertex
-{
-	XMFLOAT3 Pos;
-    XMFLOAT3 Normal;
-	//Only needs two Floats since we are only defining the U&V coordinate values
-	XMFLOAT2 TexC;
 
-};
-
-//Constant Buffer - This allows you to supply shader constants data to pipeline , data we want to continously supply 
-//We store these within since our matrices update in realtime  as game state changes , our view as we may move around the screen
-struct ConstantBuffer
-{
-	XMMATRIX mWorld;
-	XMMATRIX mView;
-	XMMATRIX mProjection;
-
-	XMFLOAT4 DiffuseMtrl;
-	XMFLOAT4 DiffuseLight;
-
-	XMFLOAT4 AmbientMtrl;
-	XMFLOAT4 AmbientLight;
-	XMFLOAT4 SpecularMtrl;
-	XMFLOAT4 SpecularLight;
-	float SpecularPower;
-	XMFLOAT3 LightVecW;
-	XMFLOAT4 EyePosW;
-
-
-
-
-};
 
 class Application
 {
@@ -108,12 +89,12 @@ private:
 
 	//We can use this as texture render target or depth stencil resource , in this case a depth stencil resource
 	ID3D11Texture2D* _pDepthStencilBuffer;
-							
+
 	//Can maniuplate rasterizerstate with pointer
 	ID3D11RasterizerState* _wireFrame;
 	//We can then use this to create the relevant world,view,projection matrices that we need.
 	//We store this data in 4x4 Matrix to transpose/ mathmatically apply matrix mathmatic too.
-	XMFLOAT4X4				_world , _world2, _world3, _world4 , _world5, _world6, _world7;
+	XMFLOAT4X4				_world , _world2, _world3, _world4 , _world5, _world6, _world7 , objTestWorld;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
 	XMFLOAT4X4				 _grid;
@@ -127,6 +108,9 @@ private:
 	float specular_power;
 	XMFLOAT4 EyePosW;
 	float _gTime;
+
+
+	MeshData objStarMeshData;
 
 private:
 	/*HRESULT - WINDOWS DATATYPE THAT IS USED TO DESCRIBE ERROR OR WARNING - Making this our function type allows us to return error/warning messages
@@ -151,5 +135,6 @@ public:
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
 	HRESULT Update();
 	void Draw();
+
 };
 

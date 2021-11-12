@@ -70,8 +70,6 @@ struct PS_INPUT
     // W component of vector is 0 as vectors cannot be translated
 		float3 normalW = mul(float4(NormalL, 0.0f), World).xyz;
 		normalW = normalize(normalW);
-
-		
 		output.Tex = Tex;
 		return output;
 	}

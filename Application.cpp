@@ -94,7 +94,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     // Initialize the projection matrix
     XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT)_WindowHeight, 0.01f, 100.0f));
-
+    objStarMeshData = OBJLoader::Load("star.obj", _pd3dDevice);
     //Return if any check error methods were false
     return S_OK;
 }
@@ -689,7 +689,7 @@ HRESULT Application::Update()
 
     _gTime = t;
 
-
+   
     //Sun
     XMStoreFloat4x4(&_world, XMMatrixRotationY(t) * XMMatrixTranslation(0.0f, 0.0f, 0.0f));
     //Planets
@@ -698,8 +698,8 @@ HRESULT Application::Update()
     //Moons
    XMStoreFloat4x4(&_world3, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(-1.2f - cos(t) * 5, 0.0f - sin(t) * 5, 0.0f));
    XMStoreFloat4x4(&_world5, XMMatrixTranslation(0.0f, -2.0f, -1.0f));
-
-    
+  
+    XMStoreFloat4x4(&objTestWorld, XMMatrixRotationY(t) * XMMatrixTranslation(4.0f, 0.0f, 0.0f));
     D3D11_RASTERIZER_DESC rastDesc;
 
     if (GetAsyncKeyState(VK_DOWN))
@@ -789,10 +789,9 @@ void Application::Draw()
 
 
     _pImmediateContext->PSSetShaderResources(0, 1, &_pTextureRV);
-
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
-
+    /*
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pTriangleVertexBuffer, &stride, &offset);
     _pImmediateContext->IASetIndexBuffer(_pTriangleIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
@@ -822,9 +821,14 @@ void Application::Draw()
     constantbuffer.mWorld = XMMatrixTranspose(world);
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
     _pImmediateContext->DrawIndexed(150, 0, 0);
-    
+    */
 
-    
+    _pImmediateContext->IASetVertexBuffers(0, 1, &objStarMeshData.VertexBuffer, &objStarMeshData.VBStride, &objStarMeshData.VBOffset);
+    _pImmediateContext->IASetIndexBuffer(objStarMeshData.IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+    world = XMLoadFloat4x4(&objTestWorld);
+    constantbuffer.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
+    _pImmediateContext->DrawIndexed(objStarMeshData.IndexCount, 0, 0);
 
     //
     // Present our back buffer to our front buffer
