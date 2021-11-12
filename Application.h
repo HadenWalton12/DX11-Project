@@ -120,9 +120,7 @@ private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT CreateDevice();
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
-	HRESULT CreateShadersAndInputLayout();
-	HRESULT CreateVertexBuffer();
-	HRESULT CreateIndexBuffer();
+	HRESULT CreateShadersAndInputLayout()
 
 	void Cleanup();
 

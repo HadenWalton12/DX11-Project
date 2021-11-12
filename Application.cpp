@@ -5,48 +5,9 @@
 */
 
 //Processes the event messages from queue ,based on the messages , if contained in queue we can give it specfic function.
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    PAINTSTRUCT ps;
-    HDC hdc;
 
-    switch (message)
-    {
-    case WM_PAINT:
-        hdc = BeginPaint(hWnd, &ps);
-        EndPaint(hWnd, &ps);
-        break;
 
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        break;
 
-    default:
-        return DefWindowProc(hWnd, message, wParam, lParam);
-    }
-
-    return 0;
-}
-
-//Class Constructor - Initalizing all default values.
-Application::Application()
-{
-    _hInst = nullptr;
-    _hWnd = nullptr;
-    _driverType = D3D_DRIVER_TYPE_NULL;
-    _featureLevel = D3D_FEATURE_LEVEL_11_0;
-    _pd3dDevice = nullptr;
-    _pImmediateContext = nullptr;
-    _pSwapChain = nullptr;
-    _pRenderTargetView = nullptr;
-    _pVertexShader = nullptr;
-    _pPixelShader = nullptr;
-    _pVertexLayout = nullptr;
-    _pTriangleVertexBuffer = nullptr;
-    _pTriangleIndexBuffer = nullptr;
-    _pConstantBuffer = nullptr;
-
-}
 
 //Class Destructor - Calls cleanup , releases values.
 Application::~Application()
@@ -394,39 +355,7 @@ HRESULT Application::CreateIndexBuffer()
 
 
 
-HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
-{
-    // Register class
-    WNDCLASSEX wcex;
-    wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.style = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc = WndProc;
-    wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
-    wcex.hInstance = hInstance;
-    wcex.hIcon = LoadIcon(hInstance, (LPCTSTR)IDI_TUTORIAL1);
-    wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wcex.lpszMenuName = nullptr;
-    wcex.lpszClassName = L"TutorialWindowClass";
-    wcex.hIconSm = LoadIcon(wcex.hInstance, (LPCTSTR)IDI_TUTORIAL1);
-    if (!RegisterClassEx(&wcex))
-        return E_FAIL;
 
-    // Create window
-    _hInst = hInstance;
-    RECT rc = { 0, 0, 640, 480 };
-    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-    _hWnd = CreateWindow(L"TutorialWindowClass", L"DX11 Framework", WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
-        nullptr);
-    if (!_hWnd)
-        return E_FAIL;
-
-    ShowWindow(_hWnd, nCmdShow);
-
-    return S_OK;
-}
 
 HRESULT Application::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
 {
