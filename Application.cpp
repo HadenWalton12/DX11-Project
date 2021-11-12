@@ -392,6 +392,8 @@ HRESULT Application::CreateIndexBuffer()
     return S_OK;
 }
 
+
+
 HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
 {
     // Register class
@@ -753,7 +755,7 @@ void Application::Draw()
     XMMATRIX projection = XMLoadFloat4x4(&_projection);
 
 
-    //Create local constant buffer , making our constant buffer world/view/projection equal the local versions of above, which equal the global versions which were initalised in the "Initalised" function.
+
     ConstantBuffer constantbuffer;
     constantbuffer.mWorld = XMMatrixTranspose(world);
     constantbuffer.mView = XMMatrixTranspose(view);
@@ -769,29 +771,28 @@ void Application::Draw()
     constantbuffer.SpecularPower = specular_power;
     constantbuffer.SpecularLight = specular_light;
     constantbuffer.SpecularMtrl = specular_material;
+
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
 
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pCubeVertexBuffer, &stride, &offset);
     _pImmediateContext->IASetIndexBuffer(_pCubeIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-    //Call VertexShader pointer, initalising the pointer used for Pipeline
+
     _pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
 
-    //Call ConstantShader pointer, initalising the pointer used to feed consant data into vertex shader
     _pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
-    //Call ConstantShader pointer, initalising the pointer used to feed consant data into pixel shader
+    
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
-    //Call PixelShader pointer, initalising the pointer used for Pipeline
+
   
     _pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
-    //_pImmediateContext->PSSetShaderResources(0, 1, &_pTextureRV);
-    //SImilar to above, update input buffers passed into InputAssembly Stage , will draw all objects below with this buffer data
+
 
 
 
     _pImmediateContext->PSSetShaderResources(0, 1, &_pTextureRV);
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
-    /*
+    
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pTriangleVertexBuffer, &stride, &offset);
     _pImmediateContext->IASetIndexBuffer(_pTriangleIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
@@ -814,14 +815,13 @@ void Application::Draw()
    
 
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pGridVertexBuffer, &stride, &offset);
-    // Set index buffer passed into input assembly stage
     _pImmediateContext->IASetIndexBuffer(_pGridIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
     world = XMLoadFloat4x4(&_world5);
     constantbuffer.mWorld = XMMatrixTranspose(world);
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
     _pImmediateContext->DrawIndexed(150, 0, 0);
-    */
+    
 
     _pImmediateContext->IASetVertexBuffers(0, 1, &objStarMeshData.VertexBuffer, &objStarMeshData.VBStride, &objStarMeshData.VBOffset);
     _pImmediateContext->IASetIndexBuffer(objStarMeshData.IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
