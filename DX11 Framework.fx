@@ -62,9 +62,7 @@ struct PS_INPUT
 		output.Pos = mul(Pos, World);
 		output.Pos = mul(output.Pos, View);
 		output.Pos = mul(output.Pos, Projection);
-		
-		output.PosW = mul(Pos, World);
-	
+
 	
 		// Convert from local space to world space
     // W component of vector is 0 as vectors cannot be translated

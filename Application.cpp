@@ -31,20 +31,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 //Class Constructor - Initalizing all default values.
 Application::Application()
 {
-    _hInst = nullptr;
-    _hWnd = nullptr;
-    _driverType = D3D_DRIVER_TYPE_NULL;
-    _featureLevel = D3D_FEATURE_LEVEL_11_0;
-    _pd3dDevice = nullptr;
-    _pImmediateContext = nullptr;
-    _pSwapChain = nullptr;
-    _pRenderTargetView = nullptr;
-    _pVertexShader = nullptr;
-    _pPixelShader = nullptr;
-    _pVertexLayout = nullptr;
-    _pTriangleVertexBuffer = nullptr;
-    _pTriangleIndexBuffer = nullptr;
-    _pConstantBuffer = nullptr;
+
 
 }
 
@@ -99,74 +86,6 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     return S_OK;
 }
 
-HRESULT Application::CreateShadersAndInputLayout()
-{
-    HRESULT hr;
-
-    // Compile the vertex shader
-    ID3DBlob* pVSBlob = nullptr;
-    hr = CompileShaderFromFile(L"DX11 Framework.fx", "VS", "vs_4_0", &pVSBlob);
-
-    //Check Error Method - Was the CompiledShaderFromFile Above correct?
-    if (FAILED(hr))
-    {
-        MessageBox(nullptr, L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
-        return hr;
-    }
-
-    // Create the vertex shader
-    hr = _pd3dDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &_pVertexShader);
-
-    if (FAILED(hr))
-    {
-        pVSBlob->Release();
-        return hr;
-    }
-
-    // Compile the pixel shader
-    ID3DBlob* pPSBlob = nullptr;
-    hr = CompileShaderFromFile(L"DX11 Framework.fx", "PS", "ps_4_0", &pPSBlob);
-
-    //Check Error Method - Was the CompiledShaderFromFile Above correct?
-    if (FAILED(hr))
-    {
-        MessageBox(nullptr,
-            L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
-        return hr;
-    }
-
-    // Create the pixel shader
-    hr = _pd3dDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &_pPixelShader);
-    pPSBlob->Release();
-
-    if (FAILED(hr))
-        return hr;
-
-    // Define the input layout
-    D3D11_INPUT_ELEMENT_DESC layout[] =
-    {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD" , 0 , DXGI_FORMAT_R32G32_FLOAT , 0 , 24 , D3D11_INPUT_PER_VERTEX_DATA , 0},
-
-    };
-
-    UINT numElements = ARRAYSIZE(layout);
-
-    // Create the input layout
-    hr = _pd3dDevice->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(),
-        pVSBlob->GetBufferSize(), &_pVertexLayout);
-    pVSBlob->Release();
-
-    if (FAILED(hr))
-    {
-        return hr;
-    }
-    // Determines the input layout - How our data will need to be presented to our program.
-    _pImmediateContext->IASetInputLayout(_pVertexLayout);
-
-    return hr;
-}
 
 //Describes Buffer Data, resources , then creates buffers with data local in this
 HRESULT Application::CreateVertexBuffer()
@@ -644,25 +563,7 @@ HRESULT Application::CreateDevice()
     return S_OK;
 }
 
-void Application::Cleanup()
-{
-    if (_pImmediateContext) _pImmediateContext->ClearState();
-    if (_pConstantBuffer) _pConstantBuffer->Release();
-    if (_pCubeVertexBuffer) _pCubeVertexBuffer->Release();
-    if (_pCubeIndexBuffer) _pCubeIndexBuffer->Release();
-    if (_pTriangleVertexBuffer) _pTriangleVertexBuffer->Release();
-    if (_pTriangleIndexBuffer) _pTriangleIndexBuffer->Release();
-    if (_pVertexLayout) _pVertexLayout->Release();
-    if (_pVertexShader) _pVertexShader->Release();
-    if (_pPixelShader) _pPixelShader->Release();
-    if (_pRenderTargetView) _pRenderTargetView->Release();
-    if (_pSwapChain) _pSwapChain->Release();
-    if (_pImmediateContext) _pImmediateContext->Release();
-    if (_pd3dDevice) _pd3dDevice->Release();
-    if (_pDepthStencilView) _pDepthStencilView->Release();
-    if (_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
-    if (_wireFrame) _wireFrame->Release();
-}
+
 
 HRESULT Application::Update()
 {
