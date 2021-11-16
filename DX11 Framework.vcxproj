@@ -376,24 +376,30 @@
   <ItemGroup />
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
+    <ClCompile Include="GameObjectComponent.cpp" />
     <ClCompile Include="GraphicComponents.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="ShaderComponent.cpp" />
+    <ClCompile Include="TextureComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DX11 Framework.fx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="ConstantStruct.h" />
+    <ClInclude Include="GameObjectComponent.h" />
     <ClInclude Include="GraphicComponents.h" />
     <ClInclude Include="MeshStruct.h" />
     <ClInclude Include="OBJLoader.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="ShaderComponent.h" />
+    <ClInclude Include="TextureComponent.h" />
     <ClInclude Include="VertexStruct.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
   </ItemGroup>

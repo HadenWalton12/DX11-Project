@@ -6,10 +6,12 @@
 #include <directxcolors.h>
 #include "resource.h"
 
-
+#include "DDSTextureLoader.h"
 #include "ShaderComponent.h"
+#include "TextureComponent.h"
 #include "VertexStruct.h"
 #include "MeshStruct.h"
+#include "ConstantStruct.h"
 #include "OBJLoader.h"
 
 using namespace DirectX;
@@ -21,7 +23,6 @@ class GraphicComponents
 private:
 	void InitialiseBuffers();
 	void InitialiseViewport();
-	void InitialiseSampler();
 	void InitialiseSwapChain();
 
 	void SwapChainPresent();
@@ -47,14 +48,14 @@ private:
 	IDXGISwapChain* _pSwapChain;
 	ID3D11RenderTargetView* _pRenderTargetView;
 	ID3D11Texture2D* _pCubeTexture;
-	ID3D11SamplerState* _pSamplerLinear = nullptr;
+
 
 
 	ID3D11DepthStencilView* _pDepthStencilView;
 	ID3D11Texture2D* _pDepthStencilBuffer;
 	ID3D11RasterizerState* _pRasterizerState;
 
-	ID3D11ShaderResourceView* _pTextureRV = nullptr;
+
 
 	XMFLOAT3 light_direction;
 	
@@ -74,7 +75,7 @@ private:
 	UINT _WindowHeight;
 	UINT _WindowWidth;
 
-
+	TextureComponent* TexComp;
 
 	void Cleanup();
 
@@ -82,10 +83,10 @@ public:
 	GraphicComponents();
 	~GraphicComponents();
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
-	ID3D11DeviceContext* _pImmediateContext;
-	ID3D11Buffer* _pConstantBuffer;
+	ID3D11DeviceContext*	 _pImmediateContext;
+	ID3D11Buffer*			_pConstantBuffer;
 	D3D_DRIVER_TYPE         _driverType;
-	ID3D11Device* _pPD3Ddevice;
+	ID3D11Device*			 _pPD3Ddevice;
 	XMFLOAT4X4				_world;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
@@ -95,7 +96,6 @@ public:
 	void InitialiseLigthing();
 	void SwitchSolid();
 	void UpdateBuffer();
-
 
 	ID3D11VertexShader* _pVertexShader;
 	ID3D11PixelShader* _pPixelShader;

@@ -28,6 +28,9 @@
       <Filter>Structures</Filter>
     </ClInclude>
     <ClInclude Include="ShaderComponent.h" />
+    <ClInclude Include="GameObjectComponent.h" />
+    <ClInclude Include="TextureComponent.h" />
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -36,6 +39,9 @@
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="GraphicComponents.cpp" />
     <ClCompile Include="ShaderComponent.cpp" />
+    <ClCompile Include="GameObjectComponent.cpp" />
+    <ClCompile Include="TextureComponent.cpp" />
+    <ClCompile Include="Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

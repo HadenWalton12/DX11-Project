@@ -1,5 +1,6 @@
 #include "GraphicComponents.h"
 
+
 GraphicComponents::GraphicComponents()
 {
     _hInst = nullptr;
@@ -106,23 +107,11 @@ HRESULT GraphicComponents::Initialise(HINSTANCE hInstance, int nCmdShow)
 
    /*
     // Initialize the world matrix
-    XMStoreFloat4x4(&_world, XMMatrixIdentity());
 
-    // Initialize values of view matrix - Defines values of 4x4 View matrix 
-    XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f);
-    XMFLOAT4 temp;
-    XMStoreFloat4(&EyePosW, Eye);
-    XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-    XMVECTOR Up = XMVectorSet(0.0f, 3.0f, 0.0f, 0.0f);
-
-    //Initalize view matrix
-    XMStoreFloat4x4(&_view, XMMatrixLookAtLH(Eye, At, Up));
-
-    // Initialize the projection matrix
-    XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT)_WindowHeight, 0.01f, 100.0f));
     //objStarMeshData = OBJLoader::Load("star.obj", _pd3dDevice);
     
     */
+    InitialiseLigthing();
     //Return if any check error methods were false
     return S_OK;
 }
@@ -209,6 +198,7 @@ void GraphicComponents::UpdateBuffer()
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
 }
 
+
 void GraphicComponents::InitialiseViewport()
 {
     // Setup the viewport
@@ -224,23 +214,6 @@ void GraphicComponents::InitialiseViewport()
     _pImmediateContext->RSSetViewports(1, &viewport);
 }
 
-void GraphicComponents::InitialiseSampler()
-{
-    // Create the sample state
-    D3D11_SAMPLER_DESC SamplerDescription;
-
-    ZeroMemory(&SamplerDescription, sizeof(SamplerDescription));
-
-    SamplerDescription.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    SamplerDescription.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    SamplerDescription.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    SamplerDescription.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-    SamplerDescription.ComparisonFunc = D3D11_COMPARISON_NEVER;
-    SamplerDescription.MinLOD = 0;
-    SamplerDescription.MaxLOD = D3D11_FLOAT32_MAX;
-
-    _pPD3Ddevice->CreateSamplerState(&SamplerDescription, &_pSamplerLinear);
-}
 
 HRESULT GraphicComponents::InitialiseRenderTarget()
 {
@@ -291,11 +264,10 @@ HRESULT GraphicComponents::InitialiseDevice()
 
 
     InitialiseSwapChain();
-    InitialiseSampler();
+    InitialiseBuffers();
     InitialiseRenderTarget();
     InitialiseViewport();
-    InitialiseBuffers();
-
+    TexComp->InitialiseSampler();
     //Passes such functions to Create device
     //CreateShadersAndInputLayout();
     //CreateVertexBuffer();
@@ -389,9 +361,9 @@ void GraphicComponents::SwitchSolid()
 
 void GraphicComponents::SwapChainPresent()
 {
-//
-// Present our back buffer to our front buffer
-//
+    //
+    // Present our back buffer to our front buffer
+    //
     _pSwapChain->Present(0, 0);
 }
 
