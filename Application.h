@@ -22,8 +22,9 @@
 #include <directxcolors.h>
 #include "resource.h"
 #include "ConstantBuffer.h"
-#include "MeshStructure.h"
-
+#include "MeshStruct.h"
+#include "GraphicComponents.h"
+#include "ShaderComponent.h"
 #include "DDSTextureLoader.h"
 //Allows us to easily call reference upon our DX naming conventions
 using namespace DirectX;
@@ -53,18 +54,18 @@ private:
 
 	MeshData objStarMeshData;
 
+	GraphicComponents* gfx;
+	ShaderComponent* sfx;
 private:
 	/*HRESULT - WINDOWS DATATYPE THAT IS USED TO DESCRIBE ERROR OR WARNING - Making this our function type allows us to return error/warning messages
 	previously not possible without such type
 	Intialises our Windows Application*/
 
-	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
-	HRESULT CreateDevice();
 
 	HRESULT CreateVertexBuffer();
 	HRESULT CreateIndexBuffer();
 
-	void Cleanup();
+
 
 	UINT _WindowHeight;
 	UINT _WindowWidth;
@@ -75,6 +76,6 @@ public:
 
 	HRESULT Update();
 	void Draw();
-
+	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
 };
 

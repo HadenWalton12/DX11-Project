@@ -6,9 +6,11 @@
 #include <vector>		//For storing the XMFLOAT3/2 variables
 #include <map>			//For fast searching when re-creating the index buffer
 
-using namespace DirectX;
+#include "VertexStruct.h"
+#include "ConstantStruct.h"
+#include "MeshStruct.h"
 
-#include "Structure.h"
+using namespace DirectX;
 
 namespace OBJLoader
 {

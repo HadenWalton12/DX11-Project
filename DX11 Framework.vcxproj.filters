@@ -18,7 +18,7 @@
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="GraphicComponents.h" />
-    <ClInclude Include="MeshStructure.h">
+    <ClInclude Include="MeshStruct.h">
       <Filter>Structures</Filter>
     </ClInclude>
     <ClInclude Include="VertexStruct.h">
@@ -27,7 +27,6 @@
     <ClInclude Include="ConstantStruct.h">
       <Filter>Structures</Filter>
     </ClInclude>
-    <ClInclude Include="GameObjects.h" />
     <ClInclude Include="ShaderComponent.h" />
   </ItemGroup>
   <ItemGroup>
@@ -36,7 +35,6 @@
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="GraphicComponents.cpp" />
-    <ClCompile Include="GameObjects.cpp" />
     <ClCompile Include="ShaderComponent.cpp" />
   </ItemGroup>
   <ItemGroup>

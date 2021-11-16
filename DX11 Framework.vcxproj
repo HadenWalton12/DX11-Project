@@ -378,7 +378,6 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
-    <ClCompile Include="GameObjects.cpp" />
     <ClCompile Include="GraphicComponents.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="ShaderComponent.cpp" />
@@ -389,9 +388,8 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="ConstantStruct.h" />
-    <ClInclude Include="GameObjects.h" />
     <ClInclude Include="GraphicComponents.h" />
-    <ClInclude Include="MeshStructure.h" />
+    <ClInclude Include="MeshStruct.h" />
     <ClInclude Include="OBJLoader.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="DDSTextureLoader.h" />
