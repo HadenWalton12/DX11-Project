@@ -34,9 +34,22 @@ class GraphicComponent
 public:
 	HRESULT InitialiseWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
-
+		void SwitchDrawBuffers(ID3D11Buffer* VB , ID3D11Buffer* IB );
+	//Virtual Representation of your video adapter(virtual representation of graphics card)
+	ID3D11Device* _pd3dDevice;
+	void InitialiseSolid();
+	void InitialiseShaders(ID3D11VertexShader* VS, ID3D11PixelShader* PS);
+	void SetInputLayout(ID3D11InputLayout* layout);
 	GraphicComponent();
+		void SwapChain();
+	void ClearBuffer();
+	void UpdateConstantBuffer();
 	~GraphicComponent();
+	void Draw(unsigned int indexCount);
+	HRESULT CreateTexture(wchar_t* filepath, ID3D11ShaderResourceView** texture);
+	void BindTextures(int startSlot, int count, std::vector<ID3D11ShaderResourceView*> textures);
+	void ClearTexture();
+	ID3D11Device* GetDevice();
 private:
 	float ClearColor[4] = { 0.0f,0.0f,1.0f,0.0f };
 
@@ -51,8 +64,6 @@ private:
 	D3D_DRIVER_TYPE         _driverType;
 	D3D_FEATURE_LEVEL       _featureLevel;
 
-	//Virtual Representation of your video adapter(virtual representation of graphics card)
-	ID3D11Device* _pd3dDevice;
 
 
 	//Applied as a device context that allows us to generate rendering commands to our device. Allowing us to manage our GPU and via that the rendering pipeline
@@ -95,19 +106,19 @@ private:
 	float _gTime;
 private:
 	HRESULT InitialiseDevice();
-	void InitialiseShaders(ID3D11VertexShader* VS , ID3D11PixelShader* PS);
+	
 	void Cleanup();
 	HRESULT InitialiseSwapchain();
 	void InitialiseSampler();
 	void InitialiseDepth();
+
 	HRESULT InitialiseRenderTarget();
 	void InitialiseViewport();
 	void InitialiseConstantBuffer();
 	void InitialiseWireFrame();
-	void InitialiseSolid();
-	void SwitchDrawBuffers(ID3D11Buffer* VB , ID3D11Buffer* IB );
-	void ClearBuffer();
-	void SetInputLayout(ID3D11InputLayout* layout);
-	void SwapChain();
+
+
+
+
 };
 

@@ -23,8 +23,8 @@
 #include <directxcolors.h>
 #include "resource.h"
 #include "GraphicComponent.h"
-
-
+#include "Star.h"
+#include <vector>
 
 #include "DDSTextureLoader.h"
 //Allows us to easily call reference upon our DX naming conventions
@@ -42,8 +42,13 @@ class Application
 private:
 
 
-
+	Star* _star;
 	GraphicComponent* _gfx;
+	std::vector<GameObjects*> _GameObjects;
+	XMFLOAT4X4				_world;
+	XMFLOAT4X4              _view;
+	XMFLOAT4X4              _projection;
+/*
 	// Interfaces/manages vertex shader  that controls vertex-shader stage (stage on pipeline)
 	ID3D11VertexShader*     _pVertexShader;			   
 	//Interfaces/manages the pixel shader that controls pixel-shader stage (Stage on PipeLine) 
@@ -71,28 +76,20 @@ private:
 
 
 	MeshData objStarMeshData;
-
+	*/
 private:
-	/*HRESULT - WINDOWS DATATYPE THAT IS USED TO DESCRIBE ERROR OR WARNING - Making this our function type allows us to return error/warning messages
-	previously not possible without such type
-	Intialises our Windows Application*/
+
+	//HRESULT CreateVertexBuffer();
+	//HRESULT CreateIndexBuffer();
 
 
-	HRESULT CreateDevice();
-	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
-	HRESULT CreateShadersAndInputLayout();
-	HRESULT CreateVertexBuffer();
-	HRESULT CreateIndexBuffer();
-
-	void Cleanup();
-
-	UINT _WindowHeight;
-	UINT _WindowWidth;
 
 public:
 	Application();
 	~Application();
-	
+
+	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
+
 	HRESULT Update();
 	void Draw();
 

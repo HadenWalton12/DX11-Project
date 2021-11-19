@@ -16,6 +16,9 @@
     <ClInclude Include="Structure.h" />
     <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="GraphicComponent.h" />
+    <ClInclude Include="ShaderComponent.h" />
+    <ClInclude Include="ObjectComponent.h" />
+    <ClInclude Include="Star.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -23,6 +26,8 @@
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="GraphicComponent.cpp" />
+    <ClCompile Include="ShaderComponent.cpp" />
+    <ClCompile Include="ObjectComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

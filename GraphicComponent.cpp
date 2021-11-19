@@ -111,11 +111,12 @@ GraphicComponent::GraphicComponent()
     _hWnd = nullptr;
     _driverType = D3D_DRIVER_TYPE_NULL;
     _featureLevel = D3D_FEATURE_LEVEL_11_0;
-    _pd3dDevice = nullptr;
-    _pImmediateContext = nullptr;
     _pSwapChain = nullptr;
     _pRenderTargetView = nullptr;
     _pConstantBuffer = nullptr;
+    _pd3dDevice = nullptr;
+    _pImmediateContext = nullptr;
+
 }
 
 GraphicComponent::~GraphicComponent()
@@ -125,16 +126,18 @@ GraphicComponent::~GraphicComponent()
 
 HRESULT GraphicComponent::InitialiseDevice()
 {
-    HRESULT hr;
+    HRESULT hr = S_OK;
     InitialiseSwapchain();
-    InitialiseSampler();
     InitialiseDepth();
     InitialiseRenderTarget();
-    InitialiseViewport();
-    InitialiseConstantBuffer();
+
     InitialiseWireFrame();
     InitialiseSolid();
 
+    InitialiseViewport();
+    InitialiseConstantBuffer();
+
+    InitialiseSampler();
 
     return S_OK;
 
@@ -147,6 +150,7 @@ void GraphicComponent::InitialiseShaders(ID3D11VertexShader* VS, ID3D11PixelShad
     _pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
     _pImmediateContext->PSSetShader(PS, nullptr, 0);
+    _pImmediateContext->PSSetSamplers(0, 1, &_pSamplerLinear);
 }
 
 void GraphicComponent::Cleanup()
@@ -219,6 +223,8 @@ HRESULT GraphicComponent::InitialiseSwapchain()
         if (SUCCEEDED(hr))
             break;
     }
+    if (FAILED(hr))
+        return hr;
 }
 
 void GraphicComponent::InitialiseSampler()
@@ -262,6 +268,28 @@ void GraphicComponent::InitialiseDepth()
     _pd3dDevice->CreateDepthStencilView(_pDepthStencilBuffer, nullptr, &_pDepthStencilView);//Depth stencil view
 }
 
+
+
+HRESULT GraphicComponent::CreateTexture(wchar_t* filepath, ID3D11ShaderResourceView** texture)
+{
+    return CreateDDSTextureFromFile(_pd3dDevice, filepath, nullptr, texture);
+}
+
+void GraphicComponent::BindTextures(int startSlot, int count, std::vector<ID3D11ShaderResourceView*> textures)
+{
+    _pImmediateContext->PSSetShaderResources(startSlot, count, &textures[0]);
+}
+
+void GraphicComponent::ClearTexture()
+{
+    _pImmediateContext->PSSetShaderResources(0, 0, nullptr);
+}
+
+ID3D11Device* GraphicComponent::GetDevice()
+{
+    return _pd3dDevice;
+}
+
 HRESULT GraphicComponent::InitialiseRenderTarget()
 {
     HRESULT hr;
@@ -270,20 +298,15 @@ HRESULT GraphicComponent::InitialiseRenderTarget()
     hr = _pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
 
     if (FAILED(hr))
-    {
         return hr;
-    }
-
-
-    //
+    
     //Describes back buffer
     hr = _pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &_pRenderTargetView);
     pBackBuffer->Release();
 
     if (FAILED(hr))
-    {
         return hr;
-    }
+    
     //Changed it from nullptr to "_depthStencilView" cause now there is a depth/stencil view.
     _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);
     // Set primitive topology - Determines the format of how we draw primitives onto our DX11 Scene
@@ -295,6 +318,11 @@ void GraphicComponent::ClearBuffer()
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
 
     _pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+}
+
+void GraphicComponent::Draw(unsigned int indexCount)
+{
+    _pImmediateContext->DrawIndexed(indexCount , 0 , 0);
 }
 void GraphicComponent::SetInputLayout(ID3D11InputLayout* layout)
 {
@@ -322,10 +350,14 @@ void GraphicComponent::InitialiseViewport()
 
 void GraphicComponent::InitialiseConstantBuffer()
 {
-    ConstantBuffer constantbuffer;
+
     // Create the constant buffer
     D3D11_BUFFER_DESC constantbufferdescription;
     ZeroMemory(&constantbufferdescription, sizeof(constantbufferdescription));
+
+
+
+
 
     //Describe Constant Buffer
     constantbufferdescription.Usage = D3D11_USAGE_DEFAULT;
@@ -334,6 +366,12 @@ void GraphicComponent::InitialiseConstantBuffer()
     constantbufferdescription.CPUAccessFlags = 0;
     _pd3dDevice->CreateBuffer(&constantbufferdescription, nullptr, &_pConstantBuffer);
    
+
+}
+void GraphicComponent::UpdateConstantBuffer()
+{
+    ConstantBuffer constantbuffer;
+
     light_direction = XMFLOAT3(2.5f, 0.0f, 4.0f);
     diffuse_material = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
     diffuse_light = XMFLOAT4(0.2f, 0.2f, 0.2f, 0.5f);
@@ -344,6 +382,13 @@ void GraphicComponent::InitialiseConstantBuffer()
     specular_power = 1.0f;
     EyePosW = XMFLOAT4(0.0f, 0.0f, -5.0f, 0.0f);
 
+    XMMATRIX world = XMLoadFloat4x4(&_world);
+    XMMATRIX view = XMLoadFloat4x4(&_view);
+    XMMATRIX projection = XMLoadFloat4x4(&_projection);
+
+    constantbuffer.mWorld = XMMatrixTranspose(world);
+    constantbuffer.mView = XMMatrixTranspose(view);
+    constantbuffer.mProjection = XMMatrixTranspose(projection);
 
     constantbuffer.LightVecW = light_direction;
     constantbuffer.DiffuseLight = diffuse_light;
@@ -358,17 +403,14 @@ void GraphicComponent::InitialiseConstantBuffer()
 
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
 }
-
 void GraphicComponent::InitialiseWireFrame()
 {
     //Create wireframe description
     D3D11_RASTERIZER_DESC wireframe;
     ZeroMemory(&wireframe, sizeof(D3D11_RASTERIZER_DESC));
-
     //Describe Wireframe
     wireframe.FillMode = D3D11_FILL_WIREFRAME;
     wireframe.CullMode = D3D11_CULL_NONE;
-
     //Create wirefram rasterizer stage
     _pd3dDevice->CreateRasterizerState(&wireframe, &_RasterizerState);
 }

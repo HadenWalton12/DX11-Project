@@ -379,7 +379,9 @@
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="GraphicComponent.cpp" />
+    <ClCompile Include="ObjectComponent.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
+    <ClCompile Include="ShaderComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DX11 Framework.fx" />
@@ -387,9 +389,12 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="GraphicComponent.h" />
+    <ClInclude Include="ObjectComponent.h" />
     <ClInclude Include="OBJLoader.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="DDSTextureLoader.h" />
+    <ClInclude Include="ShaderComponent.h" />
+    <ClInclude Include="Star.h" />
     <ClInclude Include="Structure.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
   </ItemGroup>
