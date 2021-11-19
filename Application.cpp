@@ -4,30 +4,6 @@
 
 */
 
-//Processes the event messages from queue ,based on the messages , if contained in queue we can give it specfic function.
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    PAINTSTRUCT ps;
-    HDC hdc;
-
-    switch (message)
-    {
-    case WM_PAINT:
-        hdc = BeginPaint(hWnd, &ps);
-        EndPaint(hWnd, &ps);
-        break;
-
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        break;
-
-    default:
-        return DefWindowProc(hWnd, message, wParam, lParam);
-    }
-
-    return 0;
-}
-
 //Class Constructor - Initalizing all default values.
 Application::Application()
 {
@@ -35,6 +11,7 @@ Application::Application()
     _hWnd = nullptr;
     _driverType = D3D_DRIVER_TYPE_NULL;
     _featureLevel = D3D_FEATURE_LEVEL_11_0;
+    _pd3dDevice = nullptr;
     _pd3dDevice = nullptr;
     _pImmediateContext = nullptr;
     _pSwapChain = nullptr;
@@ -57,46 +34,9 @@ Application::~Application()
 //Initalises Window Coordinates , Projection Matrix & View Matrix 
 HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 {
-    //Check Error Methods - Did Windows Initialise correctly?
-    if (FAILED(InitWindow(hInstance, nCmdShow)))
-    {
-        return E_FAIL;
-    }
+    _gfx = new GraphicComponent(); 
 
-    RECT rc;
-    //Call class window value , pass window values into local rect
-    GetClientRect(_hWnd, &rc);
 
-    //Pass calulated values , gives us window coordinates
-    _WindowWidth = rc.right - rc.left;
-    _WindowHeight = rc.bottom - rc.top;
-
-    //Check Error Method - Did Device initalise correctly?
-    if (FAILED(CreateDevice()))
-    {
-        Cleanup();
-
-        return E_FAIL;
-    }
-
-    // Initialize the world matrix
-    XMStoreFloat4x4(&_world, XMMatrixIdentity());
-
-    // Initialize values of view matrix - Defines values of 4x4 View matrix 
-    XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f);
-    XMFLOAT4 temp;
-         XMStoreFloat4(&EyePosW, Eye);
-    XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-    XMVECTOR Up = XMVectorSet(0.0f, 3.0f, 0.0f, 0.0f);
-
-    //Initalize view matrix
-    XMStoreFloat4x4(&_view, XMMatrixLookAtLH(Eye, At, Up));
-
-    // Initialize the projection matrix
-    XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT)_WindowHeight, 0.01f, 100.0f));
-    objStarMeshData = OBJLoader::Load("star.obj", _pd3dDevice);
-    //Return if any check error methods were false
-    return S_OK;
 }
 
 HRESULT Application::CreateShadersAndInputLayout()
@@ -394,40 +334,6 @@ HRESULT Application::CreateIndexBuffer()
 
 
 
-HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
-{
-    // Register class
-    WNDCLASSEX wcex;
-    wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.style = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc = WndProc;
-    wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
-    wcex.hInstance = hInstance;
-    wcex.hIcon = LoadIcon(hInstance, (LPCTSTR)IDI_TUTORIAL1);
-    wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wcex.lpszMenuName = nullptr;
-    wcex.lpszClassName = L"TutorialWindowClass";
-    wcex.hIconSm = LoadIcon(wcex.hInstance, (LPCTSTR)IDI_TUTORIAL1);
-    if (!RegisterClassEx(&wcex))
-        return E_FAIL;
-
-    // Create window
-    _hInst = hInstance;
-    RECT rc = { 0, 0, 640, 480 };
-    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-    _hWnd = CreateWindow(L"TutorialWindowClass", L"DX11 Framework", WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
-        nullptr);
-    if (!_hWnd)
-        return E_FAIL;
-
-    ShowWindow(_hWnd, nCmdShow);
-
-    return S_OK;
-}
-
 HRESULT Application::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
 {
     HRESULT hr = S_OK;
@@ -462,186 +368,6 @@ HRESULT Application::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoin
 
 HRESULT Application::CreateDevice()
 {
-    HRESULT hr = S_OK;
-
-    UINT createDeviceFlags = 0;
-
-#ifdef _DEBUG
-    createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif
-    //Lists drivetypes (methods of communicating to application to hardware)
-    D3D_DRIVER_TYPE driverTypes[] =
-    {
-        D3D_DRIVER_TYPE_HARDWARE,
-        D3D_DRIVER_TYPE_WARP,
-        D3D_DRIVER_TYPE_REFERENCE,
-    };
-
-    UINT numDriverTypes = ARRAYSIZE(driverTypes);
-
-    //Describes the DX11 versions used
-    D3D_FEATURE_LEVEL featureLevels[] =
-    {
-        D3D_FEATURE_LEVEL_11_0,
-        D3D_FEATURE_LEVEL_10_1,
-        D3D_FEATURE_LEVEL_10_0,
-    };
-
-
-    UINT numFeatureLevels = ARRAYSIZE(featureLevels);
-
-    //Create Swap Chain Description
-    DXGI_SWAP_CHAIN_DESC sd;
-    ZeroMemory(&sd, sizeof(sd));
-
-    //Describes Swap Chain
-    sd.BufferCount = 1;
-    sd.BufferDesc.Width = _WindowWidth;
-    sd.BufferDesc.Height = _WindowHeight;
-    sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    sd.BufferDesc.RefreshRate.Numerator = 60;
-    sd.BufferDesc.RefreshRate.Denominator = 1;
-    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    sd.OutputWindow = _hWnd;
-    sd.SampleDesc.Count = 1;
-    sd.SampleDesc.Quality = 0;
-    sd.Windowed = TRUE;
-
-    for (UINT driverTypeIndex = 0; driverTypeIndex < numDriverTypes; driverTypeIndex++)
-    {
-        _driverType = driverTypes[driverTypeIndex];
-        hr = D3D11CreateDeviceAndSwapChain(nullptr, _driverType, nullptr, createDeviceFlags, featureLevels, numFeatureLevels,
-            D3D11_SDK_VERSION, &sd, &_pSwapChain, &_pd3dDevice, &_featureLevel, &_pImmediateContext);
-        if (SUCCEEDED(hr))
-            break;
-    }
-
-    // Create the sample state
-
-    D3D11_SAMPLER_DESC sampDesc;
-
-    ZeroMemory(&sampDesc, sizeof(sampDesc));
-
-    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-    sampDesc.MinLOD = 0;
-    sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-
-
-
-
-
-    //Creates Depth Stencil buffer descriptor
-    D3D11_TEXTURE2D_DESC depthStencilDesc;
-    //Describing buffer descriptor
-    depthStencilDesc.Width = _WindowWidth;
-    depthStencilDesc.Height = _WindowHeight;
-    depthStencilDesc.MipLevels = 1;
-    depthStencilDesc.ArraySize = 1;
-    depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    depthStencilDesc.SampleDesc.Count = 1;
-    depthStencilDesc.SampleDesc.Quality = 0;
-    depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
-    depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-    depthStencilDesc.CPUAccessFlags = 0;
-    depthStencilDesc.MiscFlags = 0;
-
-    //Creating depth/stencil buffer
-    _pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &_pDepthStencilBuffer);//Depth stencil buffer
-    _pd3dDevice->CreateDepthStencilView(_pDepthStencilBuffer, nullptr, &_pDepthStencilView);//Depth stencil view
-
-  
-
-    if (FAILED(hr))
-    {
-        return hr;
-    }
-
-    // Create a render target view
-    ID3D11Texture2D* pBackBuffer = nullptr;
-    hr = _pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
-
-    if (FAILED(hr))
-    {
-        return hr;
-    }
-
-    hr = CreateDDSTextureFromFile(_pd3dDevice, L"Crate_COLOR.dds", nullptr, &_pTextureRV);
-    if (FAILED(hr))
-    {
-        return hr;
-    }
-  
-    //
-    //Describes back buffer
-    hr = _pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &_pRenderTargetView);
-    pBackBuffer->Release();
-
-    if (FAILED(hr))
-    {
-        return hr;
-    }
-    //Changed it from nullptr to "_depthStencilView" cause now there is a depth/stencil view.
-    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);
-
-    // Setup the viewport
-    D3D11_VIEWPORT viewport;
-    viewport.Width = (FLOAT)_WindowWidth;
-    viewport.Height = (FLOAT)_WindowHeight;
-    viewport.MinDepth = 0.0f;
-    viewport.MaxDepth = 1.0f;
-    viewport.TopLeftX = 0;
-    viewport.TopLeftY = 0;
-    _pImmediateContext->RSSetViewports(1, &viewport);
-
-    //Passes such functions to Create device
-    CreateShadersAndInputLayout();
-    CreateVertexBuffer();
-    CreateIndexBuffer();
-
-    // Set primitive topology - Determines the format of how we draw primitives onto our DX11 Scene
-    _pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-    // Create the constant buffer
-    D3D11_BUFFER_DESC constantbufferdescription;
-    ZeroMemory(&constantbufferdescription, sizeof(constantbufferdescription));
-
-    //Describe Constant Buffer
-    constantbufferdescription.Usage = D3D11_USAGE_DEFAULT;
-    constantbufferdescription.ByteWidth = sizeof(ConstantBuffer);
-    constantbufferdescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    constantbufferdescription.CPUAccessFlags = 0;
-    hr = _pd3dDevice->CreateBuffer(&constantbufferdescription, nullptr, &_pConstantBuffer);
-
-    //Create wireframe description
-    D3D11_RASTERIZER_DESC wireframe;
-    ZeroMemory(&wireframe, sizeof(D3D11_RASTERIZER_DESC));
-
-    //Describe Wireframe
-    wireframe.FillMode = D3D11_FILL_WIREFRAME;
-    wireframe.CullMode = D3D11_CULL_NONE;
-
-    //Create wirefram rasterizer stage
-    hr = _pd3dDevice->CreateRasterizerState(&wireframe, &_wireFrame);
-  
-
-    _pd3dDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear);
-
-
-    if (FAILED(hr))
-    {
-        return hr;
-    }
-
-    if (FAILED(hr))
-    {
-        return hr;
-    }
-    return S_OK;
 }
 
 void Application::Cleanup()
@@ -729,15 +455,7 @@ HRESULT Application::Update()
 void Application::Draw()
 {
 
-    light_direction = XMFLOAT3(2.5f, 0.0f, 4.0f);
-    diffuse_material = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
-    diffuse_light = XMFLOAT4(0.2f, 0.2f, 0.2f, 0.5f);
-    ambient_light = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-    ambient_material = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-    specular_material = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-    specular_light = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-    specular_power = 1.0f;
-    EyePosW = XMFLOAT4(0.0f, 0.0f, -5.0f, 0.0f);
+
     // Set vertex buffer  passed into input assembly stage
     UINT stride = sizeof(SimpleVertex);
     UINT offset = 0;
@@ -756,35 +474,12 @@ void Application::Draw()
 
 
 
-    ConstantBuffer constantbuffer;
-    constantbuffer.mWorld = XMMatrixTranspose(world);
-    constantbuffer.mView = XMMatrixTranspose(view);
-    constantbuffer.mProjection = XMMatrixTranspose(projection);
-  
-    constantbuffer.LightVecW = light_direction;
-    constantbuffer.DiffuseLight = diffuse_light;
-    constantbuffer.DiffuseMtrl = diffuse_material;
 
-    constantbuffer.AmbientLight = ambient_light;
-    constantbuffer.AmbientMtrl = ambient_material;
-    constantbuffer.EyePosW = EyePosW;
-    constantbuffer.SpecularPower = specular_power;
-    constantbuffer.SpecularLight = specular_light;
-    constantbuffer.SpecularMtrl = specular_material;
 
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
 
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_pCubeVertexBuffer, &stride, &offset);
-    _pImmediateContext->IASetIndexBuffer(_pCubeIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
-    _pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
 
-    _pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
-    
-    _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
 
-  
-    _pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
 
 
 
@@ -830,8 +525,5 @@ void Application::Draw()
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
     _pImmediateContext->DrawIndexed(objStarMeshData.IndexCount, 0, 0);
 
-    //
-    // Present our back buffer to our front buffer
-    //
-    _pSwapChain->Present(0, 0);
+
 }
