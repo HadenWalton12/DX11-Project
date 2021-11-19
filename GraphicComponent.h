@@ -32,6 +32,9 @@ using namespace DirectX;
 class GraphicComponent
 {
 public:
+	//Applied as a device context that allows us to generate rendering commands to our device. Allowing us to manage our GPU and via that the rendering pipeline
+//Further used to manage all content relating to execution and creation of things to be executed onto our device
+	ID3D11DeviceContext* _pImmediateContext;
 	HRESULT InitialiseWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
 		void SwitchDrawBuffers(ID3D11Buffer* VB , ID3D11Buffer* IB );
@@ -66,9 +69,7 @@ private:
 
 
 
-	//Applied as a device context that allows us to generate rendering commands to our device. Allowing us to manage our GPU and via that the rendering pipeline
-	//Further used to manage all content relating to execution and creation of things to be executed onto our device
-	ID3D11DeviceContext* _pImmediateContext;
+
 	//A series of buffers that allow us to take turn on buffers to render on , this variable is a pointer that references this process
 	IDXGISwapChain* _pSwapChain;
 	//In order to render our application , we need to target our renderer , this is done so we can maintain the location in video memory to render into

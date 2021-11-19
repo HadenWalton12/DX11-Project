@@ -9,25 +9,43 @@
       <UniqueIdentifier>{2c3d4c8c-5d1a-459a-a05a-a4e4b608a44e}</UniqueIdentifier>
       <Extensions>fx;fxh;hlsl</Extensions>
     </Filter>
+    <Filter Include="EngineComponent">
+      <UniqueIdentifier>{bcee61a9-7895-4015-a107-45b913f570da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects">
+      <UniqueIdentifier>{c7260ff0-62dc-42b0-9fae-83ef87275b5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="Structure.h" />
     <ClInclude Include="OBJLoader.h" />
-    <ClInclude Include="GraphicComponent.h" />
     <ClInclude Include="ShaderComponent.h" />
-    <ClInclude Include="ObjectComponent.h" />
-    <ClInclude Include="Star.h" />
+    <ClInclude Include="GraphicComponent.h">
+      <Filter>EngineComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectComponent.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Star.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
-    <ClCompile Include="GraphicComponent.cpp" />
-    <ClCompile Include="ShaderComponent.cpp" />
-    <ClCompile Include="ObjectComponent.cpp" />
+    <ClCompile Include="GraphicComponent.cpp">
+      <Filter>EngineComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectComponent.cpp">
+      <Filter>GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderComponent.cpp">
+      <Filter>EngineComponent</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

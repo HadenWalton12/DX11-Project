@@ -371,7 +371,6 @@ void GraphicComponent::InitialiseConstantBuffer()
 void GraphicComponent::UpdateConstantBuffer()
 {
     ConstantBuffer constantbuffer;
-
     light_direction = XMFLOAT3(2.5f, 0.0f, 4.0f);
     diffuse_material = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
     diffuse_light = XMFLOAT4(0.2f, 0.2f, 0.2f, 0.5f);
