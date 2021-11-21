@@ -1,9 +1,10 @@
 #include "ShaderComponent.h"
 
-ShaderComponent::ShaderComponent(GraphicComponent* gfx)
+ShaderComponent::ShaderComponent()
 {
-    _gfx = gfx;
-    _device = _gfx->GetDevice();
+    _pVertexShader = nullptr;
+    _pPixelShader = nullptr;
+    _pVertexLayout = nullptr;
 
 }
 
@@ -45,7 +46,7 @@ HRESULT ShaderComponent::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntry
 
 
 
-HRESULT ShaderComponent::CreateShaderandLayout()
+HRESULT ShaderComponent::CreateShaderandLayout(GraphicComponent* gfx)
 {
     HRESULT hr;
 
@@ -61,7 +62,7 @@ HRESULT ShaderComponent::CreateShaderandLayout()
     }
 
     // Create the vertex shader
-    hr = _device->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &_pVertexShader);
+    hr = gfx->GetDevice()->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &_pVertexShader);
 
     if (FAILED(hr))
     {
@@ -82,7 +83,7 @@ HRESULT ShaderComponent::CreateShaderandLayout()
     }
 
     // Create the pixel shader
-    hr = _device->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &_pPixelShader);
+    hr = gfx->GetDevice()->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &_pPixelShader);
     pPSBlob->Release();
 
     if (FAILED(hr))
@@ -100,7 +101,7 @@ HRESULT ShaderComponent::CreateShaderandLayout()
     UINT numElements = ARRAYSIZE(layout);
 
     // Create the input layout
-    hr = _device->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(),
+    hr = gfx->GetDevice()->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(),
         pVSBlob->GetBufferSize(), &_pVertexLayout);
     pVSBlob->Release();
 
@@ -111,9 +112,24 @@ HRESULT ShaderComponent::CreateShaderandLayout()
 
     return hr;
 }
-void ShaderComponent::ComposeShader()
+void ShaderComponent::ComposeShader(GraphicComponent* gfx)
 {
-    _gfx->SetInputLayout(_pVertexLayout);
-    _gfx->InitialiseShaders(_pVertexShader, _pPixelShader);
+    SetInputLayout(_pVertexLayout , gfx);
+    InitialiseShaders(_pVertexShader, _pPixelShader , gfx);
 }
 
+
+void ShaderComponent::InitialiseShaders(ID3D11VertexShader* VS, ID3D11PixelShader* PS, GraphicComponent* gfx)
+{
+    gfx->_pImmediateContext->VSSetShader(VS, nullptr, 0);
+    gfx->_pImmediateContext->VSSetConstantBuffers(0, 1, &gfx->_pConstantBuffer);
+    gfx->_pImmediateContext->PSSetConstantBuffers(0, 1, &gfx->_pConstantBuffer);
+    gfx->_pImmediateContext->PSSetShader(PS, nullptr, 0);
+    gfx->_pImmediateContext->PSSetSamplers(0, 1, &gfx->_pSamplerLinear);
+}
+
+
+void ShaderComponent::SetInputLayout(ID3D11InputLayout* layout , GraphicComponent* gfx)
+{
+    gfx->_pImmediateContext->IASetInputLayout(layout);
+}

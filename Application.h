@@ -23,6 +23,8 @@
 #include <directxcolors.h>
 #include "resource.h"
 #include "GraphicComponent.h"
+#include "ShaderComponent.h"
+#include "TextureComponent.h"
 #include "Star.h"
 #include <vector>
 
@@ -41,9 +43,15 @@ class Application
 {
 private:
 
+	float rotationSpeed = 1.0f;
+
+	float rotationValue = 0.0f;
+	float previousRotation = 0.0f;
 
 	Star* _star;
 	GraphicComponent* _gfx;
+	TextureComponent* _Tex;
+	ShaderComponent* _Shader;
 	std::vector<GameObjects*> _GameObjects;
 	XMFLOAT4X4				_world;
 	XMFLOAT4X4              _view;

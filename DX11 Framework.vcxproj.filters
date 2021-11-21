@@ -21,7 +21,6 @@
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="Structure.h" />
     <ClInclude Include="OBJLoader.h" />
-    <ClInclude Include="ShaderComponent.h" />
     <ClInclude Include="GraphicComponent.h">
       <Filter>EngineComponent</Filter>
     </ClInclude>
@@ -31,6 +30,10 @@
     <ClInclude Include="Star.h">
       <Filter>GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderComponent.h">
+      <Filter>EngineComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -46,6 +49,7 @@
     <ClCompile Include="ShaderComponent.cpp">
       <Filter>EngineComponent</Filter>
     </ClCompile>
+    <ClCompile Include="TextureComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

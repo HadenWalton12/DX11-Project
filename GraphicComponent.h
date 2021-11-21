@@ -34,25 +34,31 @@ class GraphicComponent
 public:
 	//Applied as a device context that allows us to generate rendering commands to our device. Allowing us to manage our GPU and via that the rendering pipeline
 //Further used to manage all content relating to execution and creation of things to be executed onto our device
-	ID3D11DeviceContext* _pImmediateContext;
+	GraphicComponent();
+	~GraphicComponent();
+
 	HRESULT InitialiseWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
+	//Will store Constant Data
+	ID3D11Buffer* _pConstantBuffer;
+	ID3D11DeviceContext* _pImmediateContext;
+	ID3D11SamplerState* _pSamplerLinear = nullptr;
 		void SwitchDrawBuffers(ID3D11Buffer* VB , ID3D11Buffer* IB );
 	//Virtual Representation of your video adapter(virtual representation of graphics card)
 	ID3D11Device* _pd3dDevice;
-	void InitialiseSolid();
-	void InitialiseShaders(ID3D11VertexShader* VS, ID3D11PixelShader* PS);
-	void SetInputLayout(ID3D11InputLayout* layout);
-	GraphicComponent();
+
 		void SwapChain();
-	void ClearBuffer();
+	void ClearRenderTarget();
 	void UpdateConstantBuffer();
-	~GraphicComponent();
+	
 	void Draw(unsigned int indexCount);
-	HRESULT CreateTexture(wchar_t* filepath, ID3D11ShaderResourceView** texture);
-	void BindTextures(int startSlot, int count, std::vector<ID3D11ShaderResourceView*> textures);
-	void ClearTexture();
+	//Will be used to reference the type of drive that will be priortised use for DX11 application
+	D3D_DRIVER_TYPE         _driverType;
+
+
+
 	ID3D11Device* GetDevice();
+	void InitialiseSolid();
 private:
 	float ClearColor[4] = { 0.0f,0.0f,1.0f,0.0f };
 
@@ -63,8 +69,7 @@ private:
 	UINT _WindowHeight;
 	UINT _WindowWidth;
 	
-	//Will be used to reference the type of drive that will be priortised use for DX11 application
-	D3D_DRIVER_TYPE         _driverType;
+
 	D3D_FEATURE_LEVEL       _featureLevel;
 
 
@@ -77,11 +82,9 @@ private:
 
 	ID3D11Texture2D* _pCubeTexture;
 	ID3D11ShaderResourceView* _pTextureRV = nullptr;
-	ID3D11SamplerState* _pSamplerLinear = nullptr;
 
 
-	//Will store Constant Data
-	ID3D11Buffer* _pConstantBuffer;
+
 
 	//Depth/Stencil Buffers - Used to create perception of depth between overlapping objects
 	ID3D11DepthStencilView* _pDepthStencilView;

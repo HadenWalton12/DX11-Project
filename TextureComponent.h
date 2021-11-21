@@ -24,38 +24,25 @@
 #include <directxcolors.h>
 #include "resource.h"
 
+
+
+#include "DDSTextureLoader.h"
 #include "GraphicComponent.h"
-
-
+//Allows us to easily call reference upon our DX naming conventions
 using namespace DirectX;
 
-
-
-
-class ShaderComponent
+class TextureComponent
 {
 public:
-
-	ShaderComponent();
-	~ShaderComponent();
-
-
-	HRESULT CreateShaderandLayout(GraphicComponent* gfx);
-	void ComposeShader(GraphicComponent* gfx);
-	void InitialiseShaders(ID3D11VertexShader* VS, ID3D11PixelShader* PS , GraphicComponent* gfx);
-	void SetInputLayout(ID3D11InputLayout* layout , GraphicComponent* gfx);
-private:
-
-	ID3D11InputLayout* _pVertexLayout;
-	ID3D11VertexShader* _pVertexShader;
-	ID3D11PixelShader* _pPixelShader;
-
-
+	TextureComponent();
+	~TextureComponent();
+	HRESULT CreateTexture(wchar_t* filepath, ID3D11ShaderResourceView** texture , GraphicComponent* gfx);
+	void BindTextures(int startSlot, int count, std::vector<ID3D11ShaderResourceView*> textures , GraphicComponent* gfx);
+	void ClearTexture(GraphicComponent* gfx);
 
 private:
-	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
-
-
+		GraphicComponent* _gfx;
+	ID3D11Device* _device;
 
 };
 

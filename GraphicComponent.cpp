@@ -130,27 +130,15 @@ HRESULT GraphicComponent::InitialiseDevice()
     InitialiseSwapchain();
     InitialiseDepth();
     InitialiseRenderTarget();
-
     InitialiseWireFrame();
     InitialiseSolid();
-
     InitialiseViewport();
     InitialiseConstantBuffer();
-
     InitialiseSampler();
 
     return S_OK;
 
 
-}
-
-void GraphicComponent::InitialiseShaders(ID3D11VertexShader* VS, ID3D11PixelShader* PS)
-{
-    _pImmediateContext->VSSetShader(VS, nullptr, 0);
-    _pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
-    _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
-    _pImmediateContext->PSSetShader(PS, nullptr, 0);
-    _pImmediateContext->PSSetSamplers(0, 1, &_pSamplerLinear);
 }
 
 void GraphicComponent::Cleanup()
@@ -270,20 +258,6 @@ void GraphicComponent::InitialiseDepth()
 
 
 
-HRESULT GraphicComponent::CreateTexture(wchar_t* filepath, ID3D11ShaderResourceView** texture)
-{
-    return CreateDDSTextureFromFile(_pd3dDevice, filepath, nullptr, texture);
-}
-
-void GraphicComponent::BindTextures(int startSlot, int count, std::vector<ID3D11ShaderResourceView*> textures)
-{
-    _pImmediateContext->PSSetShaderResources(startSlot, count, &textures[0]);
-}
-
-void GraphicComponent::ClearTexture()
-{
-    _pImmediateContext->PSSetShaderResources(0, 0, nullptr);
-}
 
 ID3D11Device* GraphicComponent::GetDevice()
 {
@@ -313,10 +287,9 @@ HRESULT GraphicComponent::InitialiseRenderTarget()
     _pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 }
-void GraphicComponent::ClearBuffer()
+void GraphicComponent::ClearRenderTarget()
 {
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
-
     _pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
@@ -324,15 +297,9 @@ void GraphicComponent::Draw(unsigned int indexCount)
 {
     _pImmediateContext->DrawIndexed(indexCount , 0 , 0);
 }
-void GraphicComponent::SetInputLayout(ID3D11InputLayout* layout)
-{
-    _pImmediateContext->IASetInputLayout(layout);
-}
+
 void GraphicComponent::SwapChain()
 {
- //
-// Present our back buffer to our front buffer
-//
     _pSwapChain->Present(0, 0);
 }
 void GraphicComponent::InitialiseViewport()
@@ -350,27 +317,19 @@ void GraphicComponent::InitialiseViewport()
 
 void GraphicComponent::InitialiseConstantBuffer()
 {
-
     // Create the constant buffer
     D3D11_BUFFER_DESC constantbufferdescription;
     ZeroMemory(&constantbufferdescription, sizeof(constantbufferdescription));
-
-
-
-
-
     //Describe Constant Buffer
     constantbufferdescription.Usage = D3D11_USAGE_DEFAULT;
     constantbufferdescription.ByteWidth = sizeof(ConstantBuffer);
     constantbufferdescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     constantbufferdescription.CPUAccessFlags = 0;
-    _pd3dDevice->CreateBuffer(&constantbufferdescription, nullptr, &_pConstantBuffer);
-   
-
+    
+    _pd3dDevice->CreateBuffer(&constantbufferdescription, nullptr, &_pConstantBuffer);  
 }
 void GraphicComponent::UpdateConstantBuffer()
 {
-    ConstantBuffer constantbuffer;
     light_direction = XMFLOAT3(2.5f, 0.0f, 4.0f);
     diffuse_material = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
     diffuse_light = XMFLOAT4(0.2f, 0.2f, 0.2f, 0.5f);
@@ -380,6 +339,8 @@ void GraphicComponent::UpdateConstantBuffer()
     specular_light = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
     specular_power = 1.0f;
     EyePosW = XMFLOAT4(0.0f, 0.0f, -5.0f, 0.0f);
+
+    ConstantBuffer constantbuffer;
 
     XMMATRIX world = XMLoadFloat4x4(&_world);
     XMMATRIX view = XMLoadFloat4x4(&_view);
@@ -392,7 +353,6 @@ void GraphicComponent::UpdateConstantBuffer()
     constantbuffer.LightVecW = light_direction;
     constantbuffer.DiffuseLight = diffuse_light;
     constantbuffer.DiffuseMtrl = diffuse_material;
-
     constantbuffer.AmbientLight = ambient_light;
     constantbuffer.AmbientMtrl = ambient_material;
     constantbuffer.EyePosW = EyePosW;
@@ -401,15 +361,18 @@ void GraphicComponent::UpdateConstantBuffer()
     constantbuffer.SpecularMtrl = specular_material;
 
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
+
 }
 void GraphicComponent::InitialiseWireFrame()
 {
     //Create wireframe description
     D3D11_RASTERIZER_DESC wireframe;
     ZeroMemory(&wireframe, sizeof(D3D11_RASTERIZER_DESC));
+    
     //Describe Wireframe
     wireframe.FillMode = D3D11_FILL_WIREFRAME;
     wireframe.CullMode = D3D11_CULL_NONE;
+
     //Create wirefram rasterizer stage
     _pd3dDevice->CreateRasterizerState(&wireframe, &_RasterizerState);
 }
