@@ -11,9 +11,10 @@ GameObjects::~GameObjects()
 {
 }
 
-void GameObjects::Update()
-{
 
+
+void GameObjects::Update(GraphicComponent* gfx)
+{
 
 }
 

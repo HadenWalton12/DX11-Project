@@ -361,12 +361,19 @@ void GraphicComponent::UpdateConstantBuffer()
 }
 
 
+
+
+ID3D11Device* GraphicComponent::GetDevice()
+{
+    return _pd3dDevice;
+}
+
 void GraphicComponent::InitialiseWireFrame()
 {
     //Create wireframe description
     D3D11_RASTERIZER_DESC wireframe;
     ZeroMemory(&wireframe, sizeof(D3D11_RASTERIZER_DESC));
-    
+
     //Describe Wireframe
     wireframe.FillMode = D3D11_FILL_WIREFRAME;
     wireframe.CullMode = D3D11_CULL_NONE;
@@ -387,10 +394,4 @@ void GraphicComponent::InitialiseSolid()
 
     //Create wirefram rasterizer stage
     _pd3dDevice->CreateRasterizerState(&solid, &_RasterizerState);
-}
-
-
-ID3D11Device* GraphicComponent::GetDevice()
-{
-    return _pd3dDevice;
 }

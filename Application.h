@@ -59,39 +59,8 @@ private:
 	XMFLOAT4X4				_world;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
-/*
-	// Interfaces/manages vertex shader  that controls vertex-shader stage (stage on pipeline)
-	ID3D11VertexShader*     _pVertexShader;			   
-	//Interfaces/manages the pixel shader that controls pixel-shader stage (Stage on PipeLine) 
-	ID3D11PixelShader*      _pPixelShader;
-	
-	//Input Layout holds definition of how to feed vertex data laid out in memory (Buffers)into input-assembler stage
-	ID3D11InputLayout*      _pVertexLayout;
-	
-	//ID3D11Buffer* - This is a buffer interface that allows to access a buffer resource, this being unstructured memory
-	//These buffers will allow us to store vertex or index data
-	ID3D11Buffer* _pCubeVertexBuffer;
-	ID3D11Buffer* _pTriangleVertexBuffer;
-	ID3D11Buffer* _pGridVertexBuffer;
-	ID3D11Buffer*           _pCubeIndexBuffer; 
-	ID3D11Buffer*			_pTriangleIndexBuffer;
-	ID3D11Buffer* _pGridIndexBuffer;
-	
-	//We can then use this to create the relevant world,view,projection matrices that we need.
-	//We store this data in 4x4 Matrix to transpose/ mathmatically apply matrix mathmatic too.
-	XMFLOAT4X4				_world , _world2, _world3, _world4 , _world5, _world6, _world7 , objTestWorld;
-	XMFLOAT4X4              _view;
-	XMFLOAT4X4              _projection;
-	XMFLOAT4X4				 _grid;
 
 
-
-	MeshData objStarMeshData;
-	*/
-private:
-
-	//HRESULT CreateVertexBuffer();
-	//HRESULT CreateIndexBuffer();
 
 
 

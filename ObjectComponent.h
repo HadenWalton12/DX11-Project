@@ -19,7 +19,7 @@ public:
 	~GameObjects();
 
 	
-	void Update();										//Used to reference instances where the object is to be updated
+	virtual void Update(GraphicComponent* gfx);										//Used to reference instances where the object is to be updated
 	void Draw();										//Draw method , to how we draw objects
 	void CreateTexture(wchar_t* path);					//Creates Texture
 

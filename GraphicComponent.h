@@ -27,6 +27,10 @@ public:
 	GraphicComponent();											//Constructor - Initialises Class Objects	
 	~GraphicComponent();										//Destructor - Clears Class Object values - Done by calling cleanup function
 
+		//Used for transformations
+	XMFLOAT4X4				_world;
+	XMFLOAT4X4              _view;
+	XMFLOAT4X4              _projection;
 
 
 	HRESULT InitialiseWindow(HINSTANCE hInstance, int nCmdShow);//Initialises Window , Creates Window - Defines Name , Properties of window (Width & Hight) , Shows Window
@@ -68,10 +72,6 @@ private:
 
 	ID3D11RasterizerState* _RasterizerState;					//Holds interface description for rasterizer state - to be bound to rasterizer stage
 
-	//Used for transformations
-	XMFLOAT4X4				_world;									
-	XMFLOAT4X4              _view;
-	XMFLOAT4X4              _projection;
 
 	//Holds background colour value
 	float ClearColor[4] = { 0.0f,0.0f,1.0f,0.0f };

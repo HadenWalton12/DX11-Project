@@ -39,43 +39,11 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 HRESULT Application::Update()
 {
 
-    HRESULT hr = S_OK;
-      // Update our time
-    static float t = 5.0f;
-
-
-    if (_gfx->_driverType == D3D_DRIVER_TYPE_REFERENCE)
-    {
-        t += (float)XM_PI * 0.0125f;
-    }
-    else
-    {
-        static DWORD dwTimeStart = 0;
-        DWORD dwTimeCur = GetTickCount();
-
-        if (dwTimeStart == 0)
-            dwTimeStart = dwTimeCur;
-
-        t = (dwTimeCur - dwTimeStart) / 1000.0f;
-    }
-
-    rotationValue += (rotationSpeed * t);
-
- 
     for (auto gameobject : _GameObjects)
     {
-        ConstantBuffer constantbuffer;
-        XMMATRIX world = XMLoadFloat4x4(&_world);
-        XMMATRIX view = XMLoadFloat4x4(&_view);
-        XMMATRIX projection = XMLoadFloat4x4(&_projection);
-
-        constantbuffer.mWorld = XMMatrixTranspose(world);
-        constantbuffer.mView = XMMatrixTranspose(view);
-        constantbuffer.mProjection = XMMatrixTranspose(projection);
-        XMStoreFloat4x4(&_world, XMMatrixRotationY(t) * XMMatrixTranslation(0.0f, 0.0f, 0.0f));
-        _gfx->UpdateConstantBuffer();
-
+        gameobject->Update(_gfx);
     }
+
     return S_OK;
 }
 
