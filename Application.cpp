@@ -64,7 +64,14 @@ HRESULT Application::Update()
  
     for (auto gameobject : _GameObjects)
     {
-   
+        ConstantBuffer constantbuffer;
+        XMMATRIX world = XMLoadFloat4x4(&_world);
+        XMMATRIX view = XMLoadFloat4x4(&_view);
+        XMMATRIX projection = XMLoadFloat4x4(&_projection);
+
+        constantbuffer.mWorld = XMMatrixTranspose(world);
+        constantbuffer.mView = XMMatrixTranspose(view);
+        constantbuffer.mProjection = XMMatrixTranspose(projection);
         XMStoreFloat4x4(&_world, XMMatrixRotationY(t) * XMMatrixTranslation(0.0f, 0.0f, 0.0f));
         _gfx->UpdateConstantBuffer();
 
@@ -75,7 +82,6 @@ HRESULT Application::Update()
 void Application::Draw()
 {
 
-
     _gfx->ClearRenderTarget();
 
     for (auto gameobject : _GameObjects)
@@ -83,6 +89,6 @@ void Application::Draw()
         gameobject->Draw();
     }
 
-    _gfx->SwapChain();
+    _gfx->SwapChainPresent();
 
 }

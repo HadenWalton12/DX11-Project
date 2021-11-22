@@ -1,48 +1,34 @@
 #pragma once
 
-#include "Structure.h"
+//ShaderComponent Depenencies
+#include "GraphicComponent.h"
+#include "DDSTextureLoader.h"
 #include "OBJLoader.h"
-//Libraries used to create application 
-//Makes it possible to create our window
-#include <windows.h>
-//Access to core DX functions 
-#include <d3d11_1.h>
-//Allows us to compile DX11 Code
-#include <d3dcompiler.h>
-//Math Library
-#include <directxmath.h>
-#include <directxcolors.h>
-//Libraries used to create application 
-//Makes it possible to create our window
-#include <windows.h>
-//Access to core DX functions 
-#include <d3d11_1.h>
-//Allows us to compile DX11 Code
-#include <d3dcompiler.h>
-//Math Library
-#include <directxmath.h>
-#include <directxcolors.h>
 #include "resource.h"
 
+//Libraries used to create application  
+
+#include <windows.h>     //Window Library - Access to window functions
+#include <d3d11_1.h>     //Core DX11 Library - Access DX11 Functions
+#include <d3dcompiler.h> //Compile Library - Compiler for DX11 Code
+
+#include <directxmath.h> //DX11 Math Library 
+#include <directxcolors.h>//Color Math Library
 
 
-#include "DDSTextureLoader.h"
-#include "GraphicComponent.h"
-//Allows us to easily call reference upon our DX naming conventions
-using namespace DirectX;
+using namespace DirectX; //Use default DX11 Naming conventions
 
 class TextureComponent
 {
 public:
+	//Constructor
 	TextureComponent();
+	//Destructor
 	~TextureComponent();
+	
 	HRESULT CreateTexture(wchar_t* filepath, ID3D11ShaderResourceView** texture , GraphicComponent* gfx);
 	void BindTextures(int startSlot, int count, std::vector<ID3D11ShaderResourceView*> textures , GraphicComponent* gfx);
 	void ClearTexture(GraphicComponent* gfx);
-
-private:
-		GraphicComponent* _gfx;
-	ID3D11Device* _device;
 
 };
 

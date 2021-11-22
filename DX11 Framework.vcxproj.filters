@@ -15,12 +15,16 @@
     <Filter Include="GameObjects">
       <UniqueIdentifier>{c7260ff0-62dc-42b0-9fae-83ef87275b5c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Structures">
+      <UniqueIdentifier>{48d06044-5f0b-43be-b279-ca08670be0f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies">
+      <UniqueIdentifier>{94945e36-9990-4c6b-92c0-8ed391121f4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="DDSTextureLoader.h" />
-    <ClInclude Include="Structure.h" />
-    <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="GraphicComponent.h">
       <Filter>EngineComponent</Filter>
     </ClInclude>
@@ -33,13 +37,29 @@
     <ClInclude Include="ShaderComponent.h">
       <Filter>EngineComponent</Filter>
     </ClInclude>
-    <ClInclude Include="TextureComponent.h" />
+    <ClInclude Include="LightingValuesStructure.h">
+      <Filter>Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantStructure.h">
+      <Filter>Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshStructure.h">
+      <Filter>Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleVertexStructure.h">
+      <Filter>Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="OBJLoader.h">
+      <Filter>Dependencies</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureComponent.h">
+      <Filter>EngineComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
-    <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="GraphicComponent.cpp">
       <Filter>EngineComponent</Filter>
     </ClCompile>
@@ -49,7 +69,12 @@
     <ClCompile Include="ShaderComponent.cpp">
       <Filter>EngineComponent</Filter>
     </ClCompile>
-    <ClCompile Include="TextureComponent.cpp" />
+    <ClCompile Include="OBJLoader.cpp">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureComponent.cpp">
+      <Filter>EngineComponent</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

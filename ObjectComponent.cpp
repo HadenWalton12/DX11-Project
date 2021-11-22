@@ -20,11 +20,12 @@ void GameObjects::Update()
 void GameObjects::Draw()
 {
 	_Shader->ComposeShader(_gfx);
-	_gfx->SwitchDrawBuffers(_mesh.VertexBuffer, _mesh.IndexBuffer);
+	SwitchDrawBuffers(_mesh.VertexBuffer, _mesh.IndexBuffer , _gfx);
 	_Tex->BindTextures(0, _Textures.size(), _Textures , _gfx);
+	_gfx->_pImmediateContext->DrawIndexed(_mesh.IndexCount, 0, 0);
 
-	
-	_gfx->Draw(_mesh.IndexCount);
+
+
 }
 
 
@@ -39,5 +40,15 @@ void GameObjects::CreateTexture(wchar_t* path)
 void GameObjects::Initialise()
 {
 	_Shader = new ShaderComponent();
-	_Shader->CreateShaderandLayout(_gfx);
+	_Shader->CreateVertexShader(_gfx);
+	_Shader->CreatePixelShader(_gfx);
+
+}
+
+void GameObjects::SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB , GraphicComponent* _gfx)
+{
+	UINT stride = sizeof(SimpleVertex);
+	UINT offset = 0;
+	_gfx->_pImmediateContext->IASetVertexBuffers(0, 1, &VB, &stride, &offset);
+	_gfx->_pImmediateContext->IASetIndexBuffer(IB, DXGI_FORMAT_R16_UINT, 0);
 }

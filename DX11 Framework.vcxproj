@@ -389,14 +389,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="ConstantStructure.h" />
     <ClInclude Include="GraphicComponent.h" />
+    <ClInclude Include="LightingValuesStructure.h" />
+    <ClInclude Include="MeshStructure.h" />
     <ClInclude Include="ObjectComponent.h" />
     <ClInclude Include="OBJLoader.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="ShaderComponent.h" />
+    <ClInclude Include="SimpleVertexStructure.h" />
     <ClInclude Include="Star.h" />
-    <ClInclude Include="Structure.h" />
     <ClInclude Include="TextureComponent.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
   </ItemGroup>

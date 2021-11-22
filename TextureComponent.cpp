@@ -6,6 +6,10 @@ TextureComponent::TextureComponent()
 
 }
 
+TextureComponent::~TextureComponent()
+{
+}
+
 HRESULT TextureComponent::CreateTexture(wchar_t* filepath, ID3D11ShaderResourceView** texture , GraphicComponent* gfx)
 {
     return CreateDDSTextureFromFile(gfx->GetDevice(), filepath, nullptr, texture);

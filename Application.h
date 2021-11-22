@@ -1,5 +1,8 @@
 #pragma once
-#include "Structure.h"
+#include "SimpleVertexStructure.h"
+#include "LightingValuesStructure.h"
+#include "ConstantStructure.h"
+#include "MeshStructure.h"
 #include "OBJLoader.h"
 //Libraries used to create application 
 //Makes it possible to create our window

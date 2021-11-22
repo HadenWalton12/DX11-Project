@@ -6,7 +6,10 @@
 
 #include <vector>
 #include "DDSTextureLoader.h"
-#include "Structure.h"
+#include "SimpleVertexStructure.h"
+#include "LightingValuesStructure.h"
+#include "ConstantStructure.h"
+#include "MeshStructure.h"
 
 class GameObjects
 {
@@ -31,6 +34,8 @@ public:
 	XMFLOAT3 GetScale();
 private:
 	void Initialise();
+
+	void SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB, GraphicComponent* _gfx);
 
 	GraphicComponent* _gfx;
 	ShaderComponent* _Shader;

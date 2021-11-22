@@ -1,6 +1,6 @@
 #include "GraphicComponent.h"
 
-//Processes the event messages from queue ,based on the messages , if contained in queue we can give it specfic function.
+//Callback function , processes message sent to the window.
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
@@ -24,11 +24,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-//Initialises Window and Window Class
 HRESULT GraphicComponent::InitialiseWindow(HINSTANCE hInstance, int nCmdShow)
 {
-    // Register class
+    //Register/Window class initialisation
     WNDCLASSEX wcex;
+
+    //Register/Window Class definition
     wcex.cbSize = sizeof(WNDCLASSEX);
     wcex.style = CS_HREDRAW | CS_VREDRAW;
     wcex.lpfnWndProc = WndProc;
@@ -41,49 +42,54 @@ HRESULT GraphicComponent::InitialiseWindow(HINSTANCE hInstance, int nCmdShow)
     wcex.lpszMenuName = nullptr;
     wcex.lpszClassName = L"TutorialWindowClass";
     wcex.hIconSm = LoadIcon(wcex.hInstance, (LPCTSTR)IDI_TUTORIAL1);
+    
+    //Check if class registration was correct
     if (!RegisterClassEx(&wcex))
+    {
         return E_FAIL;
+    }
+
 
     // Create window
     _hInst = hInstance;
+
+    //Define window width/hight
     RECT rc = { 0, 0, 640, 480 };
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-    _hWnd = CreateWindow(L"TutorialWindowClass", L"DX11 Framework", WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
-        nullptr);
+    //Create Window
+    _hWnd = CreateWindow(L"TutorialWindowClass", L"DX11 Framework", WS_OVERLAPPEDWINDOW,CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,nullptr);
+    
+    //Check if Window did create.
     if (!_hWnd)
-        return E_FAIL;
+    {
+    return E_FAIL;
+    }
 
     ShowWindow(_hWnd, nCmdShow);
-
     return S_OK;
 }
 
-//Calls Initialise Window and Initialise Device , this performs the startup for our application.
-//Further we initialise our camera values.
 HRESULT GraphicComponent::Initialise(HINSTANCE hInstance, int nCmdShow)
 {
-    //Check Error Methods - Did Windows Initialise correctly?
+    LigthtingValues lightvalue;
+    //FAILED - HRESULT Code Function - Checks if HRESULT function is less than zero 
+
+    //Check Error Initialising method, InitialiseWindow function called, if HRESULT return = 0 , return E_FAIL. If false (InititaliseWindow executed correctly) , Continue with application creation.
     if (FAILED(InitialiseWindow(hInstance, nCmdShow)))
     {
         return E_FAIL;
     }
 
     RECT rc;
-    //Call class window value , pass window values into local rect
+    
     GetClientRect(_hWnd, &rc);
 
     //Pass calulated values , gives us window coordinates
     _WindowWidth = rc.right - rc.left;
     _WindowHeight = rc.bottom - rc.top;
 
-    //Check Error Method - Did Device initalise correctly?
-    if (FAILED(InitialiseDevice()))
-    {
-        Cleanup();
-
-        return E_FAIL;
-    }
+   //InitialiseDevice , Assist creating core graphical components.
+    InitialiseDevice();
 
     // Initialize the world matrix
     XMStoreFloat4x4(&_world, XMMatrixIdentity());
@@ -91,7 +97,7 @@ HRESULT GraphicComponent::Initialise(HINSTANCE hInstance, int nCmdShow)
     // Initialize values of view matrix - Defines values of 4x4 View matrix 
     XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f);
     XMFLOAT4 temp;
-    XMStoreFloat4(&EyePosW, Eye);
+    XMStoreFloat4(&lightvalue.EyePosW, Eye);
     XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
     XMVECTOR Up = XMVectorSet(0.0f, 3.0f, 0.0f, 0.0f);
 
@@ -100,11 +106,12 @@ HRESULT GraphicComponent::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     // Initialize the projection matrix
     XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT)_WindowHeight, 0.01f, 100.0f));
-    //objStarMeshData = OBJLoader::Load("star.obj", _pd3dDevice);
+
     //Return if any check error methods were false
     return S_OK;
 }
 
+//Constructor - Initialises Class Objects
 GraphicComponent::GraphicComponent()
 {
     _hInst = nullptr;
@@ -121,12 +128,13 @@ GraphicComponent::GraphicComponent()
 
 GraphicComponent::~GraphicComponent()
 {
+    //Call Cleanup function 
     Cleanup();
 }
 
-HRESULT GraphicComponent::InitialiseDevice()
+void GraphicComponent::InitialiseDevice()
 {
-    HRESULT hr = S_OK;
+   
     InitialiseSwapchain();
     InitialiseDepth();
     InitialiseRenderTarget();
@@ -136,10 +144,11 @@ HRESULT GraphicComponent::InitialiseDevice()
     InitialiseConstantBuffer();
     InitialiseSampler();
 
-    return S_OK;
+
 
 
 }
+
 
 void GraphicComponent::Cleanup()
 {
@@ -214,7 +223,6 @@ HRESULT GraphicComponent::InitialiseSwapchain()
     if (FAILED(hr))
         return hr;
 }
-
 void GraphicComponent::InitialiseSampler()
 {
     // Create the sample state
@@ -233,6 +241,7 @@ void GraphicComponent::InitialiseSampler()
     _pd3dDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear);
 
 }
+
 
 void GraphicComponent::InitialiseDepth()
 {
@@ -257,13 +266,6 @@ void GraphicComponent::InitialiseDepth()
 }
 
 
-
-
-ID3D11Device* GraphicComponent::GetDevice()
-{
-    return _pd3dDevice;
-}
-
 HRESULT GraphicComponent::InitialiseRenderTarget()
 {
     HRESULT hr;
@@ -287,21 +289,21 @@ HRESULT GraphicComponent::InitialiseRenderTarget()
     _pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 }
+
+
 void GraphicComponent::ClearRenderTarget()
 {
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
     _pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
-void GraphicComponent::Draw(unsigned int indexCount)
-{
-    _pImmediateContext->DrawIndexed(indexCount , 0 , 0);
-}
 
-void GraphicComponent::SwapChain()
+void GraphicComponent::SwapChainPresent()
 {
     _pSwapChain->Present(0, 0);
 }
+
+
 void GraphicComponent::InitialiseViewport()
 {
     // Setup the viewport
@@ -315,6 +317,7 @@ void GraphicComponent::InitialiseViewport()
     _pImmediateContext->RSSetViewports(1, &viewport);
 }
 
+
 void GraphicComponent::InitialiseConstantBuffer()
 {
     // Create the constant buffer
@@ -326,22 +329,16 @@ void GraphicComponent::InitialiseConstantBuffer()
     constantbufferdescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     constantbufferdescription.CPUAccessFlags = 0;
     
+    //Create Buffer - Using Description above , 3rd parameters assigns value to Constantbuffer buffer pointer.
     _pd3dDevice->CreateBuffer(&constantbufferdescription, nullptr, &_pConstantBuffer);  
 }
+
 void GraphicComponent::UpdateConstantBuffer()
 {
-    light_direction = XMFLOAT3(2.5f, 0.0f, 4.0f);
-    diffuse_material = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
-    diffuse_light = XMFLOAT4(0.2f, 0.2f, 0.2f, 0.5f);
-    ambient_light = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-    ambient_material = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-    specular_material = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-    specular_light = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-    specular_power = 1.0f;
-    EyePosW = XMFLOAT4(0.0f, 0.0f, -5.0f, 0.0f);
+
 
     ConstantBuffer constantbuffer;
-
+    LigthtingValues lightvalue;
     XMMATRIX world = XMLoadFloat4x4(&_world);
     XMMATRIX view = XMLoadFloat4x4(&_view);
     XMMATRIX projection = XMLoadFloat4x4(&_projection);
@@ -350,19 +347,21 @@ void GraphicComponent::UpdateConstantBuffer()
     constantbuffer.mView = XMMatrixTranspose(view);
     constantbuffer.mProjection = XMMatrixTranspose(projection);
 
-    constantbuffer.LightVecW = light_direction;
-    constantbuffer.DiffuseLight = diffuse_light;
-    constantbuffer.DiffuseMtrl = diffuse_material;
-    constantbuffer.AmbientLight = ambient_light;
-    constantbuffer.AmbientMtrl = ambient_material;
-    constantbuffer.EyePosW = EyePosW;
-    constantbuffer.SpecularPower = specular_power;
-    constantbuffer.SpecularLight = specular_light;
-    constantbuffer.SpecularMtrl = specular_material;
+    constantbuffer.LightVecW = lightvalue.light_direction;
+    constantbuffer.DiffuseLight = lightvalue.diffuse_light;
+    constantbuffer.DiffuseMtrl = lightvalue.diffuse_material;
+    constantbuffer.AmbientLight = lightvalue.ambient_light;
+    constantbuffer.AmbientMtrl = lightvalue.ambient_material;
+    constantbuffer.EyePosW = lightvalue.EyePosW;
+    constantbuffer.SpecularPower = lightvalue.specular_power;
+    constantbuffer.SpecularLight = lightvalue.specular_light;
+    constantbuffer.SpecularMtrl = lightvalue.specular_material;
 
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
 
 }
+
+
 void GraphicComponent::InitialiseWireFrame()
 {
     //Create wireframe description
@@ -391,13 +390,8 @@ void GraphicComponent::InitialiseSolid()
     _pd3dDevice->CreateRasterizerState(&solid, &_RasterizerState);
 }
 
-void GraphicComponent::SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB)
+
+ID3D11Device* GraphicComponent::GetDevice()
 {
-    UINT stride = sizeof(SimpleVertex);
-    UINT offset = 0;
-    _pImmediateContext->IASetVertexBuffers(0, 1 , &VB , &stride , &offset);
-    _pImmediateContext->IASetIndexBuffer(IB, DXGI_FORMAT_R16_UINT, 0);
+    return _pd3dDevice;
 }
-
-
-

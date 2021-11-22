@@ -8,7 +8,10 @@
 
 using namespace DirectX;
 
-#include "Structure.h"
+#include "SimpleVertexStructure.h"
+#include "ConstantStructure.h"
+#include "MeshStructure.h"
+
 
 namespace OBJLoader
 {
