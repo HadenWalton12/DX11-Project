@@ -32,7 +32,6 @@ public:
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
 
-
 	HRESULT InitialiseWindow(HINSTANCE hInstance, int nCmdShow);//Initialises Window , Creates Window - Defines Name , Properties of window (Width & Hight) , Shows Window
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);		//Calls InitialiseWindow / InitialiseDevice , calling them for application creation.
 
@@ -71,6 +70,7 @@ private:
 	ID3D11Texture2D*		_pDepthStencilBuffer;				//2D texture interface manager , managing texel data (structured image data) , stores depth data , processed in DepthStencilView
 
 	ID3D11RasterizerState* _RasterizerState;					//Holds interface description for rasterizer state - to be bound to rasterizer stage
+
 
 
 	//Holds background colour value

@@ -8,28 +8,8 @@ public:
 	
 	void Update(GraphicComponent* gfx) override 
 	{
-
-        // Update our time
-        static float t = 5.0f;
-
-
-        if (gfx->_driverType == D3D_DRIVER_TYPE_REFERENCE)
-        {
-            t += (float)XM_PI * 0.0125f;
-        }
-        else
-        {
-            static DWORD dwTimeStart = 0;
-            DWORD dwTimeCur = GetTickCount();
-
-            if (dwTimeStart == 0)
-                dwTimeStart = dwTimeCur;
-
-            t = (dwTimeCur - dwTimeStart) / 1000.0f;
-        }
-
+		Timer t;
         gfx->UpdateConstantBuffer();
-        
-        XMStoreFloat4x4(&gfx->_world, XMMatrixRotationY(t) * XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+        XMStoreFloat4x4(&gfx->_world, XMMatrixRotationY(t.time) * XMMatrixTranslation(0.0f, 0.0f, 0.0f));
 	}
 };

@@ -401,6 +401,7 @@
     <ClInclude Include="SimpleVertexStructure.h" />
     <ClInclude Include="Star.h" />
     <ClInclude Include="TextureComponent.h" />
+    <ClInclude Include="TimeStructure.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
   </ItemGroup>
   <ItemGroup>

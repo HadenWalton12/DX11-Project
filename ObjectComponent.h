@@ -9,6 +9,7 @@
 #include "SimpleVertexStructure.h"
 #include "LightingValuesStructure.h"
 #include "ConstantStructure.h"
+#include "TimeStructure.h"
 #include "MeshStructure.h"
 
 class GameObjects
@@ -22,9 +23,10 @@ public:
 	virtual void Update(GraphicComponent* gfx);										//Used to reference instances where the object is to be updated
 	void Draw();										//Draw method , to how we draw objects
 	void CreateTexture(wchar_t* path);					//Creates Texture
-
+  float Time(static float t);
 
 private:
+
 	void Initialise();
 	void SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB, GraphicComponent* _gfx);
 

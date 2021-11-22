@@ -38,6 +38,9 @@ void GameObjects::CreateTexture(wchar_t* path)
 	_Textures.push_back(texture);
 }
 
+
+
+
 void GameObjects::Initialise()
 {
 	_Shader = new ShaderComponent();
