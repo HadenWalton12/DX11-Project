@@ -1,5 +1,4 @@
 #pragma once
-
 #include "SimpleVertexStructure.h"
 #include "LightingValuesStructure.h"
 #include "ConstantStructure.h"
@@ -52,44 +51,43 @@ public:
 //Private Objects
 private:
 
-	HINSTANCE               _hInst;	
-	HWND                    _hWnd;
+	HINSTANCE               _hInst;								//Used to specify instance which the class is registred					
+	HWND                    _hWnd;								//Used to handle a window , part of Win32 API , crates window using window instance above.
 
-	UINT _WindowHeight;
-	UINT _WindowWidth;
+	UINT _WindowHeight;											//Define window height
+	UINT _WindowWidth;											//Define window width
 
-	D3D_FEATURE_LEVEL       _featureLevel;
+	D3D_FEATURE_LEVEL       _featureLevel;						//Defines feature level targeted by the device pointer. Essentially defines the version of the DirectX API we want to use
 
-	IDXGISwapChain*			_pSwapChain;
-	ID3D11RenderTargetView* _pRenderTargetView;
+	IDXGISwapChain*			_pSwapChain;						//Interface object used to implement one or more buffers for storing rendered data before presenting it as an output
+	ID3D11RenderTargetView* _pRenderTargetView;					//Defines render target and access to sub-resources that can be accessed during rendering to a buffer ()
+	ID3D11ShaderResourceView* _pTextureRV;						//Defines shader subresource that can be accessed during rendering , e.g constant buffer,  in our case a texture buffer bound to texture data.
 
-	ID3D11ShaderResourceView* _pTextureRV;
+	ID3D11DepthStencilView* _pDepthStencilView;					//Defines view resource that accesses a texture resource during depth stencil testing , Our depth data is bound to a texture object
+	ID3D11Texture2D*		_pDepthStencilBuffer;				//2D texture interface manager , managing texel data (structured image data) , stores depth data , processed in DepthStencilView
 
-	ID3D11DepthStencilView* _pDepthStencilView;
-	ID3D11Texture2D*		_pDepthStencilBuffer;
+	ID3D11RasterizerState* _RasterizerState;					//Holds interface description for rasterizer state - to be bound to rasterizer stage
 
-	ID3D11RasterizerState* _RasterizerState;
-
-
-	XMFLOAT4X4				_world;
+	//Used for transformations
+	XMFLOAT4X4				_world;									
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
 
-
+	//Holds background colour value
 	float ClearColor[4] = { 0.0f,0.0f,1.0f,0.0f };
 
 //Private Functions
 private:
 
-	HRESULT InitialiseSwapchain();							//Creates SwapChain Function - Refer to notes of what this is
-	HRESULT InitialiseRenderTarget();						//Creates RenderTarget Function - Refer to notes of what this is
+	HRESULT InitialiseSwapchain();								//Creates SwapChain Function - Refer to notes of what this is
+	HRESULT InitialiseRenderTarget();							//Creates RenderTarget Function - Refer to notes of what this is
 
-	void Cleanup();											//Cleans Member Object Values
-	void InitialiseSampler();								//Creates Sampler  Function - Refer to notes of what this is
-	void InitialiseDevice();								//Calls Graphical Components for application creation - Has to be in order disclosed , Function names are self-explanatory
-	void InitialiseDepth();									//Creates DepthBuffer Function - Refer to notes of what this is
-	void InitialiseViewport();								//Initialise View Region - Refer to notes of what this is
-	void InitialiseConstantBuffer();						//Initialise Constant Buffer - Refer to notes of what this is
+	void Cleanup();												//Cleans Member Object Values
+	void InitialiseSampler();									//Creates Sampler  Function - Refer to notes of what this is
+	void InitialiseDevice();									//Calls Graphical Components for application creation - Has to be in order disclosed , Function names are self-explanatory
+	void InitialiseDepth();										//Creates DepthBuffer Function - Refer to notes of what this is
+	void InitialiseViewport();									//Initialise View Region - Refer to notes of what this is
+	void InitialiseConstantBuffer();							//Initialise Constant Buffer - Refer to notes of what this is
 	
 
 

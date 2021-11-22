@@ -26,9 +26,12 @@ public:
 	//Destructor
 	~TextureComponent();
 	
+	//Creates Texture
 	HRESULT CreateTexture(wchar_t* filepath, ID3D11ShaderResourceView** texture , GraphicComponent* gfx);
+	
+	//Binds an array(vector in our case) of resources to be processed to PS . Binding textures from a texture vector onto PS
 	void BindTextures(int startSlot, int count, std::vector<ID3D11ShaderResourceView*> textures , GraphicComponent* gfx);
-	void ClearTexture(GraphicComponent* gfx);
+
 
 };
 

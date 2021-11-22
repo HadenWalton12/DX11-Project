@@ -110,8 +110,7 @@ HRESULT GraphicComponent::Initialise(HINSTANCE hInstance, int nCmdShow)
     //Return if any check error methods were false
     return S_OK;
 }
-
-//Constructor - Initialises Class Objects
+ 
 GraphicComponent::GraphicComponent()
 {
     _hInst = nullptr;
