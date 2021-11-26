@@ -28,7 +28,10 @@
 #include "GraphicComponent.h"
 #include "ShaderComponent.h"
 #include "TextureComponent.h"
+
 #include "Star.h"
+#include "Plane.h"
+
 #include <vector>
 
 #include "DDSTextureLoader.h"
@@ -52,6 +55,7 @@ private:
 	float previousRotation = 0.0f;
 
 	Star* _star;
+	Plane* _plane;
 	GraphicComponent* _gfx;
 	TextureComponent* _Tex;
 	ShaderComponent* _Shader;

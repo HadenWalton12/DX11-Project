@@ -395,6 +395,7 @@
     <ClInclude Include="MeshStructure.h" />
     <ClInclude Include="ObjectComponent.h" />
     <ClInclude Include="OBJLoader.h" />
+    <ClInclude Include="Plane.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="ShaderComponent.h" />

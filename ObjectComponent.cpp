@@ -1,6 +1,6 @@
 #include "ObjectComponent.h"
 
-GameObjects::GameObjects(GraphicComponent* _gfx, char* file) : _gfx(_gfx) , _Shader(_Shader) , _Tex(_Tex)
+GameObjects::GameObjects(GraphicComponent* _gfx, char* file) : _gfx(_gfx) , _Shader(_Shader) , _Tex(_Tex) ,  world(world)
 {
 	
 	_mesh = OBJLoader::Load(file, _gfx->GetDevice());
@@ -16,6 +16,7 @@ GameObjects::~GameObjects()
 void GameObjects::Update(GraphicComponent* gfx)
 {
 
+	CalculateTransformation();
 }
 
 void GameObjects::Draw()
@@ -38,9 +39,6 @@ void GameObjects::CreateTexture(wchar_t* path)
 	_Textures.push_back(texture);
 }
 
-
-
-
 void GameObjects::Initialise()
 {
 	_Shader = new ShaderComponent();
@@ -55,4 +53,39 @@ void GameObjects::SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB , Graphic
 	UINT offset = 0;
 	_gfx->_pImmediateContext->IASetVertexBuffers(0, 1, &VB, &stride, &offset);
 	_gfx->_pImmediateContext->IASetIndexBuffer(IB, DXGI_FORMAT_R16_UINT, 0);
+}
+
+void GameObjects::CalculateTransformation()
+{
+
+
+	_gfx->UpdateConstantBuffer(world);
+	XMMATRIX scale = XMMatrixScaling(ObjectScale.x, ObjectScale.y, ObjectScale.z);
+	XMMATRIX translation = XMMatrixTranslation(ObjectTranslation.x, ObjectTranslation.y, ObjectTranslation.z);
+	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(ObjectRotation.x, ObjectRotation.y, ObjectRotation.z);
+
+	XMMATRIX m1 = XMMatrixMultiply(scale, translation);
+	XMMATRIX m2 = XMMatrixMultiply(translation, rotation);
+
+	XMMATRIX transformation = XMMatrixMultiply(m1, m2);
+
+	XMStoreFloat4x4(&world, transformation);
+}
+
+
+
+
+void GameObjects::SetRotation(float x, float y, float z)
+{
+	ObjectTranslation = XMFLOAT3(x, y, z);
+}
+
+void GameObjects::SetTranslation(float x, float y, float z)
+{
+	ObjectRotation = XMFLOAT3(x, y, z);
+}
+void GameObjects::SetScale(float x, float y, float z)
+{
+
+	ObjectScale = XMFLOAT3( x,  y,  z);
 }

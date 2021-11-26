@@ -20,17 +20,27 @@ Application::~Application()
 //Initalises Window Coordinates , Projection Matrix & View Matrix 
 HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 {
+    Timer t;
     HRESULT hr = S_OK;
     _gfx = new GraphicComponent(); 
     _Tex = new TextureComponent();
     _Shader = new ShaderComponent();
     _gfx->Initialise(hInstance, nCmdShow);
-    _star = new Star(_gfx , _Shader , _Tex);
-    _GameObjects.push_back(_star);
+
+    _plane = new Plane(_gfx, _Shader, _Tex, _gfx->_world2);
+    _star = new Star(_gfx, _Shader, _Tex, _gfx->_world);
+
+    
+
 
     _star->CreateTexture(L"Crate_COLOR.dds");
-
-   rotationValue = 0.0f;
+    _star->SetTranslation(0.0f , -5.0f , 0.0f);
+    _star->SetRotation(0.0f, 1.0f , 0.0f);
+    _star->SetScale(1.0f, 1.0f, 1.0f);
+    _plane->CreateTexture(L"Hercules_COLOR.dds");
+    _plane->SetTranslation(0.0f, 0.0f, 0.0f);
+    _plane->SetRotation(0.0f, 1.0f * t.time, 0.0f);
+    _plane->SetScale(0.1f, 0.1f, 0.1f);
     return S_OK;
 }
 
@@ -38,11 +48,8 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
 HRESULT Application::Update()
 {
-
-    for (auto gameobject : _GameObjects)
-    {
-        gameobject->Update(_gfx);
-    }
+    _plane->Update(_gfx);
+    _star->Update(_gfx);
 
     return S_OK;
 }
@@ -52,11 +59,8 @@ void Application::Draw()
 
     _gfx->ClearRenderTarget();
 
-    for (auto gameobject : _GameObjects)
-    {
-        gameobject->Draw();
-    }
-
+    _plane->Draw();
+    _star->Draw();
     _gfx->SwapChainPresent();
 
 }

@@ -29,6 +29,7 @@ public:
 
 		//Used for transformations
 	XMFLOAT4X4				_world;
+	XMFLOAT4X4				_world2;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
 
@@ -46,7 +47,7 @@ public:
 
 	void SwapChainPresent();									//Executes SwapChain function - Builds upon the creation/initilasation of it , utilising the swapchain , accompany this with clearing/initialising render target (Render Target is back buffer that gets swapped with front to be rendered to screen), we use these to flip front/back buffer to draw scene screens without double buffering.
 	void ClearRenderTarget();									//Clears RenderTarget (Buffer our scene was draw) , so the buffer is ready to be drawn on with next scene
-	void UpdateConstantBuffer();								//Updates constant buffer values
+	void UpdateConstantBuffer(XMFLOAT4X4 world);				//Updates constant buffer values
 	void InitialiseSolid();										//Changes Rasterizer State to solid
 	void InitialiseWireFrame();									//Changes Rasterizer State to WireFrame
 
