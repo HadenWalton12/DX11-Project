@@ -5,6 +5,17 @@ class Star : public GameObjects
 {
 public:
 	Star::Star(GraphicComponent* gfx , ShaderComponent* _Shader , TextureComponent* _Tex , XMFLOAT4X4 world) : GameObjects(gfx, "Star.obj") {}
-	
+
+	void CalculateTransformation() 
+	{
+		Timer t;
+		XMMATRIX scale = XMMatrixScaling(ObjectScale.x, ObjectScale.y, ObjectScale.z);
+		XMMATRIX translation = XMMatrixTranslation(ObjectTranslation.x, ObjectTranslation.y, ObjectTranslation.z);
+		XMMATRIX rotation = XMMatrixRotationRollPitchYaw(ObjectRotation.x , ObjectRotation.y * t.time, ObjectRotation.z);
+
+
+		XMStoreFloat4x4(&world, scale * translation * rotation);
+	}
+
 
 };

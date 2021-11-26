@@ -91,6 +91,10 @@ HRESULT GraphicComponent::Initialise(HINSTANCE hInstance, int nCmdShow)
    //InitialiseDevice , Assist creating core graphical components.
     InitialiseDevice();
 
+    // Initialize the world matrix
+    XMStoreFloat4x4(&_world1, XMMatrixIdentity());
+    XMStoreFloat4x4(&_world2, XMMatrixIdentity());
+    XMStoreFloat4x4(&_world3, XMMatrixIdentity());
 
     // Initialize values of view matrix - Defines values of 4x4 View matrix 
     XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f);
@@ -330,11 +334,9 @@ void GraphicComponent::InitialiseConstantBuffer()
     _pd3dDevice->CreateBuffer(&constantbufferdescription, nullptr, &_pConstantBuffer);  
 }
 
-void GraphicComponent::UpdateConstantBuffer(XMFLOAT4X4 world)
-{
-    // Initialize the world matrix
-    XMStoreFloat4x4(&world, XMMatrixIdentity());
+void GraphicComponent::UpdateConstantBuffer(XMFLOAT4X4 world )
 
+{
     ConstantBuffer constantbuffer;
     LigthtingValues lightvalue;
     XMMATRIX _world = XMLoadFloat4x4(&world);
@@ -358,6 +360,7 @@ void GraphicComponent::UpdateConstantBuffer(XMFLOAT4X4 world)
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
 
 }
+
 
 
 

@@ -27,23 +27,25 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _Shader = new ShaderComponent();
     _gfx->Initialise(hInstance, nCmdShow);
 
-    _plane = new Plane(_gfx, _Shader, _Tex, _gfx->_world2);
-    _star = new Star(_gfx, _Shader, _Tex, _gfx->_world);
-    _sphere = new Sphere(_gfx, _Shader, _Tex, _gfx->_world3);
-    
+     _plane = new Plane(_gfx, _Shader, _Tex , _gfx->_world2);
+    _star = new Star(_gfx, _Shader, _Tex , _gfx->_world1);
+ //   _sphere = new Sphere(_gfx, _Shader, _Tex, _world3);
+    _GameObjects.push_back(_plane);
+    _GameObjects.push_back(_star);
 
-    _sphere->CreateTexture(L"Crate_COLOR.dds");
-    _sphere->SetTranslation(0.0f, -5.0f, 0.0f);
-    _sphere->SetRotation(0.0f, 1.0f, 0.0f);
-    _sphere->SetScale(1.0f, 1.0f, 1.0f);
+//_sphere->CreateTexture(L"Crate_COLOR.dds");
+  //  _sphere->SetTranslation(0.0f, -5.0f, 0.0f);
+  // _sphere->SetRotation(0.0f, 1.0f, 0.0f);
+  // _sphere->SetScale(1.0f, 1.0f, 1.0f);
     _star->CreateTexture(L"Crate_COLOR.dds");
-    _star->SetTranslation(0.0f , -5.0f , 0.0f);
-    _star->SetRotation(0.0f, 1.0f , 0.0f);
-    _star->SetScale(2.0f, 2.0f, 26.0f);
-    _plane->CreateTexture(L"Hercules_COLOR.dds");
-    _plane->SetTranslation(0.0f, 0.0f, 0.0f);
-    _plane->SetRotation(0.0f, 1.0f * t.time, 0.0f);
-    _plane->SetScale(0.1f, 0.1f, 0.1f);
+    _star->SetTranslation(0.0f , 0.0f , 0.0f);
+    _star->SetScale(2.0f, 2.0f, 2.0f);
+
+   _plane->CreateTexture(L"Hercules_COLOR.dds");
+   _plane->SetTranslation(5.0f, 0.0f, 0.0f);
+   _plane->SetRotation(0.0f, 1.0f, 0.0f);
+   _plane->SetScale(0.1f, 0.1f, 0.1f);
+
     return S_OK;
 }
 
@@ -51,9 +53,14 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
 HRESULT Application::Update()
 {
-    _plane->Update(_gfx);
-    _star->Update(_gfx);
-    _sphere->Update(_gfx);
+    Timer t;
+    _star->SetRotation(0.0f, 1.0f , 0.0f);
+
+    for (auto gameobject : _GameObjects)
+    {
+        gameobject->Update(_gfx);
+
+    }
     return S_OK;
 }
 
@@ -61,9 +68,11 @@ void Application::Draw()
 {
 
     _gfx->ClearRenderTarget();
-    _sphere->Draw();
-    _plane->Draw();
-    _star->Draw();
+    for (auto gameobject : _GameObjects)
+    {
+        gameobject->Draw();
+
+    }
     _gfx->SwapChainPresent();
 
 }

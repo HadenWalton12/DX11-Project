@@ -62,7 +62,7 @@ private:
 	TextureComponent* _Tex;
 	ShaderComponent* _Shader;
 	std::vector<GameObjects*> _GameObjects;
-	XMFLOAT4X4				_world;
+
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
 

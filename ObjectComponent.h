@@ -19,7 +19,6 @@ public:
 	//we can call the device pointer and the file name as a string to initialise the object loading , to which we call the draw the loaded mesh object
 	~GameObjects();
 
-
 	void Update(GraphicComponent* gfx);										//Used to reference instances where the object is to be updated
 	void Draw();										//Draw method , to how we draw objects
 	void CreateTexture(wchar_t* path);					//Creates Texture
@@ -34,15 +33,14 @@ private:
 	void Initialise();
 	void SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB, GraphicComponent* _gfx);
 
+protected:
+	MeshData _mesh;										//Store object data within a mesh
+	std::vector<ID3D11ShaderResourceView*> _Textures;	//Texture Vector to store multiple textures
+	virtual void CalculateTransformation();
 	GraphicComponent* _gfx;								//Graphic Component Class pointer, needed to reference graphiccomponents for creation of object
 	ShaderComponent* _Shader;							//Shader Component Class Pointer, needed to reference shadercomponents for creation of shaders relevant to object
 	TextureComponent* _Tex;								//Texture Component Class pointer, needed to assign objects with textures
 	XMFLOAT4X4 world;
-protected:
-	MeshData _mesh;										//Store object data within a mesh
-	std::vector<ID3D11ShaderResourceView*> _Textures;	//Texture Vector to store multiple textures
-	void CalculateTransformation();
-
 	XMFLOAT3 ObjectTranslation;
 	XMFLOAT3 ObjectRotation;
 	XMFLOAT3 ObjectScale;

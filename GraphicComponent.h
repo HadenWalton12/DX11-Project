@@ -26,13 +26,18 @@ public:
 	
 	GraphicComponent();											//Constructor - Initialises Class Objects	
 	~GraphicComponent();										//Destructor - Clears Class Object values - Done by calling cleanup function
+	
 
-		//Used for transformations
-	XMFLOAT4X4				_world;
+	XMFLOAT4X4				_world1;
 	XMFLOAT4X4				_world2;
 	XMFLOAT4X4				_world3;
+						//Used for transformations
+
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
+
+	UINT _WindowHeight;											//Define window height
+	UINT _WindowWidth;											//Define window width
 
 	HRESULT InitialiseWindow(HINSTANCE hInstance, int nCmdShow);//Initialises Window , Creates Window - Defines Name , Properties of window (Width & Hight) , Shows Window
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);		//Calls InitialiseWindow / InitialiseDevice , calling them for application creation.
@@ -59,8 +64,7 @@ private:
 	HINSTANCE               _hInst;								//Used to specify instance which the class is registred					
 	HWND                    _hWnd;								//Used to handle a window , part of Win32 API , crates window using window instance above.
 
-	UINT _WindowHeight;											//Define window height
-	UINT _WindowWidth;											//Define window width
+
 
 	D3D_FEATURE_LEVEL       _featureLevel;						//Defines feature level targeted by the device pointer. Essentially defines the version of the DirectX API we want to use
 
