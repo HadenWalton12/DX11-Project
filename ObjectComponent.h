@@ -41,9 +41,10 @@ protected:
 	ShaderComponent* _Shader;							//Shader Component Class Pointer, needed to reference shadercomponents for creation of shaders relevant to object
 	TextureComponent* _Tex;								//Texture Component Class pointer, needed to assign objects with textures
 	XMFLOAT4X4 world;
-	XMFLOAT3 ObjectTranslation;
-	XMFLOAT3 ObjectRotation;
-	XMFLOAT3 ObjectScale;
+
+	XMFLOAT3 ObjectTranslation;							//
+	XMFLOAT3 ObjectRotation;							//
+	XMFLOAT3 ObjectScale;								//
 
 };
 
