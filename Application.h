@@ -31,6 +31,7 @@
 
 #include "Star.h"
 #include "Plane.h"
+#include "Sphere.h"
 
 #include <vector>
 
@@ -56,6 +57,7 @@ private:
 
 	Star* _star;
 	Plane* _plane;
+	Sphere* _sphere;
 	GraphicComponent* _gfx;
 	TextureComponent* _Tex;
 	ShaderComponent* _Shader;

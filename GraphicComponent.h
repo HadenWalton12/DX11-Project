@@ -30,6 +30,7 @@ public:
 		//Used for transformations
 	XMFLOAT4X4				_world;
 	XMFLOAT4X4				_world2;
+	XMFLOAT4X4				_world3;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
 

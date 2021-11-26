@@ -400,6 +400,7 @@
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="ShaderComponent.h" />
     <ClInclude Include="SimpleVertexStructure.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="Star.h" />
     <ClInclude Include="TextureComponent.h" />
     <ClInclude Include="TimeStructure.h" />
