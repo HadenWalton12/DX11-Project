@@ -1,6 +1,7 @@
 #pragma once
 #include "SimpleVertexStructure.h"
 #include "LightingValuesStructure.h"
+
 #include "ConstantStructure.h"
 #include "MeshStructure.h"
 #include "OBJLoader.h"
@@ -61,16 +62,12 @@ private:
 	GraphicComponent* _gfx;
 	TextureComponent* _Tex;
 	ShaderComponent* _Shader;
+	CameraComponent* _Camera;
+	CameraComponent* _Camera2;
 	std::vector<GameObjects*> _GameObjects;
 
-	XMFLOAT4X4              _view;
-	XMFLOAT4X4              _projection;
-
-
-
-
-
 public:
+
 	Application();
 	~Application();
 

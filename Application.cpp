@@ -1,8 +1,11 @@
 #include "Application.h"
+#include <math.h>
 /*
         Windows based aplications are always event drive to the core , waiting for messages(events) to be passed into message queue
 
 */
+
+
 
 //Class Constructor - Initalizing all default values.
 Application::Application()
@@ -22,6 +25,9 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 {
     Timer t;
     HRESULT hr = S_OK;
+
+
+
     _gfx = new GraphicComponent(); 
     _Tex = new TextureComponent();
     _Shader = new ShaderComponent();
@@ -45,8 +51,9 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
    _plane->SetTranslation(5.0f, 0.0f, 0.0f);
    _plane->SetRotation(0.0f, 1.0f, 0.0f);
    _plane->SetScale(0.1f, 0.1f, 0.1f);
-
-    return S_OK;
+   _Camera = new CameraComponent(  XMFLOAT3(0.0f, 0.0f, 4.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 3.0f, 0.0f), _gfx->_WindowWidth, _gfx->_WindowHeight, 0.01f, 100.0f );
+   _Camera2 = new CameraComponent(XMFLOAT3(0.0f, 0.0f, 10.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 3.0f, 0.0f), _gfx->_WindowWidth, _gfx->_WindowHeight, 0.01f, 100.0f);
+   return S_OK;
 }
 
 
@@ -55,12 +62,47 @@ HRESULT Application::Update()
 {
     Timer t;
     _star->SetRotation(0.0f, 1.0f , 0.0f);
-
-    for (auto gameobject : _GameObjects)
+    float moveforward = 0.0f;
+        _gfx->SwitchCamera(_Camera);
+        float speed = 1.0f * t.time / 1000;
+        XMFLOAT3 CameraPos = _Camera->GetEye();
+       //Forward
+        if (GetKeyState(0x57))
     {
-        gameobject->Update(_gfx);
+            _Camera->moveBackForward += speed;
+   
+   
+    }
+        //Back
+    else if (GetKeyState(0x53))
+    {
+            _Camera->moveBackForward -= speed;
+         
 
     }
+        //Right
+    else if (GetKeyState(0x44))
+    {
+        
+            _Camera->moveLeftRight += speed;
+
+    }
+        //Left
+    else if (GetKeyState(0x41))
+    {
+            _Camera->moveLeftRight -= speed;
+       
+
+    }
+
+        _Camera->SetEye(CameraPos);
+    for (auto gameobject : _GameObjects)
+    {
+        _gfx->UpdateCamera();
+        gameobject->Update(_gfx);
+    }
+
+
     return S_OK;
 }
 

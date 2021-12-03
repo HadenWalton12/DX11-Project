@@ -71,7 +71,7 @@ HRESULT GraphicComponent::InitialiseWindow(HINSTANCE hInstance, int nCmdShow)
 
 HRESULT GraphicComponent::Initialise(HINSTANCE hInstance, int nCmdShow)
 {
-    LigthtingValues lightvalue;
+    
     //FAILED - HRESULT Code Function - Checks if HRESULT function is less than zero 
 
     //Check Error Initialising method, InitialiseWindow function called, if HRESULT return = 0 , return E_FAIL. If false (InititaliseWindow executed correctly) , Continue with application creation.
@@ -96,6 +96,7 @@ HRESULT GraphicComponent::Initialise(HINSTANCE hInstance, int nCmdShow)
     XMStoreFloat4x4(&_world2, XMMatrixIdentity());
     XMStoreFloat4x4(&_world3, XMMatrixIdentity());
 
+    /*
     // Initialize values of view matrix - Defines values of 4x4 View matrix 
     XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f);
     XMFLOAT4 temp;
@@ -108,7 +109,7 @@ HRESULT GraphicComponent::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     // Initialize the projection matrix
     XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT)_WindowHeight, 0.01f, 100.0f));
-
+    */
     //Return if any check error methods were false
     return S_OK;
 }
@@ -340,9 +341,10 @@ void GraphicComponent::UpdateConstantBuffer(XMFLOAT4X4 world )
     ConstantBuffer constantbuffer;
     LigthtingValues lightvalue;
     XMMATRIX _world = XMLoadFloat4x4(&world);
-    XMMATRIX view = XMLoadFloat4x4(&_view);
-    XMMATRIX projection = XMLoadFloat4x4(&_projection);
+    XMMATRIX view = XMLoadFloat4x4(&_Camera->GetView());
+    XMMATRIX projection = XMLoadFloat4x4(&_Camera->GetProjection());
 
+    
     constantbuffer.mWorld = XMMatrixTranspose(_world);
     constantbuffer.mView = XMMatrixTranspose(view);
     constantbuffer.mProjection = XMMatrixTranspose(projection);
@@ -382,6 +384,16 @@ void GraphicComponent::InitialiseWireFrame()
 
     //Create wirefram rasterizer stage
     _pd3dDevice->CreateRasterizerState(&wireframe, &_RasterizerState);
+}
+
+void GraphicComponent::UpdateCamera()
+{
+    _Camera->Update();
+}
+
+void GraphicComponent::SwitchCamera(CameraComponent* camera)
+{
+    _Camera = camera;
 }
 
 void GraphicComponent::InitialiseSolid()

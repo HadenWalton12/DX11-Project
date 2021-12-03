@@ -5,6 +5,7 @@
 
 #include "OBJLoader.h"
 #include "resource.h"
+#include "CameraComponent.h"
 #include "DDSTextureLoader.h"
 
 
@@ -27,14 +28,14 @@ public:
 	GraphicComponent();											//Constructor - Initialises Class Objects	
 	~GraphicComponent();										//Destructor - Clears Class Object values - Done by calling cleanup function
 	
+	CameraComponent* _Camera;
 
 	XMFLOAT4X4				_world1;
 	XMFLOAT4X4				_world2;
 	XMFLOAT4X4				_world3;
 						//Used for transformations
 
-	XMFLOAT4X4              _view;
-	XMFLOAT4X4              _projection;
+
 
 	UINT _WindowHeight;											//Define window height
 	UINT _WindowWidth;											//Define window width
@@ -56,13 +57,15 @@ public:
 	void UpdateConstantBuffer(XMFLOAT4X4 world);				//Updates constant buffer values
 	void InitialiseSolid();										//Changes Rasterizer State to solid
 	void InitialiseWireFrame();									//Changes Rasterizer State to WireFrame
-
+	void UpdateCamera();
+	void SwitchCamera(CameraComponent* camera);
 
 //Private Objects
 private:
 
 	HINSTANCE               _hInst;								//Used to specify instance which the class is registred					
 	HWND                    _hWnd;								//Used to handle a window , part of Win32 API , crates window using window instance above.
+
 
 
 
