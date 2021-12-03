@@ -51,8 +51,11 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
    _plane->SetTranslation(5.0f, 0.0f, 0.0f);
    _plane->SetRotation(0.0f, 1.0f, 0.0f);
    _plane->SetScale(0.1f, 0.1f, 0.1f);
-   _Camera = new CameraComponent(  XMFLOAT3(0.0f, 0.0f, 4.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 3.0f, 0.0f), _gfx->_WindowWidth, _gfx->_WindowHeight, 0.01f, 100.0f );
-   _Camera2 = new CameraComponent(XMFLOAT3(0.0f, 0.0f, 10.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 3.0f, 0.0f), _gfx->_WindowWidth, _gfx->_WindowHeight, 0.01f, 100.0f);
+   XMFLOAT3 Camera_Position = XMFLOAT3(0.0f, 5.0f, -8.0f);
+   XMFLOAT3 Camera_Target = XMFLOAT3(0.0f, 0.0f, 0.0f);
+   XMFLOAT3 Camera_Up = XMFLOAT3 (0.0f, 1.0f, 0.0f);
+   _Camera = new CameraComponent(Camera_Position , Camera_Target , Camera_Up, _gfx->_WindowWidth, _gfx->_WindowHeight, 0.01f, 100.0f );
+
    return S_OK;
 }
 
@@ -62,21 +65,20 @@ HRESULT Application::Update()
 {
     Timer t;
     _star->SetRotation(0.0f, 1.0f , 0.0f);
-    float moveforward = 0.0f;
-        _gfx->SwitchCamera(_Camera);
-        float speed = 1.0f * t.time / 1000;
+  
+       _gfx->SwitchCamera(_Camera);
+        float speed = 15.0f * t.time / 1000;
         XMFLOAT3 CameraPos = _Camera->GetEye();
-       //Forward
-        if (GetKeyState(0x57))
+    //Forward
+    if (GetKeyState(0x57))
     {
-            _Camera->moveBackForward += speed;
-   
-   
+        CameraPos.x += speed;
+     
     }
-        //Back
+    //Back
     else if (GetKeyState(0x53))
     {
-            _Camera->moveBackForward -= speed;
+         
          
 
     }
@@ -84,24 +86,23 @@ HRESULT Application::Update()
     else if (GetKeyState(0x44))
     {
         
-            _Camera->moveLeftRight += speed;
+       
 
     }
         //Left
     else if (GetKeyState(0x41))
     {
-            _Camera->moveLeftRight -= speed;
-       
+          
 
     }
-
-        _Camera->SetEye(CameraPos);
+    _Camera->SetEye(CameraPos);
+      
     for (auto gameobject : _GameObjects)
     {
-        _gfx->UpdateCamera();
+ 
         gameobject->Update(_gfx);
     }
-
+    _gfx->UpdateCamera();
 
     return S_OK;
 }

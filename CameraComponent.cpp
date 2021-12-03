@@ -1,47 +1,42 @@
 #include "CameraComponent.h"
 
-CameraComponent::CameraComponent(XMVECTOR position, XMVECTOR at, XMVECTOR up, float windowWidth, float windowHeight, float nearDepth, float farDepth)
+CameraComponent::CameraComponent(XMFLOAT3 camera_position, XMFLOAT3 camera_target, XMFLOAT3 camera_up, float windowWidth, float windowHeight, float nearDepth, float farDepth)
 {
-	this->eye = position;
-	this->at =  at;
-	this->up = up;
 
+	SetView(camera_position , camera_target , camera_up);
 	 _WindowWidth = windowWidth;
 	_WindowHeight = windowHeight;
 	_NearDepth = nearDepth;
 	_FarDepth = farDepth;
-
-	Reshape(windowWidth, windowHeight, nearDepth, farDepth);
+	
+	SetProjection();
+	Camera_Position = camera_position;
+	Camera_Target = camera_target;
+	Camera_Up = camera_up;
 }
 
 void CameraComponent::SetEye(XMFLOAT3 eye)
 {
-	this->eye = eye;
+	Camera_Position = XMFLOAT3(eye.x, eye.y, eye.z);
 }
 
 void CameraComponent::SetAt(XMFLOAT3 at)
 {
-	this->at = at;
+	Camera_Target = XMFLOAT3(at.x , at.y , at.z);
 }
 
-void CameraComponent::SetUp(XMFLOAT3 up)
-{
-	this->up = up;
-}
+
+
+
 
 XMFLOAT3 CameraComponent::GetEye()
 {
-	return eye;
+	return Camera_Position;
 }
 
 XMFLOAT3 CameraComponent::GetAt()
 {
-	return at;
-}
-
-XMFLOAT3 CameraComponent::GetUp()
-{
-	return up;
+	return XMFLOAT3();
 }
 
 XMFLOAT4X4 CameraComponent::GetView()
@@ -54,6 +49,32 @@ XMFLOAT4X4 CameraComponent::GetProjection()
 	return _Projection;
 }
 
+void CameraComponent::SetView(XMFLOAT3 camera_position, XMFLOAT3 camera_target, XMFLOAT3 camera_up)
+{
+
+	LigthtingValues lightvalue;
+	XMVECTOR Eye = XMVectorSet(camera_position.x , camera_position.y , camera_position.z  , 0.0f);
+	XMVECTOR Target = XMVectorSet(camera_target.x, camera_target.y, camera_target.z, 0.0f);
+	XMVECTOR Up = XMVectorSet(camera_up.x, camera_up.y, camera_up.z, 0.0f);
+	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	up = XMVector3Transform(up, Rotation);
+	XMStoreFloat4(&lightvalue.EyePosW, Eye);
+	//Initalize view matrix
+	XMStoreFloat4x4(&_View, XMMatrixLookAtLH(Eye, Target, Up));
+}
+
+void CameraComponent::SetProjection()
+{
+
+	// Initialize the projection matrix
+	XMStoreFloat4x4(&_Projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT)_WindowHeight, 0.01f, 100.0f));
+}
+
+void CameraComponent::CameraMovement(float d)
+{
+
+}
+
 void CameraComponent::Reshape(float windowWidth, float windowHeight, float nearDepth, float farDepth)
 {
 	_WindowWidth = windowWidth;
@@ -62,31 +83,18 @@ void CameraComponent::Reshape(float windowWidth, float windowHeight, float nearD
 	_FarDepth = farDepth;
 
 
-	// Initialize the projection matrix
-	XMStoreFloat4x4(&_Projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT)_WindowHeight, 0.01f, 100.0f));
+
 
 }
 
 void CameraComponent::Update()
 {
-	LigthtingValues lightvalue;
-		// Initialize values of view matrix - Defines values of 4x4 View matrix 
 
-	XMStoreFloat4(&lightvalue.EyePosW, camPosition);
+	XMVECTOR Eye = XMVectorSet(Camera_Position.x, Camera_Position.y, Camera_Position.z, 0.0f);
+	XMVECTOR Target = XMVectorSet(Camera_Target.x, Camera_Target.y, Camera_Target.z, 0.0f);
+	XMVECTOR Up = XMVectorSet(Camera_Up.x, Camera_Up.y, Camera_Up.z, 0.0f);
 
 
-	camRotationMatrix = XMMatrixRotationRollPitchYaw(camPitch, camYaw, 0);
-	camTarget = XMVector3TransformCoord(DefaultForward, camRotationMatrix);
-	camTarget = XMVector3Normalize(camTarget);
-
-	camPosition += moveLeftRight * camRight;
-	camPosition += moveBackForward * camForward;
-	moveLeftRight = 0.0f;
-	moveBackForward = 0.0f;
-
-	camTarget = camPosition + camTarget;
-
-	XMStoreFloat4x4(&_View, XMMatrixLookAtLH(camPosition, camTarget, camUp));
-
+	XMStoreFloat4x4(&_View, XMMatrixLookAtLH(Eye, Target, Up));
 
 }

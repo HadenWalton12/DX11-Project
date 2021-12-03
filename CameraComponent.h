@@ -15,12 +15,15 @@ using namespace DirectX;
 class CameraComponent
 {
 	
-	//Storing of camera positional values 
+	//Storing of cam era positional values 
 private:
 
-	XMVECTOR eye;
-	XMVECTOR at;
-	XMVECTOR up;
+	XMFLOAT3 Camera_Position;
+	XMFLOAT3 Camera_Target;
+	XMFLOAT3 Camera_Up;
+
+	float Camera_Yaw;
+	float Camera_Pitch;
 
 	float _WindowWidth;
 	float _WindowHeight;
@@ -29,14 +32,21 @@ private:
 
 
 public:
+	
 
-	//Constructor and destructor for the camera
+	
+	XMMATRIX Camera_Rotation;
 
+	float MoveRight;
+	float MoveLeft;
+	float MoveForward;
+	float MoveBackwards;
+	
 	//Matrices passed to shader to apply lighting ect...
 
 	XMFLOAT4X4 _View;
 	XMFLOAT4X4 _Projection; 
-	CameraComponent(XMFLOAT3 position, XMFLOAT3 at, XMFLOAT3 up, float windowWidth, float windowHeight, float nearDepth, float farDepth);
+	CameraComponent(XMFLOAT3 camera_position, XMFLOAT3 camera_target, XMFLOAT3 camera_up, float windowWidth, float windowHeight, float nearDepth, float farDepth);
 	~CameraComponent();
 
 	void SetEye(XMFLOAT3 eye);
@@ -50,33 +60,10 @@ public:
 	XMFLOAT4X4 GetView();
 	XMFLOAT4X4 GetProjection();
 
-	//Use to move camera
-	XMVECTOR DefaultForward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-	XMVECTOR DefaultRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-	XMVECTOR camForward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-	XMVECTOR camRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-	XMVECTOR camPosition;
-	XMVECTOR camTarget;
-	XMVECTOR camUp;
-	//Rotate the camera
-	XMMATRIX camRotationMatrix;
+	void SetView(XMFLOAT3 camera_position, XMFLOAT3 camera_target, XMFLOAT3 camera_up);
+	void SetProjection();
 
-	//Move left and right
-	float moveLeftRight = 0.0f;
-
-	//Move back and forward
-	float moveBackForward = 0.0f;
-
-	//Vertical Rotation
-	float camYaw = 0.0f;
-	//Horizontal rotation
-	float camPitch = 0.0f;
-	void MoveForward();
-	void MoveBackward();
-	void MoveLeft();
-	void MoveRight();
-
-
+	void CameraMovement(float d);
 	void Reshape(float windowWidth, float windowHeight, float nearDepth, float farDepth);
 
 	// update function to make the current view and projection 

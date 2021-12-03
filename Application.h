@@ -26,7 +26,7 @@
 #include <directxmath.h>
 #include <directxcolors.h>
 #include "resource.h"
-#include "GraphicComponent.h"
+
 #include "ShaderComponent.h"
 #include "TextureComponent.h"
 
@@ -51,10 +51,7 @@ class Application
 {
 private:
 
-	float rotationSpeed = 1.0f;
 
-	float rotationValue = 0.0f;
-	float previousRotation = 0.0f;
 
 	Star* _star;
 	Plane* _plane;
@@ -63,7 +60,7 @@ private:
 	TextureComponent* _Tex;
 	ShaderComponent* _Shader;
 	CameraComponent* _Camera;
-	CameraComponent* _Camera2;
+
 	std::vector<GameObjects*> _GameObjects;
 
 public:
