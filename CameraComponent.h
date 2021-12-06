@@ -19,11 +19,8 @@ class CameraComponent
 private:
 
 	XMFLOAT3 Camera_Position;
-	XMFLOAT3 Camera_Target;
+	XMFLOAT3 Camera_Direction;
 	XMFLOAT3 Camera_Up;
-
-	float Camera_Yaw;
-	float Camera_Pitch;
 
 	float _WindowWidth;
 	float _WindowHeight;
@@ -32,39 +29,26 @@ private:
 
 
 public:
-	
-
-	
-	XMMATRIX Camera_Rotation;
-
-	float MoveRight;
-	float MoveLeft;
-	float MoveForward;
-	float MoveBackwards;
-	
 	//Matrices passed to shader to apply lighting ect...
 
 	XMFLOAT4X4 _View;
 	XMFLOAT4X4 _Projection; 
-	CameraComponent(XMFLOAT3 camera_position, XMFLOAT3 camera_target, XMFLOAT3 camera_up, float windowWidth, float windowHeight, float nearDepth, float farDepth);
+	CameraComponent(XMFLOAT3 camera_position, XMFLOAT3 camera_direction, XMFLOAT3 camera_up, float windowWidth, float windowHeight, float nearDepth, float farDepth);
 	~CameraComponent();
 
-	void SetEye(XMFLOAT3 eye);
-	void SetAt(XMFLOAT3 at);
-	void SetUp(XMFLOAT3 up);
+	void SetPosition(XMFLOAT3 position);
+	void SetDirection(XMFLOAT3 direction);
 
-	XMFLOAT3 GetEye();
-	XMFLOAT3 GetAt();
-	XMFLOAT3 GetUp();
+
+	XMFLOAT3 GetPosition();
+	XMFLOAT3 GetDirection();
+
 
 	XMFLOAT4X4 GetView();
 	XMFLOAT4X4 GetProjection();
 
 	void SetView(XMFLOAT3 camera_position, XMFLOAT3 camera_target, XMFLOAT3 camera_up);
 	void SetProjection();
-
-	void CameraMovement(float d);
-	void Reshape(float windowWidth, float windowHeight, float nearDepth, float farDepth);
 
 	// update function to make the current view and projection 
 // matrices

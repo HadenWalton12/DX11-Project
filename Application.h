@@ -1,4 +1,8 @@
 #pragma once
+#pragma comment (lib, "dinput8.lib")
+#pragma comment (lib, "dxguid.lib")
+#include <dinput.h>
+
 #include "SimpleVertexStructure.h"
 #include "LightingValuesStructure.h"
 
@@ -9,7 +13,9 @@
 //Makes it possible to create our window
 #include <windows.h>
 //Access to core DX functions 
+
 #include <d3d11_1.h>
+
 //Allows us to compile DX11 Code
 #include <d3dcompiler.h>
 //Math Library
@@ -53,6 +59,7 @@ private:
 
 
 
+	
 	Star* _star;
 	Plane* _plane;
 	Sphere* _sphere;
@@ -70,6 +77,22 @@ public:
 
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
 
+	bool InitDirectInput(HINSTANCE hInstance);
+	void DetectInput();
+
+	IDirectInputDevice8* DIKeyBoard;
+	IDirectInputDevice8* DIMouse;
+
+	DIMOUSESTATE mouseLastState;
+	LPDIRECTINPUT8 DirectInput;
+
+	float rotx = 0;
+	float rotz = 0;
+	float scaleX = 1.0f;
+	float scaleY = 1.0f;
+
+	XMMATRIX RotationX;
+	XMMATRIX RotationZ;
 	HRESULT Update();
 	void Draw();
 
