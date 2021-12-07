@@ -65,8 +65,8 @@
       <Filter>GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="CameraComponent.h" />
-    <ClInclude Include="DynamicCameraComponent.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="TerrainPlane.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -88,8 +88,8 @@
       <Filter>EngineComponent</Filter>
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp" />
-    <ClCompile Include="DynamicCameraComponent.cpp" />
     <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="TerrainPlane.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

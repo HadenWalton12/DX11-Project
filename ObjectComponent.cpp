@@ -19,6 +19,7 @@ void GameObjects::Update(GraphicComponent* gfx)
 
 void GameObjects::Draw()
 {
+	
 	_gfx->UpdateConstantBuffer(world);
 	_Shader->ComposeShader(_gfx);
 	SwitchDrawBuffers(_mesh.VertexBuffer, _mesh.IndexBuffer , _gfx);
@@ -29,7 +30,15 @@ void GameObjects::Draw()
 
 }
 
+void GameObjects::DrawHardCoded(ID3D11Buffer* VB, ID3D11Buffer* IB, GraphicComponent* _gfx)
+{
 
+	_gfx->UpdateConstantBuffer(world);
+	_Shader->ComposeShader(_gfx);
+	SwitchDrawBuffers(_mesh.VertexBuffer, _mesh.IndexBuffer, _gfx);
+	_Tex->BindTextures(0, _Textures.size(), _Textures, _gfx);
+	_gfx->_pImmediateContext->DrawIndexed(_mesh.IndexCount, 0, 0);
+}
 
 void GameObjects::CreateTexture(wchar_t* path)
 {

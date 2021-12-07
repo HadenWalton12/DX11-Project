@@ -39,7 +39,7 @@
 #include "Star.h"
 #include "Plane.h"
 #include "Sphere.h"
-
+#include "TerrainPlane.h"
 #include <vector>
 
 #include "DDSTextureLoader.h"
@@ -59,7 +59,7 @@ private:
 
 
 
-	
+	TerrainPlane* _Terrain;
 	Star* _star;
 	Plane* _plane;
 	Sphere* _sphere;

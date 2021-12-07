@@ -21,6 +21,7 @@ public:
 
 	void Update(GraphicComponent* gfx);										//Used to reference instances where the object is to be updated
 	void Draw();										//Draw method , to how we draw objects
+	void DrawHardCoded(ID3D11Buffer* VB, ID3D11Buffer* IB, GraphicComponent* _gfx);
 	void CreateTexture(wchar_t* path);					//Creates Texture
 
 
@@ -31,7 +32,6 @@ private:
 
 
 	void Initialise();
-	void SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB, GraphicComponent* _gfx);
 
 protected:
 	MeshData _mesh;										//Store object data within a mesh
@@ -44,6 +44,7 @@ protected:
 	XMFLOAT3 ObjectTranslation;
 	XMFLOAT3 ObjectRotation;
 	XMFLOAT3 ObjectScale;
+	void SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB, GraphicComponent* _gfx);
 
 };
 

@@ -380,11 +380,11 @@
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
-    <ClCompile Include="DynamicCameraComponent.cpp" />
     <ClCompile Include="GraphicComponent.cpp" />
     <ClCompile Include="ObjectComponent.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="ShaderComponent.cpp" />
+    <ClCompile Include="TerrainPlane.cpp" />
     <ClCompile Include="TextureComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -395,7 +395,6 @@
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="ConstantStructure.h" />
     <ClInclude Include="Cube.h" />
-    <ClInclude Include="DynamicCameraComponent.h" />
     <ClInclude Include="GraphicComponent.h" />
     <ClInclude Include="LightingValuesStructure.h" />
     <ClInclude Include="MeshStructure.h" />
@@ -408,6 +407,7 @@
     <ClInclude Include="SimpleVertexStructure.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Star.h" />
+    <ClInclude Include="TerrainPlane.h" />
     <ClInclude Include="TextureComponent.h" />
     <ClInclude Include="TimeStructure.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
