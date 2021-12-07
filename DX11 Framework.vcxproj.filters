@@ -90,6 +90,8 @@
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="TerrainPlane.cpp" />
+    <ClCompile Include="Star.cpp" />
+    <ClCompile Include="Plane.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

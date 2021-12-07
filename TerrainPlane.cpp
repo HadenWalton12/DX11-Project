@@ -1,12 +1,20 @@
 #include "TerrainPlane.h"
 
+void TerrainPlane::SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB, GraphicComponent* _gfx)
+{
+	UINT stride = sizeof(SimpleVertex);
+	UINT offset = 0;
+	_gfx->_pImmediateContext->IASetVertexBuffers(0, 1, &VB, &stride, &offset);
+	_gfx->_pImmediateContext->IASetIndexBuffer(IB, DXGI_FORMAT_R16_UINT, 0);
+}
+
 void TerrainPlane::GeneratePlane(int width , int depth)
 {
 	UINT Vertex_Count = width * depth;
 	UINT Face_Count = (width - 1) * (depth - 1) * 2;
 
-	SimpleVertex TerrainVertex[4];
-	WORD Indices[8];
+	SimpleVertex TerrainVertex[25];
+	WORD Indices[175];
 
 
 	float Half_Width = 0.5 * width;
@@ -35,13 +43,13 @@ void TerrainPlane::GeneratePlane(int width , int depth)
 			TerrainVertex[i * depth + j].TexC.y = 1.0f;
 		}
 	}
-	ID3D11Buffer* VertexBuffer;
+
 	//Grid Vertex  Buffer Description
 	D3D11_BUFFER_DESC Gridbufferdescription;
 	ZeroMemory(&Gridbufferdescription, sizeof(Gridbufferdescription));
 
 	Gridbufferdescription.Usage = D3D11_USAGE_DEFAULT;
-	Gridbufferdescription.ByteWidth = sizeof(SimpleVertex) * 4;
+	Gridbufferdescription.ByteWidth = sizeof(SimpleVertex) * 25;
 	Gridbufferdescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	Gridbufferdescription.CPUAccessFlags = 0;
 
@@ -78,14 +86,14 @@ void TerrainPlane::GeneratePlane(int width , int depth)
 		}
 
 	}
-	ID3D11Buffer* IndexBuffer;
+
 
 	//Cube Index Buffer Description
 	D3D11_BUFFER_DESC GridIndexbufferdescription;
 	ZeroMemory(&Gridbufferdescription, sizeof(GridIndexbufferdescription));
 
 	GridIndexbufferdescription.Usage = D3D11_USAGE_DEFAULT;
-	GridIndexbufferdescription.ByteWidth = sizeof(WORD) * 8;
+	GridIndexbufferdescription.ByteWidth = sizeof(WORD) * 175;
 	GridIndexbufferdescription.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	GridIndexbufferdescription.CPUAccessFlags = 0;
 
@@ -93,11 +101,10 @@ void TerrainPlane::GeneratePlane(int width , int depth)
 	ZeroMemory(&GridCubeData, sizeof(GridCubeData));
 	GridCubeData.pSysMem = Indices;
 	_gfx->_pd3dDevice->CreateBuffer(&Gridbufferdescription, &InitGridData, &IndexBuffer);
-	_mesh.IndexBuffer = IndexBuffer;
-	_mesh.VertexBuffer = VertexBuffer;
-	_mesh.IndexCount = GridIndexbufferdescription.ByteWidth;
 
-	_gfx->_pd3dDevice->CreateBuffer(&GridIndexbufferdescription, &GridCubeData, &IndexBuffer);
+	SwitchDrawBuffers(VertexBuffer, IndexBuffer, _gfx);
+
+
 	
 
 

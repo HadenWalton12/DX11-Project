@@ -1,8 +1,8 @@
 #include "ObjectComponent.h"
 
-GameObjects::GameObjects(GraphicComponent* _gfx, char* file) : _gfx(_gfx) , _Shader(_Shader) , _Tex(_Tex) , world(world)
-	{
-	_mesh = OBJLoader::Load(file, _gfx->GetDevice());
+GameObjects::GameObjects(GraphicComponent* _gfx) : _gfx(_gfx) , _Shader(_Shader) , _Tex(_Tex) , world(world)
+{
+	
 	Initialise();
 }
 
@@ -22,7 +22,8 @@ void GameObjects::Draw()
 	
 	_gfx->UpdateConstantBuffer(world);
 	_Shader->ComposeShader(_gfx);
-	SwitchDrawBuffers(_mesh.VertexBuffer, _mesh.IndexBuffer , _gfx);
+	LoadMesh();
+
 	_Tex->BindTextures(0, _Textures.size(), _Textures , _gfx);
 	_gfx->_pImmediateContext->DrawIndexed(_mesh.IndexCount, 0, 0);
 
@@ -30,21 +31,16 @@ void GameObjects::Draw()
 
 }
 
-void GameObjects::DrawHardCoded(ID3D11Buffer* VB, ID3D11Buffer* IB, GraphicComponent* _gfx)
-{
-
-	_gfx->UpdateConstantBuffer(world);
-	_Shader->ComposeShader(_gfx);
-	SwitchDrawBuffers(_mesh.VertexBuffer, _mesh.IndexBuffer, _gfx);
-	_Tex->BindTextures(0, _Textures.size(), _Textures, _gfx);
-	_gfx->_pImmediateContext->DrawIndexed(_mesh.IndexCount, 0, 0);
-}
-
 void GameObjects::CreateTexture(wchar_t* path)
 {
 	ID3D11ShaderResourceView* texture;
 	_Tex->CreateTexture(path, &texture , _gfx);
 	_Textures.push_back(texture);
+}
+
+void GameObjects::LoadMesh()
+{
+	
 }
 
 void GameObjects::Initialise()
@@ -57,10 +53,7 @@ void GameObjects::Initialise()
 
 void GameObjects::SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB , GraphicComponent* _gfx)
 {
-	UINT stride = sizeof(SimpleVertex);
-	UINT offset = 0;
-	_gfx->_pImmediateContext->IASetVertexBuffers(0, 1, &VB, &stride, &offset);
-	_gfx->_pImmediateContext->IASetIndexBuffer(IB, DXGI_FORMAT_R16_UINT, 0);
+
 }
 
 void GameObjects::CalculateTransformation()

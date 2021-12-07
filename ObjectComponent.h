@@ -15,15 +15,16 @@
 class GameObjects
 {
 public:
-	GameObjects(GraphicComponent* _gfx, char* file);   //Constructor , when child class is called , we will need to initialise a gfx component and file , this is how we create our objects.Within we call OBJ load method , passing in our "_pd3dDevice" function , and "file" , so when we create child class
+	GameObjects(GraphicComponent* _gfx);   //Constructor , when child class is called , we will need to initialise a gfx component and file , this is how we create our objects.Within we call OBJ load method , passing in our "_pd3dDevice" function , and "file" , so when we create child class
 	//we can call the device pointer and the file name as a string to initialise the object loading , to which we call the draw the loaded mesh object
 	~GameObjects();
 
 	void Update(GraphicComponent* gfx);										//Used to reference instances where the object is to be updated
 	void Draw();										//Draw method , to how we draw objects
-	void DrawHardCoded(ID3D11Buffer* VB, ID3D11Buffer* IB, GraphicComponent* _gfx);
+
 	void CreateTexture(wchar_t* path);					//Creates Texture
 
+	virtual void LoadMesh();
 
 	void SetScale(float x, float y, float z);
 	void SetRotation(float x, float y, float z);
@@ -44,7 +45,7 @@ protected:
 	XMFLOAT3 ObjectTranslation;
 	XMFLOAT3 ObjectRotation;
 	XMFLOAT3 ObjectScale;
-	void SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB, GraphicComponent* _gfx);
+	virtual void SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB, GraphicComponent* _gfx);
 
 };
 

@@ -43,20 +43,21 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _plane = new Plane(_gfx, _Shader, _Tex , _gfx->_world2);
     _star = new Star(_gfx, _Shader, _Tex , _gfx->_world1);
  //   _sphere = new Sphere(_gfx, _Shader, _Tex, _world3);
-    _GameObjects.push_back(_plane);
     _GameObjects.push_back(_star);
-    _GameObjects.push_back(_Terrain);
+    _GameObjects.push_back(_plane);
+
+   _GameObjects.push_back(_Terrain);
 //_sphere->CreateTexture(L"Crate_COLOR.dds");
   //  _sphere->SetTranslation(0.0f, -5.0f, 0.0f);
   // _sphere->SetRotation(0.0f, 1.0f, 0.0f);
   // _sphere->SetScale(1.0f, 1.0f, 1.0f);
 
     _Terrain->CreateTexture(L"Crate_COLOR.dds");
-    _Terrain->SetTranslation(0.0f, 0.0f, 0.0f);
-    _Terrain->SetScale(0.02f, 0.02f, 0.02f);
+    _Terrain->SetTranslation(0.0f, -1.0f, 0.0f);
+    _Terrain->SetScale(0.2f, 0.2f, 0.2f);
 
     _star->CreateTexture(L"Crate_COLOR.dds");
-    _star->SetTranslation(0.0f , 0.0f , 0.0f);
+    _star->SetTranslation(0.0f, 0.0f, 0.0f);
     _star->SetScale(0.02f, 0.02f, 0.02f);
 
    _plane->CreateTexture(L"Hercules_COLOR.dds");
@@ -162,8 +163,8 @@ void Application::DetectInput()
 HRESULT Application::Update()
 {
     Timer t;
-    _star->SetRotation(0.0f, 1.0f , 0.0f);
-  
+   
+    _star->SetRotation(0.0f, 1.0f, 0.0f);
        _gfx->SwitchCamera(_Camera);
        DetectInput();
     for (auto gameobject : _GameObjects)
@@ -178,8 +179,7 @@ HRESULT Application::Update()
 
 void Application::Draw()
 {
-    int width = 2;
-    int depth = 2;
+  
     _gfx->ClearRenderTarget();
   
 

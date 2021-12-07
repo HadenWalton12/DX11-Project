@@ -383,7 +383,9 @@
     <ClCompile Include="GraphicComponent.cpp" />
     <ClCompile Include="ObjectComponent.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
+    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="ShaderComponent.cpp" />
+    <ClCompile Include="Star.cpp" />
     <ClCompile Include="TerrainPlane.cpp" />
     <ClCompile Include="TextureComponent.cpp" />
   </ItemGroup>

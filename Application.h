@@ -58,11 +58,10 @@ class Application
 private:
 
 
-
 	TerrainPlane* _Terrain;
 	Star* _star;
 	Plane* _plane;
-	Sphere* _sphere;
+	//Sphere* _sphere;
 	GraphicComponent* _gfx;
 	TextureComponent* _Tex;
 	ShaderComponent* _Shader;
