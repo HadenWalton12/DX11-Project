@@ -66,6 +66,7 @@
     </ClInclude>
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="DynamicCameraComponent.h" />
+    <ClInclude Include="Cube.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -88,6 +89,7 @@
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="DynamicCameraComponent.cpp" />
+    <ClCompile Include="Cube.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

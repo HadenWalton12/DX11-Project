@@ -79,7 +79,7 @@ private:
 	ID3D11Texture2D*		_pDepthStencilBuffer;				//2D texture interface manager , managing texel data (structured image data) , stores depth data , processed in DepthStencilView
 
 	ID3D11RasterizerState* _RasterizerState;					//Holds interface description for rasterizer state - to be bound to rasterizer stage
-
+	ID3D11BlendState* _pBlendState;
 
 
 	//Holds background colour value
@@ -97,7 +97,8 @@ private:
 	void InitialiseDepth();										//Creates DepthBuffer Function - Refer to notes of what this is
 	void InitialiseViewport();									//Initialise View Region - Refer to notes of what this is
 	void InitialiseConstantBuffer();							//Initialise Constant Buffer - Refer to notes of what this is
-	
+	void InitialiseAlphaBlending();
+
 
 
 

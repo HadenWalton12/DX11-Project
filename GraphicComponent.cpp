@@ -144,6 +144,7 @@ void GraphicComponent::InitialiseDevice()
     InitialiseSolid();
     InitialiseViewport();
     InitialiseConstantBuffer();
+    InitialiseAlphaBlending();
     InitialiseSampler();
 
 
@@ -333,6 +334,36 @@ void GraphicComponent::InitialiseConstantBuffer()
     
     //Create Buffer - Using Description above , 3rd parameters assigns value to Constantbuffer buffer pointer.
     _pd3dDevice->CreateBuffer(&constantbufferdescription, nullptr, &_pConstantBuffer);  
+}
+
+void GraphicComponent::InitialiseAlphaBlending()
+{
+    D3D11_BLEND_DESC blendingdescription;
+
+    ZeroMemory(&blendingdescription, sizeof(blendingdescription));
+
+    D3D11_RENDER_TARGET_BLEND_DESC rtbd;
+
+    ZeroMemory(&rtbd, sizeof(rtbd));
+
+    rtbd.BlendEnable = true;
+    rtbd.SrcBlend = D3D11_BLEND_SRC_COLOR;
+    rtbd.DestBlend = D3D11_BLEND_BLEND_FACTOR;
+    rtbd.BlendOp = D3D11_BLEND_OP_ADD;
+    rtbd.SrcBlendAlpha = D3D11_BLEND_ONE;
+    rtbd.DestBlendAlpha = D3D11_BLEND_ZERO;
+    rtbd.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    rtbd.RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
+
+    blendingdescription.AlphaToCoverageEnable = false;
+    blendingdescription.RenderTarget[0] = rtbd;
+
+    _pd3dDevice->CreateBlendState(&blendingdescription, &_pBlendState);
+
+    float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f };
+
+    
+    _pImmediateContext->OMSetBlendState(_pBlendState , blendFactor , 0xffffffff);
 }
 
 void GraphicComponent::UpdateConstantBuffer(XMFLOAT4X4 world )

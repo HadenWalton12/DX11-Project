@@ -60,7 +60,7 @@ void CameraComponent::SetView(XMFLOAT3 camera_position, XMFLOAT3 camera_target, 
 
 	XMStoreFloat4(&lightvalue.EyePosW, Eye);
 	//Initalize view matrix
-	XMStoreFloat4x4(&_View, XMMatrixLookToLH(Eye, Target, Up));
+	XMStoreFloat4x4(&_View, XMMatrixLookAtLH(Eye, Target, Up));
 }
 
 void CameraComponent::SetProjection()
