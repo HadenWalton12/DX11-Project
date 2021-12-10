@@ -67,6 +67,7 @@
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="TerrainPlane.h" />
+    <ClInclude Include="Vertex_Index_Component.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />

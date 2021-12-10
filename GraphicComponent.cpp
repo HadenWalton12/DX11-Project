@@ -144,7 +144,6 @@ void GraphicComponent::InitialiseDevice()
     InitialiseSolid();
     InitialiseViewport();
     InitialiseConstantBuffer();
-    InitialiseAlphaBlending();
     InitialiseSampler();
 
 

@@ -1,5 +1,16 @@
 #include "Star.h"
 
+void Star::CalculateTransformation()
+{
+	Timer t;
+	XMMATRIX scale = XMMatrixScaling(ObjectScale.x, ObjectScale.y, ObjectScale.z);
+	XMMATRIX translation = XMMatrixTranslation(ObjectTranslation.x, ObjectTranslation.y, ObjectTranslation.z);
+	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(ObjectRotation.x, ObjectRotation.y * t.time, ObjectRotation.z);
+
+
+	XMStoreFloat4x4(&world, scale * translation * rotation);
+}
+
 void Star::SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB, GraphicComponent* _gfx)
 {
 	UINT stride = sizeof(SimpleVertex);

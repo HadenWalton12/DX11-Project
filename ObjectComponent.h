@@ -26,6 +26,8 @@ public:
 
 	virtual void LoadMesh();
 
+	virtual void LoadObject();
+
 	void SetScale(float x, float y, float z);
 	void SetRotation(float x, float y, float z);
 	void SetTranslation(float x, float y, float z);

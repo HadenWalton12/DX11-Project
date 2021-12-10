@@ -1,5 +1,16 @@
 #include "TerrainPlane.h"
 
+void TerrainPlane::CalculateTransformation()
+{
+	Timer t;
+	XMMATRIX scale = XMMatrixScaling(ObjectScale.x, ObjectScale.y, ObjectScale.z);
+	XMMATRIX translation = XMMatrixTranslation(ObjectTranslation.x, ObjectTranslation.y, ObjectTranslation.z);
+	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(ObjectRotation.x, ObjectRotation.y * t.time, ObjectRotation.z);
+
+
+	XMStoreFloat4x4(&world, scale * translation * rotation);
+}
+
 void TerrainPlane::SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB, GraphicComponent* _gfx)
 {
 	UINT stride = sizeof(SimpleVertex);
@@ -8,39 +19,39 @@ void TerrainPlane::SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB, Graphic
 	_gfx->_pImmediateContext->IASetIndexBuffer(IB, DXGI_FORMAT_R16_UINT, 0);
 }
 
-void TerrainPlane::GeneratePlane(int width , int depth)
+MeshData TerrainPlane::GeneratePlane(float width, float depth, UINT m, UINT n, ID3D11Device* device)
 {
-	UINT Vertex_Count = width * depth;
-	UINT Face_Count = (width - 1) * (depth - 1) * 2;
+	UINT Vertex_Count = m * n;
+	UINT Face_Count = (m - 1) * (n - 1) * 2;
 
-	SimpleVertex TerrainVertex[25];
-	WORD Indices[175];
+	SimpleVertex TerrainVertex[100];
+	WORD Indices[300];
 
 
 	float Half_Width = 0.5 * width;
 	float Half_Depth = 0.5 * depth;
 
-	float dx = width / (depth - 1); 
-	float dz = depth / (width - 1);
+	float dx = width / (n - 1); 
+	float dz = depth / (m - 1);
 
 	//Calculates the delta between each row and column of tex coords
-	float du = 1.0f / (depth - 1);
-	float dv = 1.0f / (width - 1);
+	float du = 1.0f / (n - 1);
+	float dv = 1.0f / (m - 1);
 
-	for (UINT i = 0; i < width; i++)
+	for (UINT i = 0; i < m; i++)
 	{
 		float z = Half_Depth - i * dz;
 
-		for (UINT j = 0; j < depth ; j++)
+		for (UINT j = 0; j < n ; j++)
 		{
 
 			float x = -Half_Width + j * dx;
 
-			TerrainVertex[i * depth + j].Pos = XMFLOAT3(x, 0.0f, z);
-			TerrainVertex[i * depth + j].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+			TerrainVertex[i * n + j].Pos = XMFLOAT3(x, 0.0f, z);
+			TerrainVertex[i * n + j].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
-			TerrainVertex[i * depth + j].TexC.x = 0.0f;
-			TerrainVertex[i * depth + j].TexC.y = 1.0f;
+			TerrainVertex[i * n + j].TexC.x = j * du;
+			TerrainVertex[i * n + j].TexC.y = i * dv;
 		}
 	}
 
@@ -49,7 +60,7 @@ void TerrainPlane::GeneratePlane(int width , int depth)
 	ZeroMemory(&Gridbufferdescription, sizeof(Gridbufferdescription));
 
 	Gridbufferdescription.Usage = D3D11_USAGE_DEFAULT;
-	Gridbufferdescription.ByteWidth = sizeof(SimpleVertex) * 25;
+	Gridbufferdescription.ByteWidth = sizeof(SimpleVertex) * 100;
 	Gridbufferdescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	Gridbufferdescription.CPUAccessFlags = 0;
 
@@ -58,7 +69,7 @@ void TerrainPlane::GeneratePlane(int width , int depth)
 	ZeroMemory(&InitGridData, sizeof(InitGridData));
 	InitGridData.pSysMem = TerrainVertex;
 
-	_gfx->_pd3dDevice->CreateBuffer(&Gridbufferdescription, &InitGridData, &VertexBuffer);
+	device->CreateBuffer(&Gridbufferdescription, &InitGridData, &VertexBuffer);
 
 	_mesh.VertexBuffer = VertexBuffer;
 	_mesh.VBOffset = 0;
@@ -67,17 +78,17 @@ void TerrainPlane::GeneratePlane(int width , int depth)
 
 	UINT k = 0;
 
-	for (UINT i = 0; i < width - 1; i++)
+	for (UINT i = 0; i < m - 1; i++)
 	{
-		for (UINT j = 0; j < depth - 1; j++)
+		for (UINT j = 0; j < n - 1; j++)
 		{
-			Indices[k] = i * depth + j;
-			Indices[k + 1] = i * depth + j + 1;
-			Indices[k + 2] = (i + 1) * depth + j;
+			Indices[k] = i * n + j;
+			Indices[k + 1] = i * n + j + 1;
+			Indices[k + 2] = (i + 1) * n + j;
 
-			Indices[k + 3] = (i + 1) * depth + j;
-			Indices[k + 4] = i * depth + j + 1;
-			Indices[k + 6] = (i + 1) * depth + j + 1;
+			Indices[k + 3] = (i + 1) * n + j;
+			Indices[k + 4] = i * n + j + 1;
+			Indices[k + 6] = (i + 1) * n + j + 1;
 
 			k += 6;
 
@@ -89,24 +100,26 @@ void TerrainPlane::GeneratePlane(int width , int depth)
 
 
 	//Cube Index Buffer Description
-	D3D11_BUFFER_DESC GridIndexbufferdescription;
-	ZeroMemory(&Gridbufferdescription, sizeof(GridIndexbufferdescription));
+	D3D11_BUFFER_DESC TerrainIndexBufferDescription;
+	ZeroMemory(&TerrainIndexBufferDescription, sizeof(TerrainIndexBufferDescription));
 
-	GridIndexbufferdescription.Usage = D3D11_USAGE_DEFAULT;
-	GridIndexbufferdescription.ByteWidth = sizeof(WORD) * 175;
-	GridIndexbufferdescription.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	GridIndexbufferdescription.CPUAccessFlags = 0;
+	TerrainIndexBufferDescription.Usage = D3D11_USAGE_DEFAULT;
+	TerrainIndexBufferDescription.ByteWidth = sizeof(WORD) * 300;
+	TerrainIndexBufferDescription.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	TerrainIndexBufferDescription.CPUAccessFlags = 0;
 
-	D3D11_SUBRESOURCE_DATA GridCubeData;
-	ZeroMemory(&GridCubeData, sizeof(GridCubeData));
-	GridCubeData.pSysMem = Indices;
-	_gfx->_pd3dDevice->CreateBuffer(&Gridbufferdescription, &InitGridData, &IndexBuffer);
+	D3D11_SUBRESOURCE_DATA IndexTerrainData;
+	ZeroMemory(&IndexTerrainData, sizeof(IndexTerrainData));
+	IndexTerrainData.pSysMem = Indices;
+	device->CreateBuffer(&TerrainIndexBufferDescription, &IndexTerrainData, &IndexBuffer);
 
-	SwitchDrawBuffers(VertexBuffer, IndexBuffer, _gfx);
+	_mesh.IndexBuffer = IndexBuffer;
+	_mesh.IndexCount = 300;
+
 
 
 	
-
+	return _mesh;
 
 
 }

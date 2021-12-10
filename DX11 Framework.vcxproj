@@ -412,6 +412,7 @@
     <ClInclude Include="TerrainPlane.h" />
     <ClInclude Include="TextureComponent.h" />
     <ClInclude Include="TimeStructure.h" />
+    <ClInclude Include="Vertex_Index_Component.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
   </ItemGroup>
   <ItemGroup>

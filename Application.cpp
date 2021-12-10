@@ -39,9 +39,9 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
             L"Error", MB_OK);
             return 0;
     }
-    _Terrain = new TerrainPlane(_gfx, _Shader, _Tex, _gfx->_world3);
+    _Terrain = new TerrainPlane(_gfx, _Shader, _Tex, _gfx->_world1);
     _plane = new Plane(_gfx, _Shader, _Tex , _gfx->_world2);
-    _star = new Star(_gfx, _Shader, _Tex , _gfx->_world1);
+    _star = new Star(_gfx, _Shader, _Tex , _gfx->_world3);
  //   _sphere = new Sphere(_gfx, _Shader, _Tex, _world3);
     _GameObjects.push_back(_star);
     _GameObjects.push_back(_plane);
@@ -53,16 +53,16 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
   // _sphere->SetScale(1.0f, 1.0f, 1.0f);
 
     _Terrain->CreateTexture(L"Crate_COLOR.dds");
-    _Terrain->SetTranslation(0.0f, -1.0f, 0.0f);
-    _Terrain->SetScale(0.2f, 0.2f, 0.2f);
+    _Terrain->SetTranslation(0.0f, 0.0f, 0.0f);
+    _Terrain->SetScale(1.0f, 1.0f, 1.0f);
 
     _star->CreateTexture(L"Crate_COLOR.dds");
-    _star->SetTranslation(0.0f, 0.0f, 0.0f);
+    _star->SetTranslation(-5.0f, 0.0f, 0.0f);
     _star->SetScale(0.02f, 0.02f, 0.02f);
 
    _plane->CreateTexture(L"Hercules_COLOR.dds");
    _plane->SetTranslation(5.0f, 0.0f, 0.0f);
-   _plane->SetRotation(0.0f, 1.0f, 0.0f);
+   _plane->SetRotation(0.0f, .0f, 0.0f);
    _plane->SetScale(0.1f, 0.1f, 0.1f);
    XMFLOAT3 Camera_Position = XMFLOAT3(0.0f, 0.0f, 1.0f);
    XMFLOAT3 Camera_Target = XMFLOAT3(0.0f, 0.0f, -1.0f);

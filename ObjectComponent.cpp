@@ -19,10 +19,11 @@ void GameObjects::Update(GraphicComponent* gfx)
 
 void GameObjects::Draw()
 {
-	
+	LoadMesh();
+	LoadObject();
 	_gfx->UpdateConstantBuffer(world);
 	_Shader->ComposeShader(_gfx);
-	LoadMesh();
+
 
 	_Tex->BindTextures(0, _Textures.size(), _Textures , _gfx);
 	_gfx->_pImmediateContext->DrawIndexed(_mesh.IndexCount, 0, 0);
@@ -42,7 +43,10 @@ void GameObjects::LoadMesh()
 {
 	
 }
+void GameObjects::LoadObject()
+{
 
+}
 void GameObjects::Initialise()
 {
 	_Shader = new ShaderComponent();
