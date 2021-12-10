@@ -53,8 +53,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
   // _sphere->SetScale(1.0f, 1.0f, 1.0f);
 
     _Terrain->CreateTexture(L"Crate_COLOR.dds");
-    _Terrain->SetTranslation(0.0f, 0.0f, 0.0f);
-    _Terrain->SetScale(1.0f, 1.0f, 1.0f);
+
 
     _star->CreateTexture(L"Crate_COLOR.dds");
     _star->SetTranslation(-5.0f, 0.0f, 0.0f);

@@ -15,12 +15,18 @@ void TerrainPlane::SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB, Graphic
 {
 	UINT stride = sizeof(SimpleVertex);
 	UINT offset = 0;
-	_gfx->_pImmediateContext->IASetVertexBuffers(0, 1, &VB, &stride, &offset);
+ 	_gfx->_pImmediateContext->IASetVertexBuffers(0, 1, &VB, &stride, &offset);
 	_gfx->_pImmediateContext->IASetIndexBuffer(IB, DXGI_FORMAT_R16_UINT, 0);
 }
 
-MeshData TerrainPlane::GeneratePlane(float width, float depth, UINT m, UINT n, ID3D11Device* device)
+MeshData TerrainPlane::GeneratePlane( ID3D11Device* device)
 {
+	int m = 8;
+	int   n = 8;
+
+	float width = 75.0f;
+	float depth = 75.0f;
+
 	UINT Vertex_Count = m * n;
 	UINT Face_Count = (m - 1) * (n - 1) * 2;
 
@@ -31,7 +37,7 @@ MeshData TerrainPlane::GeneratePlane(float width, float depth, UINT m, UINT n, I
 	float Half_Width = 0.5 * width;
 	float Half_Depth = 0.5 * depth;
 
-	float dx = width / (n - 1); 
+	float dx = width / (n - 1);
 	float dz = depth / (m - 1);
 
 	//Calculates the delta between each row and column of tex coords
@@ -42,7 +48,7 @@ MeshData TerrainPlane::GeneratePlane(float width, float depth, UINT m, UINT n, I
 	{
 		float z = Half_Depth - i * dz;
 
-		for (UINT j = 0; j < n ; j++)
+		for (UINT j = 0; j < n; j++)
 		{
 
 			float x = -Half_Width + j * dx;
@@ -71,9 +77,7 @@ MeshData TerrainPlane::GeneratePlane(float width, float depth, UINT m, UINT n, I
 
 	device->CreateBuffer(&Gridbufferdescription, &InitGridData, &VertexBuffer);
 
-	_mesh.VertexBuffer = VertexBuffer;
-	_mesh.VBOffset = 0;
-	_mesh.VBStride = sizeof(SimpleVertex);
+
 
 
 	UINT k = 0;
@@ -88,7 +92,7 @@ MeshData TerrainPlane::GeneratePlane(float width, float depth, UINT m, UINT n, I
 
 			Indices[k + 3] = (i + 1) * n + j;
 			Indices[k + 4] = i * n + j + 1;
-			Indices[k + 6] = (i + 1) * n + j + 1;
+			Indices[k + 5] = (i + 1) * n + j + 1;
 
 			k += 6;
 
@@ -113,6 +117,9 @@ MeshData TerrainPlane::GeneratePlane(float width, float depth, UINT m, UINT n, I
 	IndexTerrainData.pSysMem = Indices;
 	device->CreateBuffer(&TerrainIndexBufferDescription, &IndexTerrainData, &IndexBuffer);
 
+	_mesh.VertexBuffer = VertexBuffer;
+	_mesh.VBOffset = 0;
+	_mesh.VBStride = sizeof(SimpleVertex);
 	_mesh.IndexBuffer = IndexBuffer;
 	_mesh.IndexCount = 300;
 

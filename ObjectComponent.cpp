@@ -15,12 +15,13 @@ GameObjects::~GameObjects()
 void GameObjects::Update(GraphicComponent* gfx)
 {
 	CalculateTransformation();
+
 }
 
 void GameObjects::Draw()
 {
 	LoadMesh();
-	LoadObject();
+
 	_gfx->UpdateConstantBuffer(world);
 	_Shader->ComposeShader(_gfx);
 
