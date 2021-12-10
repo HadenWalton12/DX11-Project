@@ -73,16 +73,17 @@
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="TerrainPlane.h" />
-    <ClInclude Include="Vertex_Index_Component.h" />
     <ClInclude Include="SkyBox.h" />
-    <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="VertexBuffer.h">
       <Filter>Engine\Bindables</Filter>
     </ClInclude>
     <ClInclude Include="Bindable.h">
       <Filter>Engine\Bindables</Filter>
     </ClInclude>
-    <ClInclude Include="VertexShader.h">
+    <ClInclude Include="Shaders.h">
+      <Filter>Engine\Bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
       <Filter>Engine\Bindables</Filter>
     </ClInclude>
   </ItemGroup>
@@ -112,11 +113,6 @@
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="Entities.cpp" />
-    <ClCompile Include="IndexBuffer.cpp" />
-    <ClCompile Include="VertexBuffer.cpp">
-      <Filter>Engine\Bindables</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

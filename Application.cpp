@@ -1,5 +1,10 @@
 #include "Application.h"
     
+//Example of ECS Engine
+// https://amirazmi.net/c-ecs-engine/
+
+
+
 /*
         Windows based aplications are always event drive to the core , waiting for messages(events) to be passed into message queue
 
@@ -64,6 +69,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
    _plane->SetTranslation(5.0f, 0.0f, 0.0f);
    _plane->SetRotation(0.0f, .0f, 0.0f);
    _plane->SetScale(0.1f, 0.1f, 0.1f);
+
    XMFLOAT3 Camera_Position = XMFLOAT3(0.0f, 0.0f, 1.0f);
    XMFLOAT3 Camera_Target = XMFLOAT3(0.0f, 0.0f, -1.0f);
    XMFLOAT3 Camera_Up = XMFLOAT3 (0.0f, 1.0f, 0.0f);
