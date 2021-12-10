@@ -385,6 +385,7 @@
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="ShaderComponent.cpp" />
+    <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="Star.cpp" />
     <ClCompile Include="TerrainPlane.cpp" />
     <ClCompile Include="TextureComponent.cpp" />
@@ -407,6 +408,7 @@
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="ShaderComponent.h" />
     <ClInclude Include="SimpleVertexStructure.h" />
+    <ClInclude Include="SkyBox.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Star.h" />
     <ClInclude Include="TerrainPlane.h" />

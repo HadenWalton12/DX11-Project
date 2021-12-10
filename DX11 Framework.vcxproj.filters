@@ -68,6 +68,7 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="TerrainPlane.h" />
     <ClInclude Include="Vertex_Index_Component.h" />
+    <ClInclude Include="SkyBox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -93,6 +94,7 @@
     <ClCompile Include="TerrainPlane.cpp" />
     <ClCompile Include="Star.cpp" />
     <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="SkyBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

@@ -33,6 +33,7 @@ public:
 	XMFLOAT4X4				_world1;
 	XMFLOAT4X4				_world2;
 	XMFLOAT4X4				_world3;
+	XMFLOAT4X4				_world4;
 						//Used for transformations
 
 

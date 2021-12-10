@@ -6,6 +6,7 @@
 #include "SimpleVertexStructure.h"
 #include "LightingValuesStructure.h"
 
+
 #include "ConstantStructure.h"
 #include "MeshStructure.h"
 #include "OBJLoader.h"
@@ -36,6 +37,7 @@
 #include "ShaderComponent.h"
 #include "TextureComponent.h"
 
+#include "SkyBox.h"
 #include "Star.h"
 #include "Plane.h"
 #include "Sphere.h"
@@ -61,6 +63,7 @@ private:
 	TerrainPlane* _Terrain;
 	Star* _star;
 	Plane* _plane;
+	SkyBox* _skybox;
 	//Sphere* _sphere;
 	GraphicComponent* _gfx;
 	TextureComponent* _Tex;

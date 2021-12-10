@@ -42,6 +42,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _Terrain = new TerrainPlane(_gfx, _Shader, _Tex, _gfx->_world1);
     _plane = new Plane(_gfx, _Shader, _Tex , _gfx->_world2);
     _star = new Star(_gfx, _Shader, _Tex , _gfx->_world3);
+    _skybox = new SkyBox(_gfx, _Shader, _Tex , _gfx->_world4);
  //   _sphere = new Sphere(_gfx, _Shader, _Tex, _world3);
     _GameObjects.push_back(_star);
     _GameObjects.push_back(_plane);
@@ -53,7 +54,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
   // _sphere->SetScale(1.0f, 1.0f, 1.0f);
 
     _Terrain->CreateTexture(L"Crate_COLOR.dds");
-
+    _skybox->CreateTexture(L"Skybox.dds");
 
     _star->CreateTexture(L"Crate_COLOR.dds");
     _star->SetTranslation(-5.0f, 0.0f, 0.0f);
@@ -181,7 +182,7 @@ void Application::Draw()
   
     _gfx->ClearRenderTarget();
   
-
+    _skybox->Draw();
     for (auto gameobject : _GameObjects)
     {
         
