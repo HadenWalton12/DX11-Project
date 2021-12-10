@@ -382,6 +382,7 @@
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="Entities.cpp" />
     <ClCompile Include="GraphicComponent.cpp" />
+    <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="ObjectComponent.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="Plane.cpp" />
@@ -390,6 +391,8 @@
     <ClCompile Include="Star.cpp" />
     <ClCompile Include="TerrainPlane.cpp" />
     <ClCompile Include="TextureComponent.cpp" />
+    <ClCompile Include="VertexBuffer.cpp" />
+    <ClCompile Include="VertexShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DX11 Framework.fx" />
@@ -399,8 +402,9 @@
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="ConstantStructure.h" />
     <ClInclude Include="Cube.h" />
-    <ClInclude Include="Entities.h" />
+    <ClInclude Include="Bindable.h" />
     <ClInclude Include="GraphicComponent.h" />
+    <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="LightingValuesStructure.h" />
     <ClInclude Include="MeshStructure.h" />
     <ClInclude Include="ObjectComponent.h" />
@@ -416,6 +420,8 @@
     <ClInclude Include="TerrainPlane.h" />
     <ClInclude Include="TextureComponent.h" />
     <ClInclude Include="TimeStructure.h" />
+    <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="VertexShader.h" />
     <ClInclude Include="Vertex_Index_Component.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
   </ItemGroup>
