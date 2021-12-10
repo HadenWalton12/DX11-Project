@@ -380,6 +380,7 @@
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
+    <ClCompile Include="Entities.cpp" />
     <ClCompile Include="GraphicComponent.cpp" />
     <ClCompile Include="ObjectComponent.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
@@ -398,6 +399,7 @@
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="ConstantStructure.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="Entities.h" />
     <ClInclude Include="GraphicComponent.h" />
     <ClInclude Include="LightingValuesStructure.h" />
     <ClInclude Include="MeshStructure.h" />

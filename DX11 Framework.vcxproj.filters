@@ -9,9 +9,6 @@
       <UniqueIdentifier>{2c3d4c8c-5d1a-459a-a05a-a4e4b608a44e}</UniqueIdentifier>
       <Extensions>fx;fxh;hlsl</Extensions>
     </Filter>
-    <Filter Include="EngineComponent">
-      <UniqueIdentifier>{bcee61a9-7895-4015-a107-45b913f570da}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObjects">
       <UniqueIdentifier>{c7260ff0-62dc-42b0-9fae-83ef87275b5c}</UniqueIdentifier>
     </Filter>
@@ -21,12 +18,21 @@
     <Filter Include="Dependencies">
       <UniqueIdentifier>{94945e36-9990-4c6b-92c0-8ed391121f4d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{7c4d20c6-1d17-4084-a847-a20e999b5998}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\EngineComponent">
+      <UniqueIdentifier>{bcee61a9-7895-4015-a107-45b913f570da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Bindables">
+      <UniqueIdentifier>{c28627e2-0d03-4f87-a1ed-d94bb204d9fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="GraphicComponent.h">
-      <Filter>EngineComponent</Filter>
+      <Filter>Engine\EngineComponent</Filter>
     </ClInclude>
     <ClInclude Include="ObjectComponent.h">
       <Filter>GameObjects</Filter>
@@ -35,7 +41,7 @@
       <Filter>GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="ShaderComponent.h">
-      <Filter>EngineComponent</Filter>
+      <Filter>Engine\EngineComponent</Filter>
     </ClInclude>
     <ClInclude Include="LightingValuesStructure.h">
       <Filter>Structures</Filter>
@@ -53,7 +59,7 @@
       <Filter>Dependencies</Filter>
     </ClInclude>
     <ClInclude Include="TextureComponent.h">
-      <Filter>EngineComponent</Filter>
+      <Filter>Engine\EngineComponent</Filter>
     </ClInclude>
     <ClInclude Include="TimeStructure.h">
       <Filter>Structures</Filter>
@@ -69,25 +75,26 @@
     <ClInclude Include="TerrainPlane.h" />
     <ClInclude Include="Vertex_Index_Component.h" />
     <ClInclude Include="SkyBox.h" />
+    <ClInclude Include="Entities.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="GraphicComponent.cpp">
-      <Filter>EngineComponent</Filter>
+      <Filter>Engine\EngineComponent</Filter>
     </ClCompile>
     <ClCompile Include="ObjectComponent.cpp">
       <Filter>GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="ShaderComponent.cpp">
-      <Filter>EngineComponent</Filter>
+      <Filter>Engine\EngineComponent</Filter>
     </ClCompile>
     <ClCompile Include="OBJLoader.cpp">
       <Filter>Dependencies</Filter>
     </ClCompile>
     <ClCompile Include="TextureComponent.cpp">
-      <Filter>EngineComponent</Filter>
+      <Filter>Engine\EngineComponent</Filter>
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Cube.cpp" />
@@ -95,6 +102,7 @@
     <ClCompile Include="Star.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="SkyBox.cpp" />
+    <ClCompile Include="Entities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
