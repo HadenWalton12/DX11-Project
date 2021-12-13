@@ -21,10 +21,24 @@
     <Filter Include="Dependencies">
       <UniqueIdentifier>{94945e36-9990-4c6b-92c0-8ed391121f4d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4a3b335f-a2f1-46ec-8017-ed5f183251df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{b4f401d6-741a-4cd6-95b1-d07c617ac6e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SystemComponents">
+      <UniqueIdentifier>{fd13e2b0-8550-4f0f-b848-07f323a49fdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\System Components">
+      <UniqueIdentifier>{0cbc991e-4f9c-4945-ad14-94c28e79ff14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\System Components\Shader Dependency">
+      <UniqueIdentifier>{358be64d-f983-474b-9b68-74e27b21e8ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="GraphicComponent.h">
       <Filter>EngineComponent</Filter>
     </ClInclude>
@@ -65,12 +79,37 @@
       <Filter>GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="CameraComponent.h" />
-    <ClInclude Include="DynamicCameraComponent.h" />
+    <ClInclude Include="DDSTextureLoader.h">
+      <Filter>Dependencies</Filter>
+    </ClInclude>
+    <ClInclude Include="Render Commands.h">
+      <Filter>Source Files\SystemComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>Header Files\System Components</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Header Files\System Components</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>Header Files\System Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>Header Files\System Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderCompiler.h">
+      <Filter>Header Files\System Components\Shader Dependency</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityTransformation.h">
+      <Filter>Header Files\System Components</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformationStructure.h">
+      <Filter>Structures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
-    <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="GraphicComponent.cpp">
       <Filter>EngineComponent</Filter>
     </ClCompile>
@@ -87,7 +126,10 @@
       <Filter>EngineComponent</Filter>
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp" />
-    <ClCompile Include="DynamicCameraComponent.cpp" />
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityTransformation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
