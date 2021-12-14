@@ -5,11 +5,14 @@
 class Star : public GameObjects
 {
 public:
-	Star::Star(GraphicComponent* gfx, ID3D11VertexShader* vertex_shader, ID3D11PixelShader* pixel_shader ,  TextureComponent* _Tex , XMFLOAT4X4 world) : GameObjects(gfx, "Star.obj")
+	Star::Star(GraphicComponent* gfx ,  TextureComponent* _Tex , XMFLOAT4X4 world) : GameObjects(gfx, "Star.obj")
 	{
-		_pVertexShader = new VertexShader(_gfx->GetDevice() , _VS , L"DX11 Framework.fx");
 		
-			
+		_pVertexShader = new VertexShader(_gfx->GetDevice() , _VS , L"DX11 Framework.fx");
+		_pPixelShader = new PixelShader(_gfx->GetDevice(), _PS, L"DX11 Framework.fx");
+		_VS = _pVertexShader->GetShader();
+		_PS = _pPixelShader->GetShader();
+		gfx->InitialiseShaders(_VS, _PS);
 	}
 
 	void CalculateTransformation()  override
@@ -25,7 +28,7 @@ public:
 
 	void Initialise() 
 	{
-	
+		
 	
 		
 		//_pPixelShader = new PixelShaderComp(_gfx->GetDevice(), PS, L"DX11 Framework.fx");
@@ -33,6 +36,7 @@ public:
 
 	}
 	ID3D11VertexShader* _VS;
+	ID3D11PixelShader* _PS;
 	VertexShader* _pVertexShader;
 	PixelShader* _pPixelShader;
 	

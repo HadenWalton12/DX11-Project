@@ -56,6 +56,7 @@ public:
 	void ClearRenderTarget();									//Clears RenderTarget (Buffer our scene was draw) , so the buffer is ready to be drawn on with next scene
 	void UpdateConstantBuffer(XMFLOAT4X4 world);				//Updates constant buffer values
 	void InitialiseSolid();										//Changes Rasterizer State to solid
+	void InitialiseShaders(ID3D11VertexShader* VS, ID3D11PixelShader* PS);
 	void InitialiseWireFrame();									//Changes Rasterizer State to WireFrame
 	void UpdateCamera();
 	void SwitchCamera(CameraComponent* camera);

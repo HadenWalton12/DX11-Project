@@ -5,10 +5,10 @@ class PixelShader
 {
 public:
 
-    PixelShader(ID3D11Device* device, ID3D11PixelShader* pixel_shader, WCHAR* PS_PATH) : _pDevice(device)
+    PixelShader(ID3D11Device* device, ID3D11PixelShader* pixel_shader, WCHAR* PS_PATH) : _pDevice(device) , _PixelShader(pixel_shader)
     {
         _pShaderCompiler = new ShaderCompiler();
-
+        CreatePixelShader(pixel_shader , PS_PATH);
 
     }
 
@@ -37,12 +37,16 @@ public:
             return hr;
         }
 
-
+        _PixelShader = pixel_shader;
 
     }
+    ID3D11PixelShader* GetShader()
+    {
+        return _PixelShader;
 
+    }
 private:
-
+    ID3D11PixelShader* _PixelShader;
     ID3D11Device* _pDevice;
     ShaderCompiler* _pShaderCompiler;
 };

@@ -409,3 +409,11 @@ void GraphicComponent::InitialiseSolid()
     //Create wirefram rasterizer stage
     _pd3dDevice->CreateRasterizerState(&solid, &_RasterizerState);
 }
+void GraphicComponent::InitialiseShaders(ID3D11VertexShader* VS, ID3D11PixelShader* PS)
+{
+   _pImmediateContext->VSSetShader(VS, nullptr, 0);
+   _pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
+   _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
+   _pImmediateContext->PSSetShader(PS, nullptr, 0);
+   _pImmediateContext->PSSetSamplers(0, 1, &_pSamplerLinear);
+}

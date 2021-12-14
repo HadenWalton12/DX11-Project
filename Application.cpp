@@ -38,8 +38,8 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
             L"Error", MB_OK);
             return 0;
     }
-    _pVertexShader = new VertexShader(_gfx->GetDevice() , _VS , L"DX11 Framework.fx");
-    _star = new Star(_gfx, _pVertexShader->GetShader(), _PS , _Tex , _gfx->_world1);
+
+    _star = new Star(_gfx, _Tex , _gfx->_world1);
 
     _GameObjects.push_back(_star);
 
