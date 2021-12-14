@@ -395,19 +395,24 @@
     <ClInclude Include="ConstantStructure.h" />
     <ClInclude Include="DynamicCameraComponent.h" />
     <ClInclude Include="GraphicComponent.h" />
+    <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="LightingValuesStructure.h" />
     <ClInclude Include="MeshStructure.h" />
     <ClInclude Include="ObjectComponent.h" />
     <ClInclude Include="OBJLoader.h" />
+    <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Plane.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="DDSTextureLoader.h" />
+    <ClInclude Include="ShaderCompiler.h" />
     <ClInclude Include="ShaderComponent.h" />
     <ClInclude Include="SimpleVertexStructure.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Star.h" />
     <ClInclude Include="TextureComponent.h" />
     <ClInclude Include="TimeStructure.h" />
+    <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="VertexShader.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
   </ItemGroup>
   <ItemGroup>

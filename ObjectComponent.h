@@ -1,7 +1,7 @@
 #pragma once
 #include "OBJLoader.h"
 #include "GraphicComponent.h"
-#include "ShaderComponent.h"
+
 #include "TextureComponent.h"
 
 #include <vector>
@@ -30,7 +30,7 @@ public:
 private:
 
 
-	void Initialise();
+	virtual void Initialise();
 	void SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB, GraphicComponent* _gfx);
 
 protected:
@@ -38,7 +38,7 @@ protected:
 	std::vector<ID3D11ShaderResourceView*> _Textures;	//Texture Vector to store multiple textures
 	virtual void CalculateTransformation();
 	GraphicComponent* _gfx;								//Graphic Component Class pointer, needed to reference graphiccomponents for creation of object
-	ShaderComponent* _Shader;							//Shader Component Class Pointer, needed to reference shadercomponents for creation of shaders relevant to object
+	
 	TextureComponent* _Tex;								//Texture Component Class pointer, needed to assign objects with textures
 	XMFLOAT4X4 world;
 	XMFLOAT3 ObjectTranslation;

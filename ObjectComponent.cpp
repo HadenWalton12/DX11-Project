@@ -1,6 +1,6 @@
 #include "ObjectComponent.h"
 
-GameObjects::GameObjects(GraphicComponent* _gfx, char* file) : _gfx(_gfx) , _Shader(_Shader) , _Tex(_Tex) , world(world)
+GameObjects::GameObjects(GraphicComponent* _gfx, char* file) : _gfx(_gfx) , _Tex(_Tex) , world(world)
 	{
 	_mesh = OBJLoader::Load(file, _gfx->GetDevice());
 	Initialise();
@@ -20,7 +20,7 @@ void GameObjects::Update(GraphicComponent* gfx)
 void GameObjects::Draw()
 {
 	_gfx->UpdateConstantBuffer(world);
-	_Shader->ComposeShader(_gfx);
+	
 	SwitchDrawBuffers(_mesh.VertexBuffer, _mesh.IndexBuffer , _gfx);
 	_Tex->BindTextures(0, _Textures.size(), _Textures , _gfx);
 	_gfx->_pImmediateContext->DrawIndexed(_mesh.IndexCount, 0, 0);
@@ -40,9 +40,7 @@ void GameObjects::CreateTexture(wchar_t* path)
 
 void GameObjects::Initialise()
 {
-	_Shader = new ShaderComponent();
-	_Shader->CreateVertexShader(_gfx);
-	_Shader->CreatePixelShader(_gfx);
+
 
 }
 

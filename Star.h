@@ -1,12 +1,18 @@
 #pragma once
 #include "ObjectComponent.h"
-
+#include "PixelShader.h"
+#include "VertexShader.h"
 class Star : public GameObjects
 {
 public:
-	Star::Star(GraphicComponent* gfx , ShaderComponent* _Shader , TextureComponent* _Tex , XMFLOAT4X4 world) : GameObjects(gfx, "Star.obj") {}
+	Star::Star(GraphicComponent* gfx, ID3D11VertexShader* vertex_shader, ID3D11PixelShader* pixel_shader ,  TextureComponent* _Tex , XMFLOAT4X4 world) : GameObjects(gfx, "Star.obj")
+	{
+		_pVertexShader = new VertexShader(_gfx->GetDevice() , _VS , L"DX11 Framework.fx");
+		
+			
+	}
 
-	void CalculateTransformation() 
+	void CalculateTransformation()  override
 	{
 		Timer t;
 		XMMATRIX scale = XMMatrixScaling(ObjectScale.x, ObjectScale.y, ObjectScale.z);
@@ -17,5 +23,17 @@ public:
 		XMStoreFloat4x4(&world, scale * translation * rotation);
 	}
 
+	void Initialise() 
+	{
+	
+	
+		
+		//_pPixelShader = new PixelShaderComp(_gfx->GetDevice(), PS, L"DX11 Framework.fx");
 
+
+	}
+	ID3D11VertexShader* _VS;
+	VertexShader* _pVertexShader;
+	PixelShader* _pPixelShader;
+	
 };

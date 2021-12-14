@@ -66,6 +66,11 @@
     </ClInclude>
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="DynamicCameraComponent.h" />
+    <ClInclude Include="VertexShader.h" />
+    <ClInclude Include="PixelShader.h" />
+    <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="ShaderCompiler.h" />
+    <ClInclude Include="IndexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />

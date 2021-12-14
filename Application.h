@@ -22,27 +22,20 @@
 #include <directxmath.h>
 #include <directxcolors.h>
 //Libraries used to create application 
-//Makes it possible to create our window
-#include <windows.h>
-//Access to core DX functions 
-#include <d3d11_1.h>
-//Allows us to compile DX11 Code
-#include <d3dcompiler.h>
-//Math Library
-#include <directxmath.h>
-#include <directxcolors.h>
-#include "resource.h"
 
-#include "ShaderComponent.h"
+
+
 #include "TextureComponent.h"
 
 #include "Star.h"
 #include "Plane.h"
 #include "Sphere.h"
-
+#include "CameraComponent.h"
 #include <vector>
 
 #include "DDSTextureLoader.h"
+#include "PixelShader.h"
+#include "VertexShader.h"
 //Allows us to easily call reference upon our DX naming conventions
 using namespace DirectX;
 
@@ -65,7 +58,10 @@ private:
 	Sphere* _sphere;
 	GraphicComponent* _gfx;
 	TextureComponent* _Tex;
-	ShaderComponent* _Shader;
+	PixelShader* _pPixelShader;
+	VertexShader* _pVertexShader;
+	ID3D11PixelShader* _PS;
+	ID3D11VertexShader* _VS;
 	CameraComponent* _Camera;
 
 	std::vector<GameObjects*> _GameObjects;
