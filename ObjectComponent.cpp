@@ -14,7 +14,7 @@ GameObjects::~GameObjects()
 
 void GameObjects::Update(GraphicComponent* gfx)
 {
-	CalculateTransformation();
+	CalculateTransformation(); 
 }
 
 void GameObjects::Draw()
