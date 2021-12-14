@@ -1,21 +1,20 @@
 #pragma once
-#include "ObjectComponent.h"
-
-class Star : public GameObjects
+#include "EntityTransformation.h"
+#include "RenderCommands.h"
+class Star 
 {
 public:
-	Star::Star(GraphicComponent* gfx , ShaderComponent* _Shader , TextureComponent* _Tex , XMFLOAT4X4 world) : GameObjects(gfx, "Star.obj") {}
-
-	void CalculateTransformation() 
+	Star::Star(ID3D11Device* device, ID3D11DeviceContext* device_context, XMFLOAT4X4 world, ID3D11VertexShader* VS, ID3D11PixelShader* PS, MeshData _Mesh , ID3D11Buffer* CB)
 	{
-		Timer t;
-		XMMATRIX scale = XMMatrixScaling(ObjectScale.x, ObjectScale.y, ObjectScale.z);
-		XMMATRIX translation = XMMatrixTranslation(ObjectTranslation.x, ObjectTranslation.y, ObjectTranslation.z);
-		XMMATRIX rotation = XMMatrixRotationRollPitchYaw(ObjectRotation.x , ObjectRotation.y * t.time, ObjectRotation.z);
+		
+		_pPipelineCommands->UpdateConstantBuffer(world);
 
 
-		XMStoreFloat4x4(&world, scale * translation * rotation);
+
+
+
+
 	}
 
-
+	RenderingCommand* _pPipelineCommands;
 };

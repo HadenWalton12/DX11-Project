@@ -36,6 +36,9 @@
     <Filter Include="Header Files\System Components\Shader Dependency">
       <UniqueIdentifier>{358be64d-f983-474b-9b68-74e27b21e8ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\System Components\NewFilter1">
+      <UniqueIdentifier>{c65427d3-c1ce-45dd-aaf9-dd5bb9126a05}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -66,9 +69,6 @@
     <ClInclude Include="OBJLoader.h">
       <Filter>Dependencies</Filter>
     </ClInclude>
-    <ClInclude Include="TextureComponent.h">
-      <Filter>EngineComponent</Filter>
-    </ClInclude>
     <ClInclude Include="TimeStructure.h">
       <Filter>Structures</Filter>
     </ClInclude>
@@ -82,7 +82,7 @@
     <ClInclude Include="DDSTextureLoader.h">
       <Filter>Dependencies</Filter>
     </ClInclude>
-    <ClInclude Include="Render Commands.h">
+    <ClInclude Include="RenderCommands.h">
       <Filter>Source Files\SystemComponents</Filter>
     </ClInclude>
     <ClInclude Include="IndexBuffer.h">
@@ -103,8 +103,8 @@
     <ClInclude Include="EntityTransformation.h">
       <Filter>Header Files\System Components</Filter>
     </ClInclude>
-    <ClInclude Include="TransformationStructure.h">
-      <Filter>Structures</Filter>
+    <ClInclude Include="ConstantBufferFunc.h">
+      <Filter>Header Files\System Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -121,9 +121,6 @@
     </ClCompile>
     <ClCompile Include="OBJLoader.cpp">
       <Filter>Dependencies</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureComponent.cpp">
-      <Filter>EngineComponent</Filter>
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp">

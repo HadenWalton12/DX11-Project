@@ -96,20 +96,7 @@ HRESULT GraphicComponent::Initialise(HINSTANCE hInstance, int nCmdShow)
     XMStoreFloat4x4(&_world2, XMMatrixIdentity());
     XMStoreFloat4x4(&_world3, XMMatrixIdentity());
 
-    /*
-    // Initialize values of view matrix - Defines values of 4x4 View matrix 
-    XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f);
-    XMFLOAT4 temp;
-    XMStoreFloat4(&lightvalue.EyePosW, Eye);
-    XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-    XMVECTOR Up = XMVectorSet(0.0f, 3.0f, 0.0f, 0.0f);
 
-    //Initalize view matrix
-    XMStoreFloat4x4(&_view, XMMatrixLookAtLH(Eye, At, Up));
-
-    // Initialize the projection matrix
-    XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT)_WindowHeight, 0.01f, 100.0f));
-    */
     //Return if any check error methods were false
     return S_OK;
 }
@@ -143,7 +130,7 @@ void GraphicComponent::InitialiseDevice()
     InitialiseWireFrame();
     InitialiseSolid();
     InitialiseViewport();
-    InitialiseConstantBuffer();
+ 
     InitialiseSampler();
 
 
@@ -293,17 +280,9 @@ HRESULT GraphicComponent::InitialiseRenderTarget()
 }
 
 
-void GraphicComponent::ClearRenderTarget()
-{
-    _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
-    _pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-}
 
 
-void GraphicComponent::SwapChainPresent()
-{
-    _pSwapChain->Present(0, 0);
-}
+
 
 
 void GraphicComponent::InitialiseViewport()
@@ -320,57 +299,14 @@ void GraphicComponent::InitialiseViewport()
 }
 
 
-void GraphicComponent::InitialiseConstantBuffer()
-{
-    // Create the constant buffer
-    D3D11_BUFFER_DESC constantbufferdescription;
-    ZeroMemory(&constantbufferdescription, sizeof(constantbufferdescription));
-    //Describe Constant Buffer
-    constantbufferdescription.Usage = D3D11_USAGE_DEFAULT;
-    constantbufferdescription.ByteWidth = sizeof(ConstantBuffer);
-    constantbufferdescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    constantbufferdescription.CPUAccessFlags = 0;
-    
-    //Create Buffer - Using Description above , 3rd parameters assigns value to Constantbuffer buffer pointer.
-    _pd3dDevice->CreateBuffer(&constantbufferdescription, nullptr, &_pConstantBuffer);  
-}
-
-void GraphicComponent::UpdateConstantBuffer(XMFLOAT4X4 world )
-
-{
-    ConstantBuffer constantbuffer;
-    LigthtingValues lightvalue;
-    XMMATRIX _world = XMLoadFloat4x4(&world);
-    XMMATRIX view = XMLoadFloat4x4(&_Camera->GetView());
-    XMMATRIX projection = XMLoadFloat4x4(&_Camera->GetProjection());
-
-    
-    constantbuffer.mWorld = XMMatrixTranspose(_world);
-    constantbuffer.mView = XMMatrixTranspose(view);
-    constantbuffer.mProjection = XMMatrixTranspose(projection);
-
-    constantbuffer.LightVecW = lightvalue.light_direction;
-    constantbuffer.DiffuseLight = lightvalue.diffuse_light;
-    constantbuffer.DiffuseMtrl = lightvalue.diffuse_material;
-    constantbuffer.AmbientLight = lightvalue.ambient_light;
-    constantbuffer.AmbientMtrl = lightvalue.ambient_material;
-    constantbuffer.EyePosW = lightvalue.EyePosW;
-    constantbuffer.SpecularPower = lightvalue.specular_power;
-    constantbuffer.SpecularLight = lightvalue.specular_light;
-    constantbuffer.SpecularMtrl = lightvalue.specular_material;
-
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
-
-}
 
 
 
 
 
-ID3D11Device* GraphicComponent::GetDevice()
-{
-    return _pd3dDevice;
-}
+
+
+
 
 void GraphicComponent::InitialiseWireFrame()
 {
@@ -386,15 +322,7 @@ void GraphicComponent::InitialiseWireFrame()
     _pd3dDevice->CreateRasterizerState(&wireframe, &_RasterizerState);
 }
 
-void GraphicComponent::UpdateCamera()
-{
-    _Camera->Update();
-}
 
-void GraphicComponent::SwitchCamera(CameraComponent* camera)
-{
-    _Camera = camera;
-}
 
 void GraphicComponent::InitialiseSolid()
 {
