@@ -33,13 +33,12 @@
 #include <directxcolors.h>
 #include "resource.h"
 
-#include "ShaderComponent.h"
-#include "TextureComponent.h"
-
+#include "VertexShader.h"
+#include "PixelShader.h"
 #include "Star.h"
 #include "Plane.h"
 #include "Sphere.h"
-
+#include "CameraComponent.h"
 #include <vector>
 
 #include "DDSTextureLoader.h"
@@ -57,17 +56,16 @@ class Application
 {
 private:
 
-
-
+	VertexShader* _StarVS;
+	PixelShader* _StarPS;
 	
+	ID3D11PixelShader* _PS;
+	ID3D11VertexShader* _VS;
+
+	CameraComponent* _Camera;
 	Star* _star;
 	Plane* _plane;
 	Sphere* _sphere;
-	GraphicComponent* _gfx;
-	TextureComponent* _Tex;
-	ShaderComponent* _Shader;
-	CameraComponent* _Camera;
-
 	std::vector<GameObjects*> _GameObjects;
 
 public:
@@ -86,6 +84,8 @@ public:
 	DIMOUSESTATE mouseLastState;
 	LPDIRECTINPUT8 DirectInput;
 
+	RenderingPipeline* _pPipeline;
+
 	float rotx = 0;
 	float rotz = 0;
 	float scaleX = 1.0f;
@@ -94,7 +94,7 @@ public:
 	XMMATRIX RotationX;
 	XMMATRIX RotationZ;
 	HRESULT Update();
-	void Draw();
+	void Render();
 
 };
 

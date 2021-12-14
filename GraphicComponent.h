@@ -21,12 +21,12 @@
 
 using namespace DirectX; //Use default DX11 Naming conventions
 
-class GraphicComponent
+class RenderingPipeline
 {
 public:
 	
-	GraphicComponent();											//Constructor - Initialises Class Objects	
-	~GraphicComponent();										//Destructor - Clears Class Object values - Done by calling cleanup function
+	RenderingPipeline();											//Constructor - Initialises Class Objects	
+	~RenderingPipeline();										//Destructor - Clears Class Object values - Done by calling cleanup function
 	
 	CameraComponent* _Camera;
 
@@ -47,8 +47,9 @@ public:
 	ID3D11SamplerState* _pSamplerLinear;						//Bind to any shader stage (VS / PS) , used to bind reference of texture sample operations - We bind to PixelShader to accomidate per-pixel lighting
 		
 	ID3D11Device* GetDevice();									//Gets "_pd3dDevice" - Needed for reference of executing shader & texture systems within Shader/Texture Components - Returns value of singular device.
-	ID3D11Device* _pd3dDevice;									//Virtual Representation of Video Card , used to create resources for application , resources exuted using device context
-	ID3D11DeviceContext* _pImmediateContext;					//Stores reference to DeviceContext , allow us to generate rendering commands to execute within application
+	void UpdateConstantBuffer(XMFLOAT4X4 world, ID3D11Buffer* CB);
+	ID3D11Device* _pDevice;									//Virtual Representation of Video Card , used to create resources for application , resources exuted using device context
+	ID3D11DeviceContext* _pDeviceContext;					//Stores reference to DeviceContext , allow us to generate rendering commands to execute within application
 
 	D3D_DRIVER_TYPE         _driverType;
 
@@ -56,8 +57,17 @@ public:
 	void ClearRenderTarget();									//Clears RenderTarget (Buffer our scene was draw) , so the buffer is ready to be drawn on with next scene
 	void UpdateConstantBuffer(XMFLOAT4X4 world);				//Updates constant buffer values
 	void InitialiseSolid();										//Changes Rasterizer State to solid
-	void InitialiseWireFrame();									//Changes Rasterizer State to WireFrame
+	void InitialiseWireFrame();
+	void InitialiseTexture(wchar_t* path, std::vector<ID3D11ShaderResourceView*> textures);
+	HRESULT CreateTexture(wchar_t* filepath, ID3D11ShaderResourceView** texture);
+	void BindTextures(int startSlot, int count, std::vector<ID3D11ShaderResourceView*> textures);
+	//Changes Rasterizer State to WireFrame
 	void UpdateCamera();
+	void Swap(IDXGISwapChain* swap_chain);
+	void BindVertexShader(ID3D11VertexShader* VS);
+	void BindPixelShader(ID3D11PixelShader* PS);
+	void BindSampler(ID3D11SamplerState* sampler);
+	void BindVertexBuffer(ID3D11Buffer* vertex_buffer, UINT stride, UINT offset);
 	void SwitchCamera(CameraComponent* camera);
 
 //Private Objects

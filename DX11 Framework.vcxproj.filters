@@ -52,9 +52,6 @@
     <ClInclude Include="OBJLoader.h">
       <Filter>Dependencies</Filter>
     </ClInclude>
-    <ClInclude Include="TextureComponent.h">
-      <Filter>EngineComponent</Filter>
-    </ClInclude>
     <ClInclude Include="TimeStructure.h">
       <Filter>Structures</Filter>
     </ClInclude>
@@ -66,6 +63,17 @@
     </ClInclude>
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="DynamicCameraComponent.h" />
+    <ClInclude Include="RenderCommands.h">
+      <Filter>EngineComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="PixelShader.h" />
+    <ClInclude Include="VertexShader.h" />
+    <ClInclude Include="ShaderCompiler.h" />
+    <ClInclude Include="EntityTransformations.h">
+      <Filter>Structures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -82,9 +90,6 @@
     </ClCompile>
     <ClCompile Include="OBJLoader.cpp">
       <Filter>Dependencies</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureComponent.cpp">
-      <Filter>EngineComponent</Filter>
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="DynamicCameraComponent.cpp" />

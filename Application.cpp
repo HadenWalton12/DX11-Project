@@ -26,12 +26,11 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     Timer t;
     HRESULT hr = S_OK;
     
+    
 
+    _pPipeline = new RenderingPipeline(); 
 
-    _gfx = new GraphicComponent(); 
-    _Tex = new TextureComponent();
-    _Shader = new ShaderComponent();
-    _gfx->Initialise(hInstance, nCmdShow);
+    _pPipeline->Initialise(hInstance, nCmdShow);
 
     if (!InitDirectInput(hInstance))
     {
@@ -39,29 +38,16 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
             L"Error", MB_OK);
             return 0;
     }
-    
-     _plane = new Plane(_gfx, _Shader, _Tex , _gfx->_world2);
-    _star = new Star(_gfx, _Shader, _Tex , _gfx->_world1);
- //   _sphere = new Sphere(_gfx, _Shader, _Tex, _world3);
-    _GameObjects.push_back(_plane);
+    _StarVS = new VertexShader(_pPipeline->GetDevice(), _VS, L"DX11 Framework.fx");
+    _StarPS = new PixelShader(_pPipeline->GetDevice() , _PS, L"DX11 Framework.fx");
+    _star=   new   Star(_pPipeline, _VS , _PS, _pPipeline->_world1);
+
+
     _GameObjects.push_back(_star);
-
-//_sphere->CreateTexture(L"Crate_COLOR.dds");
-  //  _sphere->SetTranslation(0.0f, -5.0f, 0.0f);
-  // _sphere->SetRotation(0.0f, 1.0f, 0.0f);
-  // _sphere->SetScale(1.0f, 1.0f, 1.0f);
-    _star->CreateTexture(L"Crate_COLOR.dds");
-    _star->SetTranslation(0.0f , 0.0f , 0.0f);
-    _star->SetScale(0.02f, 0.02f, 0.02f);
-
-   _plane->CreateTexture(L"Hercules_COLOR.dds");
-   _plane->SetTranslation(5.0f, 0.0f, 0.0f);
-   _plane->SetRotation(0.0f, 1.0f, 0.0f);
-   _plane->SetScale(0.1f, 0.1f, 0.1f);
    XMFLOAT3 Camera_Position = XMFLOAT3(0.0f, 0.0f, 1.0f);
    XMFLOAT3 Camera_Target = XMFLOAT3(0.0f, 0.0f, -1.0f);
    XMFLOAT3 Camera_Up = XMFLOAT3 (0.0f, 1.0f, 0.0f);
-   _Camera = new CameraComponent(Camera_Position , Camera_Target , Camera_Up, _gfx->_WindowWidth, _gfx->_WindowHeight, 0.01f, 100.0f );
+   _Camera = new CameraComponent(Camera_Position , Camera_Target , Camera_Up, _pPipeline->_WindowWidth, _gfx->_WindowHeight, 0.01f, 100.0f );
 
    return S_OK;
 }
@@ -157,7 +143,7 @@ void Application::DetectInput()
 HRESULT Application::Update()
 {
     Timer t;
-    _star->SetRotation(0.0f, 1.0f , 0.0f);
+ 
   
        _gfx->SwitchCamera(_Camera);
        DetectInput();
@@ -171,7 +157,7 @@ HRESULT Application::Update()
     return S_OK;
 }
 
-void Application::Draw()
+void Application::Render()
 {
 
     _gfx->ClearRenderTarget();

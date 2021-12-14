@@ -1,21 +1,29 @@
 #pragma once
 #include "ObjectComponent.h"
-
+#include "EntityTransformations.h"
 class Star : public GameObjects
 {
 public:
-	Star::Star(GraphicComponent* gfx , ShaderComponent* _Shader , TextureComponent* _Tex , XMFLOAT4X4 world) : GameObjects(gfx, "Star.obj") {}
-
-	void CalculateTransformation() 
+	Star::Star(RenderingPipeline* pipeline ,VertexShader* VS, PixelShader* PS , XMFLOAT4X4 world) : GameObjects(pipeline)
 	{
-		Timer t;
-		XMMATRIX scale = XMMatrixScaling(ObjectScale.x, ObjectScale.y, ObjectScale.z);
-		XMMATRIX translation = XMMatrixTranslation(ObjectTranslation.x, ObjectTranslation.y, ObjectTranslation.z);
-		XMMATRIX rotation = XMMatrixRotationRollPitchYaw(ObjectRotation.x , ObjectRotation.y * t.time, ObjectRotation.z);
+		_mesh = OBJLoader::Load("star.obj", _pPipeline->GetDevice());
+		_pVertexShader = VS;
+		_pPixelShader = PS;
+		_World = world;
 
-
-		XMStoreFloat4x4(&world, scale * translation * rotation);
 	}
 
-
+	
+	void CalculateTransformation() override
+	{
+		Transformation = new EntityTransformation(_World, Translate, Rotation, Scale);
+	}
+	XMFLOAT4X4 _World;
+	EntityTransformation* Transformation;
+	XMFLOAT3 Translate = XMFLOAT3(0.0f, 0.0f, -5.0f);
+	XMFLOAT3 Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 Scale = XMFLOAT3(0.20f, 0.20f, 0.20f);
+	VertexShader* _pVertexShader;
+	PixelShader* _pPixelShader;
+	MeshData _mesh;
 };
