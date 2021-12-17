@@ -29,14 +29,13 @@ public:
 	void SetTranslation(float x, float y, float z);
 private:
 
-
-	virtual void Initialise();
 	void SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB, GraphicComponent* _gfx);
 
 protected:
 	MeshData _mesh;										//Store object data within a mesh
 	std::vector<ID3D11ShaderResourceView*> _Textures;	//Texture Vector to store multiple textures
 	virtual void CalculateTransformation();
+	virtual void BindShaders();
 	GraphicComponent* _gfx;								//Graphic Component Class pointer, needed to reference graphiccomponents for creation of object
 	
 	TextureComponent* _Tex;								//Texture Component Class pointer, needed to assign objects with textures

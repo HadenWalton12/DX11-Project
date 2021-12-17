@@ -20,7 +20,7 @@ public:
 
         // Compile the vertex shader
         ID3DBlob* pVSBlob = nullptr;
-        hr = _pShaderCompiler->CompileShaderFromFile(VS_PATH, "VS", "vs_4_0", &pVSBlob);
+        hr = _pShaderCompiler->CompileShaderFromFile(L"DX11 Framework.fx" , "VS", "vs_4_0", &pVSBlob);
 
         //Check Error Method - Was the CompiledShaderFromFile Above correct?
         if (FAILED(hr))

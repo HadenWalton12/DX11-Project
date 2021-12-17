@@ -18,7 +18,7 @@ public:
 
         // Compile the pixel shader
         ID3DBlob* pPSBlob = nullptr;
-        hr = _pShaderCompiler->CompileShaderFromFile(PS_PATH, "PS", "ps_4_0", &pPSBlob);
+        hr = _pShaderCompiler->CompileShaderFromFile(L"DX11 Framework.fx", "PS", "ps_4_0", &pPSBlob);
 
         //Check Error Method - Was the CompiledShaderFromFile Above correct?
         if (FAILED(hr))

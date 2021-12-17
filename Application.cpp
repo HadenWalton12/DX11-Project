@@ -45,10 +45,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
 
     _star->CreateTexture(L"Crate_COLOR.dds");
-    _star->SetTranslation(0.0f , 0.0f , 0.0f);
-    _star->SetScale(0.02f, 0.02f, 0.02f);
-
-
+   
    XMFLOAT3 Camera_Position = XMFLOAT3(0.0f, 0.0f, 1.0f);
    XMFLOAT3 Camera_Target = XMFLOAT3(0.0f, 0.0f, -1.0f);
    XMFLOAT3 Camera_Up = XMFLOAT3 (0.0f, 1.0f, 0.0f);
