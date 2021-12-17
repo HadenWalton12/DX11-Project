@@ -381,12 +381,10 @@
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="DynamicCameraComponent.cpp" />
-    <ClCompile Include="GraphicComponent.cpp" />
     <ClCompile Include="ObjectComponent.cpp" />
     <ClCompile Include="ObjectTranformation.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="RenderCommands.cpp" />
-    <ClCompile Include="ShaderComponent.cpp" />
     <ClCompile Include="TextureComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -399,7 +397,6 @@
     <ClInclude Include="DX.h" />
     <ClInclude Include="DynamicCameraComponent.h" />
     <ClInclude Include="EntityTransformation.h" />
-    <ClInclude Include="GraphicComponent.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="LightingValuesStructure.h" />
     <ClInclude Include="MeshStructure.h" />
@@ -412,7 +409,6 @@
     <CLInclude Include="resource.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="ShaderCompiler.h" />
-    <ClInclude Include="ShaderComponent.h" />
     <ClInclude Include="SimpleVertexStructure.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Star.h" />

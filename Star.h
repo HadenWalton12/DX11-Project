@@ -15,18 +15,23 @@ public:
 		_World = world;
 		_pDX11 = dx;
 		_pRenderCommand = render_command;
-		
 
-		BindShaders();
+
 	
 	}
 
-	void CalculateTransformation()  override
+	void CalculateTransformation()
 	{
+		Timer t;
+		XMMATRIX scale = XMMatrixScaling(ObjectScale.x, ObjectScale.y, ObjectScale.z);
+		XMMATRIX translation = XMMatrixTranslation(ObjectTranslation.x, ObjectTranslation.y, ObjectTranslation.z);
+		XMMATRIX rotation = XMMatrixRotationRollPitchYaw(ObjectRotation.x, ObjectRotation.y * t.time, ObjectRotation.z);
 
+
+		XMStoreFloat4x4(&world, scale * translation * rotation);
 	}
 
-	void BindShaders()
+	void BindShaders() override
 	{
 
 		_pVertexShader = new VertexShader(_pRenderCommand->GetDevice(), _VS, _pRenderCommand->GetDeviceContext(), L"DX11 Framework.fx");
@@ -38,6 +43,10 @@ public:
 		_pRenderCommand->BindSampler(_pDX11->_pSamplerLinear);
 
 	}
+	Timer  t;
+	XMFLOAT3 _StarTranslate = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 _StarScale = XMFLOAT3(0.02f, 0.02f, 0.02f);
+	XMFLOAT3 _StarRotate = XMFLOAT3(0.0f, 1.0f * t.time, 0.0f);
 	XMFLOAT4X4 _World;
 	ObjectTranformation* _pStarTransform;
 	EntityTransformation transformation;

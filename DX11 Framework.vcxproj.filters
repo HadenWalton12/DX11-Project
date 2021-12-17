@@ -25,17 +25,11 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="DDSTextureLoader.h" />
-    <ClInclude Include="GraphicComponent.h">
-      <Filter>EngineComponent</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectComponent.h">
       <Filter>GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Star.h">
       <Filter>GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderComponent.h">
-      <Filter>EngineComponent</Filter>
     </ClInclude>
     <ClInclude Include="LightingValuesStructure.h">
       <Filter>Structures</Filter>
@@ -80,14 +74,8 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
-    <ClCompile Include="GraphicComponent.cpp">
-      <Filter>EngineComponent</Filter>
-    </ClCompile>
     <ClCompile Include="ObjectComponent.cpp">
       <Filter>GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderComponent.cpp">
-      <Filter>EngineComponent</Filter>
     </ClCompile>
     <ClCompile Include="OBJLoader.cpp">
       <Filter>Dependencies</Filter>

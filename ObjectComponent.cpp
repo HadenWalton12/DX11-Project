@@ -20,6 +20,7 @@ void GameObjects::Update()
 void GameObjects::Draw()
 {
 	_pRenderCommand->UpdateConstantBuffer(world);
+	BindShaders();
 	SwitchDrawBuffers(_mesh.VertexBuffer, _mesh.IndexBuffer , _pRenderCommand);
 	_Tex->BindTextures(0, _Textures.size(), _Textures , _pRenderCommand);
 	_pRenderCommand->GetDeviceContext()->DrawIndexed(_mesh.IndexCount, 0, 0);
@@ -54,3 +55,17 @@ void GameObjects::BindShaders()
 
 
 
+void GameObjects::SetRotation(float x, float y, float z)
+{
+	ObjectRotation = XMFLOAT3(x, y, z);
+}
+
+void GameObjects::SetTranslation(float x, float y, float z)
+{
+	ObjectTranslation = XMFLOAT3(x, y, z);
+}
+void GameObjects::SetScale(float x, float y, float z)
+{
+
+	ObjectScale = XMFLOAT3(x, y, z);
+}

@@ -21,7 +21,9 @@ public:
 	void Update();										//Used to reference instances where the object is to be updated
 	void Draw();										//Draw method , to how we draw objects
 	void CreateTexture(wchar_t* path);					//Creates Texture
-
+	void SetScale(float x, float y, float z);
+	void SetRotation(float x, float y, float z);
+	void SetTranslation(float x, float y, float z);
 private:
 
 	void SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB, RenderCommands* render_command);
@@ -35,7 +37,9 @@ protected:
 	
 	TextureComponent* _Tex;								//Texture Component Class pointer, needed to assign objects with textures
 	XMFLOAT4X4 world;
-
+	XMFLOAT3 ObjectTranslation;							//
+	XMFLOAT3 ObjectRotation;							//
+	XMFLOAT3 ObjectScale;
 
 };
 

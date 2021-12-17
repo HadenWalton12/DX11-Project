@@ -64,12 +64,15 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _pDX11->InitialiseDevice();
     _pRenderCommands = new RenderCommands(_pDX11->_pDevice, _pDX11->_pDeviceContext, _Camera , _pDX11->_pConstantBuffer);
     _star = new Star(_pRenderCommands, _Tex , _world1 , _pDX11);
-
+    
     _GameObjects.push_back(_star);
     _star->CreateTexture(L"Crate_COLOR.dds");
+    _star->SetTranslation(0.0f, 0.0f, 0.0f);
+    _star->SetScale(2.0f, 2.0f, 2.0f);
     XMFLOAT3 Camera_Position = XMFLOAT3(0.0f, 0.0f, 3.0f);
     XMFLOAT3 Camera_Target = XMFLOAT3(0.0f, 0.0f, -1.0f);
     XMFLOAT3 Camera_Up = XMFLOAT3(0.0f, 1.0f, 0.0f);
+
     _Camera = new CameraComponent(Camera_Position, Camera_Target, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
 
 
@@ -152,13 +155,13 @@ void Application::DetectInput()
     //Forward
     if (keyboardState[DIK_W] & 0x80)
     {
-        CameraPosition.z -= 0.001;
+        CameraPosition.z -= 0.1;
     }
 
     //Backwards
     if (keyboardState[DIK_S] & 0x80)
     {
-        CameraPosition.z += 0.001;
+        CameraPosition.z += 0.1;
     }
 
     //Right
@@ -206,7 +209,7 @@ void Application::DetectInput()
 HRESULT Application::Update()
 {
     Timer t;
-
+    _star->SetRotation(0.0f, 1.0f, 0.0f);
     _pRenderCommands->SwitchCamera(_Camera);
        DetectInput();
     for (auto gameobject : _GameObjects)
