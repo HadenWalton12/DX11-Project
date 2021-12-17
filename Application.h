@@ -23,7 +23,8 @@
 #include <directxcolors.h>
 //Libraries used to create application 
 
-
+#include "DX.h"
+#include "RenderCommands.h"
 
 #include "TextureComponent.h"
 
@@ -50,13 +51,12 @@ class Application
 {
 private:
 
-
-
+	DX* _pDX11;
+	RenderCommands* _pRenderCommands;
 	
 	Star* _star;
 	Plane* _plane;
 	Sphere* _sphere;
-	GraphicComponent* _gfx;
 	TextureComponent* _Tex;
 	PixelShader* _pPixelShader;
 	VertexShader* _pVertexShader;
@@ -68,8 +68,17 @@ private:
 
 public:
 
-	Application();
-	~Application();
+	HINSTANCE               _hInst;								//Used to specify instance which the class is registred					
+	HWND                    _hWnd;								//Used to handle a window , part of Win32 API , crates window using window instance above.
+
+
+	UINT _WindowHeight;											//Define window height
+	UINT _WindowWidth;											//Define window width
+
+
+
+	Application() {};
+	~Application() {};
 
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
 
@@ -91,6 +100,10 @@ public:
 	XMMATRIX RotationZ;
 	HRESULT Update();
 	void Draw();
-
+	
+	HRESULT InitialiseWindow(HINSTANCE hInstance, int nCmdShow);
+	XMFLOAT4X4				_world1;
+	XMFLOAT4X4				_world2;
+	XMFLOAT4X4				_world3;
 };
 

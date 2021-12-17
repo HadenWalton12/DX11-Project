@@ -1,7 +1,7 @@
 #pragma once
 
 //ShaderComponent Depenencies
-#include "GraphicComponent.h"
+#include "RenderCommands.h"
 #include "DDSTextureLoader.h"
 #include "OBJLoader.h"
 #include "resource.h"
@@ -27,10 +27,10 @@ public:
 	~TextureComponent();
 	
 	//Creates Texture
-	HRESULT CreateTexture(wchar_t* filepath, ID3D11ShaderResourceView** texture , GraphicComponent* gfx);
+	HRESULT CreateTexture(wchar_t* filepath, ID3D11ShaderResourceView** texture , RenderCommands* render_command);
 	
 	//Binds an array(vector in our case) of resources to be processed to PS . Binding textures from a texture vector onto PS
-	void BindTextures(int startSlot, int count, std::vector<ID3D11ShaderResourceView*> textures , GraphicComponent* gfx);
+	void BindTextures(int startSlot, int count, std::vector<ID3D11ShaderResourceView*> textures , RenderCommands* render_command);
 
 
 };

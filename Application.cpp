@@ -1,23 +1,26 @@
 #include "Application.h"
-    
-/*
-        Windows based aplications are always event drive to the core , waiting for messages(events) to be passed into message queue
-
-*/
-
-
-
-//Class Constructor - Initalizing all default values.
-Application::Application()
+//Callback function , processes message sent to the window.
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    PAINTSTRUCT ps;
+    HDC hdc;
 
+    switch (message)
+    {
+    case WM_PAINT:
+        hdc = BeginPaint(hWnd, &ps);
+        EndPaint(hWnd, &ps);
+        break;
 
-}
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        break;
 
-//Class Destructor - Calls cleanup , releases values.
-Application::~Application()
-{
+    default:
+        return DefWindowProc(hWnd, message, wParam, lParam);
+    }
 
+    return 0;
 }
 
 //Initalises Window Coordinates , Projection Matrix & View Matrix 
@@ -25,12 +28,37 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 {
     Timer t;
     HRESULT hr = S_OK;
+    if (FAILED(InitialiseWindow(hInstance, nCmdShow)))
+    {
+        return E_FAIL;
+    }
+
+
+    RECT rc;
+
+    GetClientRect(_hWnd, &rc);
+
+    //Pass calulated values , gives us window coordinates
+    _WindowWidth = rc.right - rc.left;
+    _WindowHeight = rc.bottom - rc.top;
     
-    _gfx = new GraphicComponent();
+    XMFLOAT3 Camera_Position = XMFLOAT3(0.0f, 0.0f, 1.0f);
+    XMFLOAT3 Camera_Target = XMFLOAT3(0.0f, 0.0f, -1.0f);
+    XMFLOAT3 Camera_Up = XMFLOAT3(0.0f, 1.0f, 0.0f);
+    _Camera = new CameraComponent(Camera_Position, Camera_Target, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
+
+    _pDX11 = new DX(_WindowWidth, _WindowHeight, _hWnd);
     _Tex = new TextureComponent();
 
 
-    _gfx->Initialise(hInstance, nCmdShow);
+
+
+
+    // Initialize the world matrix
+    XMStoreFloat4x4(&_world1, XMMatrixIdentity());
+    XMStoreFloat4x4(&_world2, XMMatrixIdentity());
+    XMStoreFloat4x4(&_world3, XMMatrixIdentity());
+
 
     if (!InitDirectInput(hInstance))
     {
@@ -39,23 +67,63 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
             return 0;
     }
 
-    _star = new Star(_gfx, _Tex , _gfx->_world1);
+    //InitialiseDevice , Assist creating core graphical components.
+    _pDX11->InitialiseDevice();
+    _pRenderCommands = new RenderCommands(_pDX11->_pDevice, _pDX11->_pDeviceContext, _Camera , _pDX11->_pConstantBuffer);
+    _star = new Star(_pRenderCommands, _Tex , _world1 , _pDX11);
 
     _GameObjects.push_back(_star);
-
-
     _star->CreateTexture(L"Crate_COLOR.dds");
     _star->SetTranslation(0.0f, 0.0f, 0.0f);
     _star->SetScale(0.02f, 0.02f, 0.02f);
-   
-   XMFLOAT3 Camera_Position = XMFLOAT3(0.0f, 0.0f, 1.0f);
-   XMFLOAT3 Camera_Target = XMFLOAT3(0.0f, 0.0f, -1.0f);
-   XMFLOAT3 Camera_Up = XMFLOAT3 (0.0f, 1.0f, 0.0f);
-   _Camera = new CameraComponent(Camera_Position , Camera_Target , Camera_Up, _gfx->_WindowWidth, _gfx->_WindowHeight, 0.01f, 100.0f );
+
 
    return S_OK;
 }
+HRESULT Application::InitialiseWindow(HINSTANCE hInstance, int nCmdShow)
+{
+    //Register/Window class initialisation
+    WNDCLASSEX wcex;
 
+    //Register/Window Class definition
+    wcex.cbSize = sizeof(WNDCLASSEX);
+    wcex.style = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc = WndProc;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = 0;
+    wcex.hInstance = hInstance;
+    wcex.hIcon = LoadIcon(hInstance, (LPCTSTR)IDI_TUTORIAL1);
+    wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcex.lpszMenuName = nullptr;
+    wcex.lpszClassName = L"TutorialWindowClass";
+    wcex.hIconSm = LoadIcon(wcex.hInstance, (LPCTSTR)IDI_TUTORIAL1);
+
+    //Check if class registration was correct
+    if (!RegisterClassEx(&wcex))
+    {
+        return E_FAIL;
+    }
+
+
+    // Create window
+    _hInst = hInstance;
+
+    //Define window width/hight
+    RECT rc = { 0, 0, 640, 480 };
+    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
+    //Create Window
+    _hWnd = CreateWindow(L"TutorialWindowClass", L"DX11 Framework", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
+
+    //Check if Window did create.
+    if (!_hWnd)
+    {
+        return E_FAIL;
+    }
+
+    ShowWindow(_hWnd, nCmdShow);
+    return S_OK;
+}
 bool Application::InitDirectInput(HINSTANCE hInstance)
 {
     DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&DirectInput, NULL);
@@ -149,14 +217,14 @@ HRESULT Application::Update()
     Timer t;
     _star->SetRotation(0.0f, 1.0f , 0.0f);
   
-       _gfx->SwitchCamera(_Camera);
+    _pRenderCommands->SwitchCamera(_Camera);
        DetectInput();
     for (auto gameobject : _GameObjects)
     {
  
-        gameobject->Update(_gfx);
+        gameobject->Update(_pRenderCommands);
     }
-    _gfx->UpdateCamera();
+    _pRenderCommands->UpdateCamera();
 
     return S_OK;
 }
@@ -164,12 +232,13 @@ HRESULT Application::Update()
 void Application::Draw()
 {
 
-    _gfx->ClearRenderTarget();
+    _pRenderCommands->ClearRenderTarget(_pDX11->_pRenderTargetView , _pDX11->_pDepthStencilView);
     for (auto gameobject : _GameObjects)
     {
         gameobject->Draw();
 
     }
-    _gfx->SwapChainPresent();
+    _pRenderCommands->SwapChainPresent(_pDX11->_pSwapChain);
 
 }
+

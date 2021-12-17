@@ -71,6 +71,8 @@
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="ShaderCompiler.h" />
     <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="DX.h" />
+    <ClInclude Include="RenderCommands.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -93,6 +95,8 @@
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="DynamicCameraComponent.cpp" />
+    <ClCompile Include="DX.cpp" />
+    <ClCompile Include="RenderCommands.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

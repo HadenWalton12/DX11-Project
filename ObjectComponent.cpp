@@ -1,8 +1,8 @@
 #include "ObjectComponent.h"
 
-GameObjects::GameObjects(GraphicComponent* _gfx, char* file) : _gfx(_gfx) , _Tex(_Tex) , world(world)
+GameObjects::GameObjects(RenderCommands* render_commands , char* file) : _pRenderCommand(render_commands) , _Tex(_Tex) , world(world)
 {
-	_mesh = OBJLoader::Load(file, _gfx->GetDevice());
+	_mesh = OBJLoader::Load(file, _pRenderCommand->GetDevice());
 
 }
 
@@ -12,7 +12,7 @@ GameObjects::~GameObjects()
 
 
 
-void GameObjects::Update(GraphicComponent* gfx)
+void GameObjects::Update(RenderCommands* render_commands )
 {
 
 	CalculateTransformation(); 
@@ -20,11 +20,10 @@ void GameObjects::Update(GraphicComponent* gfx)
 
 void GameObjects::Draw()
 {
-	_gfx->UpdateConstantBuffer(world);
-
-	SwitchDrawBuffers(_mesh.VertexBuffer, _mesh.IndexBuffer , _gfx);
-	_Tex->BindTextures(0, _Textures.size(), _Textures , _gfx);
-	_gfx->_pImmediateContext->DrawIndexed(_mesh.IndexCount, 0, 0);
+	_pRenderCommand->UpdateConstantBuffer(world);
+	SwitchDrawBuffers(_mesh.VertexBuffer, _mesh.IndexBuffer , _pRenderCommand);
+	_Tex->BindTextures(0, _Textures.size(), _Textures , _pRenderCommand);
+	_pRenderCommand->GetDeviceContext()->DrawIndexed(_mesh.IndexCount, 0, 0);
 
 
 
@@ -35,15 +34,15 @@ void GameObjects::Draw()
 void GameObjects::CreateTexture(wchar_t* path)
 {
 	ID3D11ShaderResourceView* texture;
-	_Tex->CreateTexture(path, &texture , _gfx);
+	_Tex->CreateTexture(path, &texture , _pRenderCommand);
 	_Textures.push_back(texture);
 }
-void GameObjects::SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB , GraphicComponent* _gfx)
+void GameObjects::SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB , RenderCommands* render_commands)
 {
 	UINT stride = sizeof(SimpleVertex);
 	UINT offset = 0;
-	_gfx->_pImmediateContext->IASetVertexBuffers(0, 1, &VB, &stride, &offset);
-	_gfx->_pImmediateContext->IASetIndexBuffer(IB, DXGI_FORMAT_R16_UINT, 0);
+	_pRenderCommand->GetDeviceContext()->IASetVertexBuffers(0, 1, &VB, &stride, &offset);
+	_pRenderCommand->GetDeviceContext()->IASetIndexBuffer(IB, DXGI_FORMAT_R16_UINT, 0);
 }
 
 void GameObjects::CalculateTransformation()

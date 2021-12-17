@@ -10,14 +10,14 @@ TextureComponent::~TextureComponent()
 {
 }
 
-HRESULT TextureComponent::CreateTexture(wchar_t* filepath, ID3D11ShaderResourceView** texture , GraphicComponent* gfx)
+HRESULT TextureComponent::CreateTexture(wchar_t* filepath, ID3D11ShaderResourceView** texture , RenderCommands* render_command)
 {
-    return CreateDDSTextureFromFile(gfx->GetDevice(), filepath, nullptr, texture);
+    return CreateDDSTextureFromFile(render_command->GetDevice(), filepath, nullptr, texture);
 }
 
 
-void TextureComponent::BindTextures(int startSlot, int count, std::vector<ID3D11ShaderResourceView*> textures , GraphicComponent* gfx)
+void TextureComponent::BindTextures(int startSlot, int count, std::vector<ID3D11ShaderResourceView*> textures ,  RenderCommands* render_command)
 {
-    gfx->_pImmediateContext->PSSetShaderResources(startSlot, count, &textures[0]);
+    render_command->GetDeviceContext()->PSSetShaderResources(startSlot, count, &textures[0]);
 }
 

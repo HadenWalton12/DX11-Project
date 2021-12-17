@@ -1,13 +1,15 @@
 #pragma once
 #include "ObjectComponent.h"
 #include "PixelShader.h"
+#include "DX.h"
 #include "VertexShader.h"
 class Star : public GameObjects
 {
 public:
-	Star::Star(GraphicComponent* gfx ,  TextureComponent* _Tex , XMFLOAT4X4 world) : GameObjects(gfx, "Star.obj")
+	Star::Star(RenderCommands* render_command,  TextureComponent* _Tex , XMFLOAT4X4 world , DX* dx) : GameObjects(render_command, "Star.obj")
 	{
-		_gfx = gfx;
+		_pDX11 = dx;
+		_pRenderCommand = render_command;
 		BindShaders();
 	}
 
@@ -25,16 +27,20 @@ public:
 	void BindShaders()
 	{
 
-		_pVertexShader = new VertexShader(_gfx->GetDevice(), _VS, _gfx->GetDeviceContext(), L"DX11 Framework.fx");
-		_pPixelShader = new PixelShader(_gfx->GetDevice(), _PS, L"DX11 Framework.fx");
+		_pVertexShader = new VertexShader(_pRenderCommand->GetDevice(), _VS, _pRenderCommand->GetDeviceContext(), L"DX11 Framework.fx");
+		_pPixelShader = new PixelShader(_pRenderCommand->GetDevice(), _PS, L"DX11 Framework.fx");
 		_VS = _pVertexShader->GetShader();
 		_PS = _pPixelShader->GetShader();
-		_gfx->InitialiseShaders(_VS, _PS);
+		_pRenderCommand->BindVertexShader(_VS);
+		_pRenderCommand->BindPixelShader(_PS);
+		_pRenderCommand->BindSampler(_pDX11->_pSamplerLinear);
+
 	}
 
 	ID3D11VertexShader* _VS;
 	ID3D11PixelShader* _PS;
 	VertexShader* _pVertexShader;
+	DX* _pDX11;
 	PixelShader* _pPixelShader;
-	GraphicComponent* _gfx;
+	RenderCommands* _pRenderCommand;
 };
