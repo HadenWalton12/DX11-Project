@@ -12,9 +12,8 @@ GameObjects::~GameObjects()
 
 
 
-void GameObjects::Update(RenderCommands* render_commands )
+void GameObjects::Update()
 {
-
 	CalculateTransformation(); 
 }
 
@@ -49,25 +48,9 @@ void GameObjects::CalculateTransformation()
 {
 }
 
-
-
-
-
-
-void GameObjects::SetRotation(float x, float y, float z)
-{
-	ObjectRotation = XMFLOAT3(x, y, z);
-}
-
-void GameObjects::SetTranslation(float x, float y, float z)
-{
-	ObjectTranslation = XMFLOAT3(x, y, z);
-}
 void GameObjects::BindShaders()
 {
 }
-void GameObjects::SetScale(float x, float y, float z)
-{
 
-	ObjectScale = XMFLOAT3( x,  y,  z);
-}
+
+

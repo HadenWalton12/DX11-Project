@@ -50,10 +50,6 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _pDX11 = new DX(_WindowWidth, _WindowHeight, _hWnd);
     _Tex = new TextureComponent();
 
-
-
-
-
     // Initialize the world matrix
     XMStoreFloat4x4(&_world1, XMMatrixIdentity());
     XMStoreFloat4x4(&_world2, XMMatrixIdentity());
@@ -74,8 +70,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     _GameObjects.push_back(_star);
     _star->CreateTexture(L"Crate_COLOR.dds");
-    _star->SetTranslation(0.0f, 0.0f, 0.0f);
-    _star->SetScale(0.02f, 0.02f, 0.02f);
+
 
 
    return S_OK;
@@ -215,14 +210,13 @@ void Application::DetectInput()
 HRESULT Application::Update()
 {
     Timer t;
-    _star->SetRotation(0.0f, 1.0f , 0.0f);
-  
+
     _pRenderCommands->SwitchCamera(_Camera);
        DetectInput();
     for (auto gameobject : _GameObjects)
     {
  
-        gameobject->Update(_pRenderCommands);
+        gameobject->Update();
     }
     _pRenderCommands->UpdateCamera();
 

@@ -9,13 +9,7 @@ public:
 	void CalculateTransformation() 
 	{
 	
-		Timer t;
-		XMMATRIX scale = XMMatrixScaling(ObjectScale.x, ObjectScale.y, ObjectScale.z);
-		XMMATRIX translation = XMMatrixTranslation(ObjectTranslation.x, ObjectTranslation.y, ObjectTranslation.z);
-		XMMATRIX rotation = XMMatrixRotationRollPitchYaw(ObjectRotation.x * t.time, ObjectRotation.y , ObjectRotation.z);
 
-
-		XMStoreFloat4x4(&world, scale * translation * rotation);
 	}
 
 };
