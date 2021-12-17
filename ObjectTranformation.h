@@ -4,9 +4,9 @@
 class ObjectTranformation
 {
 public:
-	ObjectTranformation(XMFLOAT4X4 world) : _World(world)
+	ObjectTranformation(XMFLOAT4X4 world , XMFLOAT3 translation , XMFLOAT3 scale , XMFLOAT3 rotation) : _World(world) , ObjectTranslation(translation) , ObjectRotation(rotation) , ObjectScale(scale)
 	{
-
+		UpdateTransformation();
 	}
 	void UpdateTransformation( )
 	{
@@ -20,18 +20,7 @@ public:
 
 	}
 
-	void SetScale(float x, float y, float z)
-	{
-		ObjectScale = XMFLOAT3(x, y, z);
-	}
-	void SetRotation(float x, float y, float z)
-	{
-		ObjectRotation = XMFLOAT3(x, y, z);
-	}
-	void SetTranslation(float x, float y, float z)
-	{
-		ObjectTranslation = XMFLOAT3(x, y, z);
-	}
+
 
 private:
 

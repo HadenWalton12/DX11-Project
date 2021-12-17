@@ -67,7 +67,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     _GameObjects.push_back(_star);
     _star->CreateTexture(L"Crate_COLOR.dds");
-    XMFLOAT3 Camera_Position = XMFLOAT3(0.0f, 0.0f, 1.0f);
+    XMFLOAT3 Camera_Position = XMFLOAT3(0.0f, 0.0f, 3.0f);
     XMFLOAT3 Camera_Target = XMFLOAT3(0.0f, 0.0f, -1.0f);
     XMFLOAT3 Camera_Up = XMFLOAT3(0.0f, 1.0f, 0.0f);
     _Camera = new CameraComponent(Camera_Position, Camera_Target, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
@@ -133,7 +133,6 @@ bool Application::InitDirectInput(HINSTANCE hInstance)
     DIMouse->SetCooperativeLevel(NULL, DISCL_EXCLUSIVE | DISCL_NOWINKEY | DISCL_FOREGROUND);
     return true;
 }
-
 void Application::DetectInput()
 {
 
@@ -204,9 +203,6 @@ void Application::DetectInput()
     
  
 }
-
-
-
 HRESULT Application::Update()
 {
     Timer t;
@@ -215,7 +211,6 @@ HRESULT Application::Update()
        DetectInput();
     for (auto gameobject : _GameObjects)
     {
- 
         gameobject->Update();
     }
     _pRenderCommands->UpdateCamera();

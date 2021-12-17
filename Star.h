@@ -11,24 +11,19 @@ class Star : public GameObjects
 public:
 	Star::Star(RenderCommands* render_command, TextureComponent* _Tex, XMFLOAT4X4 world, DX* dx) : GameObjects(render_command, "Star.obj")
 	{
-		Timer t;
+
 		_World = world;
 		_pDX11 = dx;
 		_pRenderCommand = render_command;
-		_pStarTransform = new ObjectTranformation(world);
 		
-		_pStarTransform->SetScale(0.02f, 0.02f, 0.02f);
-		_pStarTransform->SetTranslation(0.0f, 0.0f, -2.0f);
-		_pStarTransform->SetRotation(0.0f, 0.0f, 0.2f * t.time);
+
 		BindShaders();
 	
 	}
 
 	void CalculateTransformation()  override
 	{
-		Timer t;
 
-		_pStarTransform->UpdateTransformation();
 	}
 
 	void BindShaders()
