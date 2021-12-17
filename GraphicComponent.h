@@ -45,7 +45,7 @@ public:
 
 	ID3D11Buffer* _pConstantBuffer;								//Defines ConstantBuffer Storage 
 	ID3D11SamplerState* _pSamplerLinear;						//Bind to any shader stage (VS / PS) , used to bind reference of texture sample operations - We bind to PixelShader to accomidate per-pixel lighting
-		
+	ID3D11DeviceContext* GetDeviceContext();
 	ID3D11Device* GetDevice();									//Gets "_pd3dDevice" - Needed for reference of executing shader & texture systems within Shader/Texture Components - Returns value of singular device.
 	ID3D11Device* _pd3dDevice;									//Virtual Representation of Video Card , used to create resources for application , resources exuted using device context
 	ID3D11DeviceContext* _pImmediateContext;					//Stores reference to DeviceContext , allow us to generate rendering commands to execute within application

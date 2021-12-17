@@ -367,6 +367,11 @@ void GraphicComponent::UpdateConstantBuffer(XMFLOAT4X4 world )
 
 
 
+ID3D11DeviceContext* GraphicComponent::GetDeviceContext()
+{
+    return _pImmediateContext;
+}
+
 ID3D11Device* GraphicComponent::GetDevice()
 {
     return _pd3dDevice;

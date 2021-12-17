@@ -8,7 +8,7 @@ public:
 	Star::Star(GraphicComponent* gfx ,  TextureComponent* _Tex , XMFLOAT4X4 world) : GameObjects(gfx, "Star.obj")
 	{
 		_gfx = gfx;
-		
+		BindShaders();
 	}
 
 	void CalculateTransformation()  override
@@ -21,25 +21,17 @@ public:
 
 		XMStoreFloat4x4(&world, scale * translation * rotation);
 	}
-
-	void BindShaders() override
+	 
+	void BindShaders()
 	{
 
-		_pVertexShader = new VertexShader(_gfx->GetDevice(), _VS, L"DX11 Framework.fx");
+		_pVertexShader = new VertexShader(_gfx->GetDevice(), _VS, _gfx->GetDeviceContext(), L"DX11 Framework.fx");
 		_pPixelShader = new PixelShader(_gfx->GetDevice(), _PS, L"DX11 Framework.fx");
 		_VS = _pVertexShader->GetShader();
 		_PS = _pPixelShader->GetShader();
 		_gfx->InitialiseShaders(_VS, _PS);
 	}
-	void Initialise() 
-	{
-		
-	
-		
-		//_pPixelShader = new PixelShaderComp(_gfx->GetDevice(), PS, L"DX11 Framework.fx");
 
-
-	}
 	ID3D11VertexShader* _VS;
 	ID3D11PixelShader* _PS;
 	VertexShader* _pVertexShader;

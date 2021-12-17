@@ -6,7 +6,7 @@ class VertexShader
 {
 public:
 
-    VertexShader(ID3D11Device* device, ID3D11VertexShader* vertex_shader, WCHAR* VS_PATH) : _pDevice(device), _VertexShader(vertex_shader)
+    VertexShader(ID3D11Device* device, ID3D11VertexShader* vertex_shader, ID3D11DeviceContext* device_context,WCHAR* VS_PATH) : _pDevice(device), _VertexShader(vertex_shader) , _pDeviceContext(device_context)
     {
         _pShaderCompiler = new ShaderCompiler();
         CreateVertexShader(VS_PATH, vertex_shader);
@@ -20,7 +20,7 @@ public:
 
         // Compile the vertex shader
         ID3DBlob* pVSBlob = nullptr;
-        hr = _pShaderCompiler->CompileShaderFromFile(L"DX11 Framework.fx" , "VS", "vs_4_0", &pVSBlob);
+        hr = _pShaderCompiler->CompileShaderFromFile(VS_PATH, "VS", "vs_4_0", &pVSBlob);
 
         //Check Error Method - Was the CompiledShaderFromFile Above correct?
         if (FAILED(hr))
@@ -55,6 +55,7 @@ public:
         {
             return hr;
         }
+        _pDeviceContext->IASetInputLayout(vertex_layout);
         _VertexShader = vertex_shader;
 
     }
@@ -67,5 +68,6 @@ public:
 private:
     ID3D11VertexShader* _VertexShader;
     ID3D11Device* _pDevice;
+    ID3D11DeviceContext* _pDeviceContext;
     ShaderCompiler* _pShaderCompiler;
 };
