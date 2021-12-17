@@ -142,7 +142,7 @@ void Application::DetectInput()
     XMFLOAT3 CameraPosition = _Camera->GetPosition();
     XMFLOAT3 CameraDirection = _Camera->GetDirection();
     DIMOUSESTATE mouseCurrState;
-
+    XMFLOAT3 Star_Trans = _star->GetTranslation();
     BYTE keyboardState[256];
 
     DIKeyBoard->Acquire();
@@ -155,7 +155,7 @@ void Application::DetectInput()
     //Forward
     if (keyboardState[DIK_W] & 0x80)
     {
-        CameraPosition.z -= 0.1;
+        Star_Trans.y -= 0.1;
     }
 
     //Backwards
@@ -185,7 +185,7 @@ void Application::DetectInput()
     //Down
     if (keyboardState[DIK_LSHIFT] & 0x80)
     {
-        CameraPosition.y -= 0.001;
+        CameraPosition.y -= 0.1;
     }
 
     //Look Vertical
@@ -203,7 +203,7 @@ void Application::DetectInput()
     //Update 
     _Camera->SetDirection(CameraDirection);
     _Camera->SetPosition(CameraPosition);
-    
+    _star->SetTranslation(Star_Trans);
  
 }
 HRESULT Application::Update()

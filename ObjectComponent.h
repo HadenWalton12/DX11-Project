@@ -24,6 +24,15 @@ public:
 	void SetScale(float x, float y, float z);
 	void SetRotation(float x, float y, float z);
 	void SetTranslation(float x, float y, float z);
+	void SetTranslation(XMFLOAT3 trans)
+	{
+
+		ObjectTranslation = trans;
+	}
+	XMFLOAT3 GetTranslation()
+	{
+		return ObjectTranslation;
+	}
 private:
 
 	void SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB, RenderCommands* render_command);
