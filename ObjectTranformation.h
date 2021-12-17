@@ -38,6 +38,6 @@ private:
 	XMFLOAT3 ObjectTranslation;							
 	XMFLOAT3 ObjectRotation;							
 	XMFLOAT3 ObjectScale;
-	XMFLOAT4X4 _World
+	XMFLOAT4X4 _World;
 };
 

@@ -42,10 +42,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _WindowWidth = rc.right - rc.left;
     _WindowHeight = rc.bottom - rc.top;
     
-    XMFLOAT3 Camera_Position = XMFLOAT3(0.0f, 0.0f, 1.0f);
-    XMFLOAT3 Camera_Target = XMFLOAT3(0.0f, 0.0f, -1.0f);
-    XMFLOAT3 Camera_Up = XMFLOAT3(0.0f, 1.0f, 0.0f);
-    _Camera = new CameraComponent(Camera_Position, Camera_Target, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
+
 
     _pDX11 = new DX(_WindowWidth, _WindowHeight, _hWnd);
     _Tex = new TextureComponent();
@@ -70,7 +67,10 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     _GameObjects.push_back(_star);
     _star->CreateTexture(L"Crate_COLOR.dds");
-
+    XMFLOAT3 Camera_Position = XMFLOAT3(0.0f, 0.0f, 1.0f);
+    XMFLOAT3 Camera_Target = XMFLOAT3(0.0f, 0.0f, -1.0f);
+    XMFLOAT3 Camera_Up = XMFLOAT3(0.0f, 1.0f, 0.0f);
+    _Camera = new CameraComponent(Camera_Position, Camera_Target, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
 
 
    return S_OK;

@@ -28,7 +28,7 @@ public:
 	{
 		Timer t;
 
-		_pStarTransform->UpdateTransformation( _World);
+		_pStarTransform->UpdateTransformation();
 	}
 
 	void BindShaders()
