@@ -1,6 +1,6 @@
 #include "ObjectComponent.h"
 
-GameObjects::GameObjects(RenderCommands* render_commands , char* file) : _pRenderCommand(render_commands) , _Tex(_Tex) , world(world)
+GameObjects::GameObjects(RenderCommands* render_commands , char* file) : _pRenderCommand(render_commands) , _Tex(_Tex)
 {
 	_mesh = OBJLoader::Load(file, _pRenderCommand->GetDevice());
 
@@ -10,17 +10,15 @@ GameObjects::~GameObjects()
 {
 }
 
-
-
 void GameObjects::Update()
 {
-	CalculateTransformation(); 
+	WorldTransformations();
 }
 
 void GameObjects::Draw()
 {
-	_pRenderCommand->UpdateConstantBuffer(world);
 	BindShaders();
+	_pRenderCommand->UpdateConstantBuffer(_World);
 	SwitchDrawBuffers(_mesh.VertexBuffer, _mesh.IndexBuffer , _pRenderCommand);
 	_Tex->BindTextures(0, _Textures.size(), _Textures , _pRenderCommand);
 	_pRenderCommand->GetDeviceContext()->DrawIndexed(_mesh.IndexCount, 0, 0);
@@ -29,8 +27,10 @@ void GameObjects::Draw()
 
 }
 
-
-
+void GameObjects::SetWorld(XMFLOAT4X4 world)
+{
+	_World = world;
+}
 void GameObjects::CreateTexture(wchar_t* path)
 {
 	ID3D11ShaderResourceView* texture;
@@ -45,7 +45,9 @@ void GameObjects::SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB , RenderC
 	_pRenderCommand->GetDeviceContext()->IASetIndexBuffer(IB, DXGI_FORMAT_R16_UINT, 0);
 }
 
-void GameObjects::CalculateTransformation()
+
+
+void GameObjects::WorldTransformations()
 {
 }
 
@@ -54,18 +56,3 @@ void GameObjects::BindShaders()
 }
 
 
-
-void GameObjects::SetRotation(float x, float y, float z)
-{
-	ObjectRotation = XMFLOAT3(x, y, z);
-}
-
-void GameObjects::SetTranslation(float x, float y, float z)
-{
-	ObjectTranslation = XMFLOAT3(x, y, z);
-}
-void GameObjects::SetScale(float x, float y, float z)
-{
-
-	ObjectScale = XMFLOAT3(x, y, z);
-}

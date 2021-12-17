@@ -9,31 +9,27 @@
 class Star : public GameObjects
 {
 public:
-	Star::Star(RenderCommands* render_command, TextureComponent* _Tex, XMFLOAT4X4 world, DX* dx) : GameObjects(render_command, "Star.obj")
-	{
-
-		_World = world;
+	Star::Star(RenderCommands* render_command, TextureComponent* _Tex, DX* dx) : GameObjects(render_command, "Star.obj")
+	{	
 		_pDX11 = dx;
 		_pRenderCommand = render_command;
-
-
-	
+		_pStarTransform = new ObjectTranformation(&_StarWorld);
 	}
 
-	void CalculateTransformation()
+	void WorldTransformations() override
 	{
 		Timer t;
-		XMMATRIX scale = XMMatrixScaling(ObjectScale.x, ObjectScale.y, ObjectScale.z);
-		XMMATRIX translation = XMMatrixTranslation(ObjectTranslation.x, ObjectTranslation.y, ObjectTranslation.z);
-		XMMATRIX rotation = XMMatrixRotationRollPitchYaw(ObjectRotation.x, ObjectRotation.y * t.time, ObjectRotation.z);
-
-
-		XMStoreFloat4x4(&world, scale * translation * rotation);
+		_pStarTransform->SetTranslation(0.0f, 0.0f, 0.0f);
+		_pStarTransform->SetScale(1.0f, 1.0f, 1.0f);
+		t.Update();
+		_pStarTransform->SetRotation(0.0f, 1.0f *t.time , 0.0f);
+		_pStarTransform->CalculateWorldTransformation(_StarWorld);
+		
+		SetWorld(_pStarTransform->GetWorld());
 	}
 
 	void BindShaders() override
 	{
-
 		_pVertexShader = new VertexShader(_pRenderCommand->GetDevice(), _VS, _pRenderCommand->GetDeviceContext(), L"DX11 Framework.fx");
 		_pPixelShader = new PixelShader(_pRenderCommand->GetDevice(), _PS, L"DX11 Framework.fx");
 		_VS = _pVertexShader->GetShader();
@@ -43,11 +39,13 @@ public:
 		_pRenderCommand->BindSampler(_pDX11->_pSamplerLinear);
 
 	}
+
+	
+
 	Timer  t;
-	XMFLOAT3 _StarTranslate = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	XMFLOAT3 _StarScale = XMFLOAT3(0.02f, 0.02f, 0.02f);
-	XMFLOAT3 _StarRotate = XMFLOAT3(0.0f, 1.0f * t.time, 0.0f);
-	XMFLOAT4X4 _World;
+	
+
+	XMFLOAT4X4 _StarWorld;
 	ObjectTranformation* _pStarTransform;
 	EntityTransformation transformation;
 	ID3D11VertexShader* _VS;

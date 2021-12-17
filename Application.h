@@ -102,8 +102,6 @@ public:
 	void Draw();
 	
 	HRESULT InitialiseWindow(HINSTANCE hInstance, int nCmdShow);
-	XMFLOAT4X4				_world1;
-	XMFLOAT4X4				_world2;
-	XMFLOAT4X4				_world3;
+
 };
 

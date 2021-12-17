@@ -380,7 +380,6 @@
     <ClCompile Include="DX.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
-    <ClCompile Include="DynamicCameraComponent.cpp" />
     <ClCompile Include="ObjectComponent.cpp" />
     <ClCompile Include="ObjectTranformation.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
@@ -395,7 +394,6 @@
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="ConstantStructure.h" />
     <ClInclude Include="DX.h" />
-    <ClInclude Include="DynamicCameraComponent.h" />
     <ClInclude Include="EntityTransformation.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="LightingValuesStructure.h" />

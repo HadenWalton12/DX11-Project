@@ -19,20 +19,12 @@ public:
 	~GameObjects();
 
 	void Update();										//Used to reference instances where the object is to be updated
-	void Draw();										//Draw method , to how we draw objects
+	void Draw();
+	
+	void SetWorld(XMFLOAT4X4 world);
+	//Draw method , to how we draw objects
 	void CreateTexture(wchar_t* path);					//Creates Texture
-	void SetScale(float x, float y, float z);
-	void SetRotation(float x, float y, float z);
-	void SetTranslation(float x, float y, float z);
-	void SetTranslation(XMFLOAT3 trans)
-	{
 
-		ObjectTranslation = trans;
-	}
-	XMFLOAT3 GetTranslation()
-	{
-		return ObjectTranslation;
-	}
 private:
 
 	void SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB, RenderCommands* render_command);
@@ -40,15 +32,13 @@ private:
 protected:
 	MeshData _mesh;										//Store object data within a mesh
 	std::vector<ID3D11ShaderResourceView*> _Textures;	//Texture Vector to store multiple textures
-	virtual void CalculateTransformation();
+	virtual void WorldTransformations();
 	virtual void BindShaders();
 	RenderCommands* _pRenderCommand;							//Graphic Component Class pointer, needed to reference graphiccomponents for creation of object
 	
 	TextureComponent* _Tex;								//Texture Component Class pointer, needed to assign objects with textures
-	XMFLOAT4X4 world;
-	XMFLOAT3 ObjectTranslation;							//
-	XMFLOAT3 ObjectRotation;							//
-	XMFLOAT3 ObjectScale;
+	XMFLOAT4X4 _World;
+
 
 };
 

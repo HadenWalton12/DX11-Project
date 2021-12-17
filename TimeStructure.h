@@ -23,11 +23,17 @@ struct Timer
 			static DWORD dwTimeStart = 0;
 			DWORD dwTimeCur = GetTickCount();
 
-			if (dwTimeStart == 0)
-				dwTimeStart = dwTimeCur;
 
 			time = (dwTimeCur - dwTimeStart) / 1000.0f;
 
+	}
+	void Update()
+	{
+		static DWORD dwTimeStart = 0;
+		DWORD dwTimeCur = GetTickCount();
+
+
+		time = (dwTimeCur - dwTimeStart) / 1000.0f;
 	}
 
 };

@@ -59,7 +59,6 @@
       <Filter>GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="CameraComponent.h" />
-    <ClInclude Include="DynamicCameraComponent.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="VertexBuffer.h" />
@@ -84,7 +83,6 @@
       <Filter>EngineComponent</Filter>
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp" />
-    <ClCompile Include="DynamicCameraComponent.cpp" />
     <ClCompile Include="DX.cpp" />
     <ClCompile Include="RenderCommands.cpp" />
     <ClCompile Include="ObjectTranformation.cpp" />
