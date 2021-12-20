@@ -30,7 +30,7 @@ public:
 
 		VertexBufferDescrption.Usage = D3D11_USAGE_DEFAULT;
 		VertexBufferDescrption.ByteWidth = sizeof(SimpleVertex) * Vertex.size();
-		VertexBufferDescrption.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		VertexBufferDescrption.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		VertexBufferDescrption.CPUAccessFlags = 0;
 
 

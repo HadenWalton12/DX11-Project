@@ -21,67 +21,84 @@ public:
 		_pTerrainTransform = new ObjectTranformation(&_TerrainWorld);
 
 	}
+	//Terrain Loading Based from Frank Lunar Book
 	MeshData LoadMesh()
 	{
-		int m = 3;
-		int n = 3;
+		//
+		int column = 25;
+		int row = 25;
 
-		float width = 75.0f;
-		float depth = 75.0f;
+		float width = 1.0f;
+		float depth = 1.0f;
 
-		UINT Vertex_Count = m * n;
-		UINT Face_Count = (m - 1) * (n - 1) * 2;
+		UINT Vertex_Count = column * row;
+		UINT Face_Count = (column - 1) * (row - 1) * 2 * 3;
 
 		std::vector<SimpleVertex> TerrainVertex;
 		std::vector <WORD> Indices;
 
-
-		float Half_Width = 0.5 * width;
-		float Half_Depth = 0.5 * depth;
-
-		float dx = width / (n - 1);
-		float dz = depth / (m - 1);
-
-		//Calculates the delta between each row and column of tex coords
-		float du = 1.0f / (n - 1);
-		float dv = 1.0f / (m - 1);
-
+		Indices.resize(Face_Count);
 		TerrainVertex.resize(Vertex_Count);
 
-		for (UINT i = 0; i < m; i++)
+		//Used in spacing calculations to determine the spacing between points
+		float Half_Width = 0.5;
+		float Half_Depth = 0.5;
+
+		//Used to correctly space out the differences between each x and z value given.
+			//Correctly maps out the grid to be square like. Called cell spacing
+		float dx = width / (column - 1);
+		float dz = depth / (row - 1);
+
+		//Calculates the delta between each row and column of tex coords
+		float du = 1.0f / (column - 1);
+		float dv = 1.0f / (row - 1);
+
+
+		for (UINT i = 0; i < row; i++)
 		{
+			//Updates Z/row value to be used to fill the next columns of data
 			float z = Half_Depth - i * dz;
 
-			for (UINT j = 0; j < n; j++)
+			//For each co
+			for (UINT j = 0; j < column; j++)
 			{
-
+				//Increments value , update the next element column position
 				float x = -Half_Width + j * dx;
 
-				TerrainVertex[i * n + j].Pos = XMFLOAT3(x, 0.0f, z);
-				TerrainVertex[i * n + j].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+				//Updates with current column instance , with the set value of the row
+				TerrainVertex[i * column + j].Pos = XMFLOAT3(x, 0.0f, z);
 
-				TerrainVertex[i * n + j].TexC.x = j * du;
-				TerrainVertex[i * n + j].TexC.y = i * dv;
+				//As long as light positions are above this value(they will thats how lighting works) , lighting will work correctly , binding normals correctly
+				TerrainVertex[i * column + j].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+
+				//Correctly maps texture bound to each vertex point
+				TerrainVertex[i * column + j].TexC.x = j * dv;
+				TerrainVertex[i * column + j].TexC.y = i * du;
 			}
 		}
-		//Resizes the indices vector to avoid calling the copy constructor for every new index
-		Indices.resize(Face_Count * 3); // 3 indices per face
 
-		// Iterate over each quad and compute indices.
+
+		//Used as the element accesser , will modify overtime
 		UINT k = 0;
-		for (UINT i = 0; i < m - 1; ++i)
+		for (UINT i = 0; i < column - 1; ++i)
 		{
-			for (UINT j = 0; j < n - 1; ++j)
+			//Draws a Quad - Two Triangles
+			for (UINT j = 0; j < row - 1; ++j)
 			{
-				Indices[k] = i * n + j;
-				Indices[k + 1] = i * n + j + 1;
-				Indices[k + 2] = (i + 1) * n + j;
+				//First Triangle in Quad
+				///  
+				Indices[k] = i * row + j;				//Access Initial Element Value
+				Indices[k + 1] = i * row + j + 1;	   //Will access the next value from previous element 
+				Indices[k + 2] = (i + 1) * row + j;    //Will access element on next row to create first triangle
 
-				Indices[k + 3] = (i + 1) * n + j;
-				Indices[k + 4] = i * n + j + 1;
-				Indices[k + 5] = (i + 1) * n + j + 1;
+				//Second Triangle in Quad
+				Indices[k + 3] = (i + 1) * row + j;		//Will access the previous element to start draw of next triangle
+				Indices[k + 5] = (i + 1) * row + j + 1; //Will access the next element from this previous value
+				Indices[k + 4] = i * row + j + 1;		//Will access element value on row above previous two values to complete second triangle ,completing the Quad
+			
 
-				k += 6; // next quad
+				//To access elements for next Quad.
+				k += 6; 
 			}
 		}
 
@@ -101,7 +118,7 @@ public:
 	{
 		Timer t;
 		_pTerrainTransform->SetTranslation(1.0f, -1.0f, 1.0f);
-		_pTerrainTransform->SetScale(0.20f, 0.20f, 0.20f);
+		_pTerrainTransform->SetScale(10.0f, 10.0f, 10.0f);
 		t.Update();
 		_pTerrainTransform->SetRotation(0.0f, 0.0f, 0.0f);
 		_pTerrainTransform->CalculateWorldTransformation(_TerrainWorld);

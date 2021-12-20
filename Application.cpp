@@ -72,7 +72,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _GameObjects.push_back(_plane);
   
 
-    _Terrain->CreateTexture(L"Crate_COLOR.dds");
+    _Terrain->CreateTexture(L"Grass.dds");
     _star->CreateTexture(L"Crate_COLOR.dds");
     _plane->CreateTexture(L"Hercules_COLOR.dds");
     XMFLOAT3 Camera_Position = XMFLOAT3(0.0f, 0.0f, 3.0f);
@@ -185,7 +185,7 @@ void Application::DetectInput()
     //Up
     if (keyboardState[DIK_SPACE] & 0x80)
     {
-        CameraPosition.y += 0.001;
+        CameraPosition.y += 0.1;
     }
 
     //Down
