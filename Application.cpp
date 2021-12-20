@@ -62,10 +62,11 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _pDX11->InitialiseDevice();
     _pRenderCommands = new RenderCommands(_pDX11->_pDevice, _pDX11->_pDeviceContext, _Camera , _pDX11->_pConstantBuffer);
     _star = new Star(_pRenderCommands, _Tex , _pDX11);
-    
+    _plane = new Plane(_pRenderCommands, _Tex, _pDX11);
     _GameObjects.push_back(_star);
+    _GameObjects.push_back(_plane);
     _star->CreateTexture(L"Crate_COLOR.dds");
-
+    _plane->CreateTexture(L"Hercules_COLOR.dds");
     XMFLOAT3 Camera_Position = XMFLOAT3(0.0f, 0.0f, 3.0f);
     XMFLOAT3 Camera_Target = XMFLOAT3(0.0f, 0.0f, -1.0f);
     XMFLOAT3 Camera_Up = XMFLOAT3(0.0f, 1.0f, 0.0f);
