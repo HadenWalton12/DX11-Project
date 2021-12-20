@@ -3,8 +3,7 @@
 #pragma comment (lib, "dxguid.lib")
 #include <dinput.h>
 
-#include "SimpleVertexStructure.h"
-#include "LightingValuesStructure.h"
+
 
 #include "ConstantStructure.h"
 #include "MeshStructure.h"
@@ -29,6 +28,7 @@
 #include "TextureComponent.h"
 
 #include "Star.h"
+#include "Terrain.h"
 #include "Plane.h"
 #include "Sphere.h"
 #include "CameraComponent.h"
@@ -53,7 +53,7 @@ private:
 
 	DX* _pDX11;
 	RenderCommands* _pRenderCommands;
-	
+	Terrain* _Terrain;
 	Star* _star;
 	Plane* _plane;
 	Sphere* _sphere;

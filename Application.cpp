@@ -60,21 +60,29 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     //InitialiseDevice , Assist creating core graphical components.
     _pDX11->InitialiseDevice();
+    
     _pRenderCommands = new RenderCommands(_pDX11->_pDevice, _pDX11->_pDeviceContext, _Camera , _pDX11->_pConstantBuffer);
+    
     _star = new Star(_pRenderCommands, _Tex , _pDX11);
     _plane = new Plane(_pRenderCommands, _Tex, _pDX11);
+    _Terrain = new Terrain(_pRenderCommands, _Tex, _pDX11);
+    
+    _GameObjects.push_back(_Terrain);
     _GameObjects.push_back(_star);
     _GameObjects.push_back(_plane);
+  
+
+    _Terrain->CreateTexture(L"Crate_COLOR.dds");
     _star->CreateTexture(L"Crate_COLOR.dds");
     _plane->CreateTexture(L"Hercules_COLOR.dds");
     XMFLOAT3 Camera_Position = XMFLOAT3(0.0f, 0.0f, 3.0f);
     XMFLOAT3 Camera_Target = XMFLOAT3(0.0f, 0.0f, -1.0f);
     XMFLOAT3 Camera_Up = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
+  
     _Camera = new CameraComponent(Camera_Position, Camera_Target, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
-
-
-   return S_OK;
+ 
+    return S_OK;
 }
 HRESULT Application::InitialiseWindow(HINSTANCE hInstance, int nCmdShow)
 {
@@ -217,7 +225,6 @@ HRESULT Application::Update()
 
     return S_OK;
 }
-
 void Application::Draw()
 {
 

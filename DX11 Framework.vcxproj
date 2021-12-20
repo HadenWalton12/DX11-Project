@@ -373,7 +373,6 @@
       </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemGroup />
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
@@ -410,6 +409,7 @@
     <ClInclude Include="SimpleVertexStructure.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Star.h" />
+    <ClInclude Include="Terrain.h" />
     <ClInclude Include="TextureComponent.h" />
     <ClInclude Include="TimeStructure.h" />
     <ClInclude Include="VertexBuffer.h" />

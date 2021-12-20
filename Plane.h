@@ -9,13 +9,19 @@
 class Plane : public GameObjects
 {
 public:
-	Plane::Plane(RenderCommands* render_command, TextureComponent* _Tex, DX* dx) : GameObjects(render_command, "Hercules.obj") 
+	Plane::Plane(RenderCommands* render_command, TextureComponent* _Tex, DX* dx) : GameObjects(render_command) 
 	{
 		_pDX11 = dx;
 		_pRenderCommand = render_command;
+		LoadMesh();
 		_pStarTransform = new ObjectTranformation(&_StarWorld);
-	}
 
+	}
+	MeshData LoadMesh() 
+	{
+		_mesh = OBJLoader::Load("Hercules.obj", _pRenderCommand->GetDevice());
+		return _mesh;
+	}
 	void WorldTransformations() override
 	{
 		Timer t;

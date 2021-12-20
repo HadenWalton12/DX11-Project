@@ -18,17 +18,18 @@ using namespace DirectX; //Use default DX11 Naming
 
 class VertexBuffer
 {
+public:
 	//Used for object creation and binding to render pipeline.
 
-	VertexBuffer(ID3D11Device* device, ID3D11DeviceContext* device_context, std::vector<SimpleVertex>& vertices, ID3D11Buffer* vertex_buffer)
+	VertexBuffer(ID3D11Device* device, ID3D11DeviceContext* device_context, std::vector<SimpleVertex>&vertices, ID3D11Buffer* vertex_buffer) : _pVertexBuffer(vertex_buffer) , Vertex(vertices)
 	{
-		ID3D11Buffer* vertex_buffer;
+	
 
 		D3D11_BUFFER_DESC VertexBufferDescrption;
 		ZeroMemory(&VertexBufferDescrption, sizeof(VertexBufferDescrption));
 
 		VertexBufferDescrption.Usage = D3D11_USAGE_DEFAULT;
-		VertexBufferDescrption.ByteWidth = sizeof(SimpleVertex) * vertices.size();
+		VertexBufferDescrption.ByteWidth = sizeof(SimpleVertex) * Vertex.size();
 		VertexBufferDescrption.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		VertexBufferDescrption.CPUAccessFlags = 0;
 
@@ -36,8 +37,38 @@ class VertexBuffer
 		//Specifies data being used - Used in the process of creating buffers , calls reference to relevant index struct (InitData variable equals TrianglePyramidIndex)
 		D3D11_SUBRESOURCE_DATA VertexBufferData;
 		ZeroMemory(&VertexBufferData, sizeof(VertexBufferData));
-		VertexBufferData.pSysMem = vertices.data();
+		VertexBufferData.pSysMem = Vertex.data();
 
-		device->CreateBuffer(&VertexBufferDescrption, &VertexBufferData, &vertex_buffer);
+		device->CreateBuffer(&VertexBufferDescrption, &VertexBufferData, &_pVertexBuffer);
+	
+		
+		VBOffset = 0;
+		VBStride = sizeof(SimpleVertex);
+	
 	}
+	ID3D11Buffer* GetVertexBuffer()
+	{
+		return _pVertexBuffer;
+	}
+
+	UINT GetStride()
+	{
+
+		return VBStride;
+
+	}
+	UINT GetOffSet()
+	{
+
+		return VBOffset;
+
+	}
+
+
+private:
+
+	ID3D11Buffer* _pVertexBuffer;
+	UINT VBStride;
+	UINT VBOffset;
+	std::vector<SimpleVertex>Vertex;
 };

@@ -14,13 +14,14 @@
 class GameObjects
 {
 public:
-	GameObjects(RenderCommands* render_command, char* file);   //Constructor , when child class is called , we will need to initialise a gfx component and file , this is how we create our objects.Within we call OBJ load method , passing in our "_pd3dDevice" function , and "file" , so when we create child class
+	GameObjects(RenderCommands* render_command);   //Constructor , when child class is called , we will need to initialise a gfx component and file , this is how we create our objects.Within we call OBJ load method , passing in our "_pd3dDevice" function , and "file" , so when we create child class
 	//we can call the device pointer and the file name as a string to initialise the object loading , to which we call the draw the loaded mesh object
 	~GameObjects();
 
 	void Update();										//Used to reference instances where the object is to be updated
 	void Draw();
-	
+
+
 	void SetWorld(XMFLOAT4X4 world);
 	//Draw method , to how we draw objects
 	void CreateTexture(wchar_t* path);					//Creates Texture

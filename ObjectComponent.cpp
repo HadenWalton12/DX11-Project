@@ -1,9 +1,9 @@
 #include "ObjectComponent.h"
 
-GameObjects::GameObjects(RenderCommands* render_commands , char* file) : _pRenderCommand(render_commands) , _Tex(_Tex)
+GameObjects::GameObjects(RenderCommands* render_commands) : _pRenderCommand(render_commands) , _Tex(_Tex)
 {
-	_mesh = OBJLoader::Load(file, _pRenderCommand->GetDevice());
-
+	
+	
 }
 
 GameObjects::~GameObjects()
@@ -17,6 +17,7 @@ void GameObjects::Update()
 
 void GameObjects::Draw()
 {
+
 	BindShaders();
 	_pRenderCommand->UpdateConstantBuffer(_World);
 	SwitchDrawBuffers(_mesh.VertexBuffer, _mesh.IndexBuffer , _pRenderCommand);

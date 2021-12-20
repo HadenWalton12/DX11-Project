@@ -9,10 +9,11 @@
 class Star : public GameObjects
 {
 public:
-	Star::Star(RenderCommands* render_command, TextureComponent* _Tex, DX* dx) : GameObjects(render_command, "Star.obj")
+	Star::Star(RenderCommands* render_command, TextureComponent* _Tex, DX* dx) : GameObjects(render_command)
 	{	
 		_pDX11 = dx;
 		_pRenderCommand = render_command;
+		LoadMesh();
 		_pStarTransform = new ObjectTranformation(&_StarWorld);
 	}
 
@@ -27,7 +28,11 @@ public:
 		
 		SetWorld(_pStarTransform->GetWorld());
 	}
-
+	MeshData LoadMesh() 	
+	{
+		_mesh = OBJLoader::Load("Star.obj", _pRenderCommand->GetDevice());
+		return _mesh;
+	}
 	void BindShaders() override
 	{
 		_pVertexShader = new VertexShader(_pRenderCommand->GetDevice(), _VS, _pRenderCommand->GetDeviceContext(), L"DX11 Framework.fx");

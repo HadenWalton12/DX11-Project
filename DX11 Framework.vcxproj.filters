@@ -68,6 +68,9 @@
     <ClInclude Include="RenderCommands.h" />
     <ClInclude Include="ObjectTranformation.h" />
     <ClInclude Include="EntityTransformation.h" />
+    <ClInclude Include="Terrain.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
