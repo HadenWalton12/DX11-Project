@@ -25,10 +25,11 @@ public:
 	void WorldTransformations() override
 	{
 		Timer t;
-		_pStarTransform->SetTranslation(0.0f, 0.0f, 0.0f);
-		_pStarTransform->SetScale(0.20f, 0.20f, 0.20f);
 		t.Update();
-		_pStarTransform->SetRotation(0.0f, 1.0f * t.time, 0.0f);
+		_pStarTransform->SetTranslation(0.0f, 2.0f, 0.0f);
+		_pStarTransform->SetScale(0.10f, 0.10f, 0.10f);
+		
+		_pStarTransform->SetRotation(0.0f,0.0f, 0.0f);
 		_pStarTransform->CalculateWorldTransformation(_StarWorld);
 
 		SetWorld(_pStarTransform->GetWorld());
@@ -38,10 +39,12 @@ public:
 	{
 		_pVertexShader = new VertexShader(_pRenderCommand->GetDevice(), _VS, _pRenderCommand->GetDeviceContext(), L"DX11 Framework.fx");
 		_pPixelShader = new PixelShader(_pRenderCommand->GetDevice(), _PS, L"DX11 Framework.fx");
+		
 		_VS = _pVertexShader->GetShader();
 		_PS = _pPixelShader->GetShader();
 		_pRenderCommand->BindVertexShader(_VS);
 		_pRenderCommand->BindPixelShader(_PS);
+		
 		_pRenderCommand->BindSampler(_pDX11->_pSamplerLinear);
 
 	}

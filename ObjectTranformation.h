@@ -14,7 +14,7 @@ public:
 	{
 		Timer t;
 		XMMATRIX l_scale = XMMatrixScaling(ObjectScale.x, ObjectScale.y, ObjectScale.z);
-		XMMATRIX l_translation = XMMatrixTranslation(ObjectTranslation.x, ObjectTranslation.y, ObjectTranslation.z);
+		XMMATRIX l_translation = XMMatrixTranslation(ObjectTranslation.x, ObjectTranslation.y, ObjectTranslation.z );
 		XMMATRIX l_rotation = XMMatrixRotationRollPitchYaw(ObjectRotation.x, ObjectRotation.y , ObjectRotation.z);
 
 		XMStoreFloat4x4(&world, l_scale * l_translation * l_rotation);

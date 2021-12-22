@@ -52,6 +52,22 @@ public:
 // matrices
 	void Update();
 
+	XMVECTOR CameraPosition;
+	XMVECTOR CameraTarget;
+	XMVECTOR CameraUp;
+	XMVECTOR DefaultForward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+	XMVECTOR DefaultRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+	XMVECTOR CameraForward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+	XMVECTOR CameraRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+
+	XMMATRIX CameraRotationMatrix;
+	
+
+	float moveLeftRight = 0.0f;
+	float moveBackForward = 0.0f;
+
+	float camYaw = 0.0f;
+	float camPitch = 0.0f;
 
 };
 

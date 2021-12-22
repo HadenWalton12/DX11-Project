@@ -82,10 +82,11 @@ void InputComponent::DetectWASDMovement(CameraComponent* camera_instance)
     if (mouseCurrState.lY != mouseLastState.lY)
     {
         CameraDirection.y -= (mouseCurrState.lY * 0.05f);
+       
     }
 
     //Look Horizontal
-    if ( mouseLastState.lX)
+    if (mouseCurrState.lX != mouseLastState.lX)
     {
         CameraDirection.x -= (mouseCurrState.lX * 0.05f);
     }
@@ -95,6 +96,61 @@ void InputComponent::DetectWASDMovement(CameraComponent* camera_instance)
     camera_instance->SetPosition(CameraPosition);
 
 
+
+}
+
+void InputComponent::DetectPlaneMovement(CameraComponent* camera_instance)
+{
+    XMFLOAT3 CameraPosition = camera_instance->GetPosition();
+    XMFLOAT3 CameraDirection = camera_instance->GetDirection();
+    DIMOUSESTATE mouseCurrState;
+
+    BYTE keyboardState[256];
+
+    DIKeyBoard->Acquire();
+    DIMouse->Acquire();
+
+    DIMouse->GetDeviceState(sizeof(DIMOUSESTATE), &mouseCurrState);
+    DIKeyBoard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
+
+
+
+    //Forward
+    if (keyboardState[DIK_UP] & 0x80)
+    {
+        CameraPosition.z -= 0.001;
+    }
+
+    //Backwards
+    if (keyboardState[DIK_DOWN] & 0x80)
+    {
+        CameraPosition.z += 0.001;
+    }
+
+    //Right
+    if (keyboardState[DIK_LEFT] & 0x80)
+    {
+        CameraPosition.x -= 0.001;
+    }
+
+    //Left
+    if (keyboardState[DIK_RIGHT] & 0x80)
+    {
+        CameraPosition.x += 0.001;
+    }
+
+    //Look Vertical
+    if (mouseCurrState.lY != mouseLastState.lY)
+    {
+        CameraDirection.y -= (mouseCurrState.lY * 0.05f);
+
+    }
+
+    //Look Horizontal
+    if (mouseCurrState.lX != mouseLastState.lX)
+    {
+        CameraDirection.x -= (mouseCurrState.lX * 0.05f);
+    }
 
 }
 

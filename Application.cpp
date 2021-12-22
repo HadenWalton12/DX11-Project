@@ -67,12 +67,12 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _Terrain->CreateTexture(L"Grass.dds");
     _star->CreateTexture(L"Crate_COLOR.dds");
     _plane->CreateTexture(L"Hercules_COLOR.dds");
-    XMFLOAT3 DynamicCameraPostion = XMFLOAT3(0.0f, 5.0f, -3.0f);
+    XMFLOAT3 DynamicCameraPostion = XMFLOAT3(0.0f, 0.0f, -3.0f);
     XMFLOAT3 TopDownCameraPosition = XMFLOAT3(0.0f, 5.0f, 0.0f);
     XMFLOAT3 DefaultCameraPosition = XMFLOAT3(0.0f, 0.0f, -3.0f);
 
     XMFLOAT3 DynamicCameraDirection = XMFLOAT3(0.0f, 0.0f, 3.0f);
-    XMFLOAT3 DefaultCameraDirection = XMFLOAT3(0.0f, 0.5f, 0.0f);
+    XMFLOAT3 DefaultCameraDirection = XMFLOAT3(0.0f, 0.0f, 3.0f);
     XMFLOAT3 TopDownCameraDirection = XMFLOAT3(0.0f, -0.01f, 0.000001f);
 
     XMFLOAT3 Camera_Up = XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -81,7 +81,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _DynamicMovementCamera = new CameraComponent(DynamicCameraPostion, DynamicCameraDirection, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
     _StaticTopDownCamera = new CameraComponent(TopDownCameraPosition, TopDownCameraDirection, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
     _StaticDefaultCamera = new CameraComponent(DefaultCameraPosition, DefaultCameraDirection, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
-
+    _PlaneCamera = new CameraComponent(DynamicCameraPostion, DynamicCameraDirection, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
     //Initialise Input Device
     _Input = new InputComponent(hInstance);
 
@@ -165,8 +165,6 @@ HRESULT Application::Update()
     if (keyboardState[DIK_4] & 0x80)
     {
     }
-   
- 
    
     for (auto gameobject : _GameObjects)
     {
