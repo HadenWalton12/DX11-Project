@@ -1,10 +1,4 @@
 #pragma once
-#pragma comment (lib, "dinput8.lib")
-#pragma comment (lib, "dxguid.lib")
-#include <dinput.h>
-
-
-
 #include "ConstantStructure.h"
 #include "MeshStructure.h"
 #include "OBJLoader.h"
@@ -31,7 +25,10 @@
 #include "Terrain.h"
 #include "Plane.h"
 #include "Sphere.h"
+
+#include "InputComponent.h"
 #include "CameraComponent.h"
+
 #include <vector>
 
 #include "DDSTextureLoader.h"
@@ -57,12 +54,22 @@ private:
 	Star* _star;
 	Plane* _plane;
 	Sphere* _sphere;
+	
 	TextureComponent* _Tex;
+	
 	PixelShader* _pPixelShader;
 	VertexShader* _pVertexShader;
+	
 	ID3D11PixelShader* _PS;
 	ID3D11VertexShader* _VS;
-	CameraComponent* _Camera;
+	
+	InputComponent* _Input;
+
+	CameraComponent* _DynamicMovementCamera;
+	CameraComponent* _PlaneCamera;
+	CameraComponent* _StaticTopDownCamera;
+	CameraComponent* _StaticDefaultCamera;
+
 
 	std::vector<GameObjects*> _GameObjects;
 
@@ -76,20 +83,14 @@ public:
 	UINT _WindowWidth;											//Define window width
 
 
-
 	Application() {};
 	~Application() {};
 
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
 
-	bool InitDirectInput(HINSTANCE hInstance);
-	void DetectInput();
+	
 
-	IDirectInputDevice8* DIKeyBoard;
-	IDirectInputDevice8* DIMouse;
 
-	DIMOUSESTATE mouseLastState;
-	LPDIRECTINPUT8 DirectInput;
 
 	float rotx = 0;
 	float rotz = 0;
@@ -101,6 +102,12 @@ public:
 	HRESULT Update();
 	void Draw();
 	
+
+
+
+
+
+
 	HRESULT InitialiseWindow(HINSTANCE hInstance, int nCmdShow);
 
 };

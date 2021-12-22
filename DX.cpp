@@ -1,4 +1,5 @@
 #include "DX.h"
+#include "DX.h"
 DX::DX(UINT width, UINT height, HWND hWnd) : _WindowWidth(width) , _WindowHeight(height) , _hWnd(hWnd)
 {
     _driverType = D3D_DRIVER_TYPE_NULL;
@@ -80,7 +81,7 @@ HRESULT DX::InitialiseSwapchain()
     sd.OutputWindow = _hWnd;
     sd.SampleDesc.Count = 1;
     sd.SampleDesc.Quality = 0;
-    sd.Windowed = TRUE;
+    sd.Windowed = true;
 
     for (UINT driverTypeIndex = 0; driverTypeIndex < numDriverTypes; driverTypeIndex++)
     {

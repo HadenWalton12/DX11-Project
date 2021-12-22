@@ -379,6 +379,7 @@
     <ClCompile Include="DX.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
+    <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="ObjectComponent.cpp" />
     <ClCompile Include="ObjectTranformation.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
@@ -395,6 +396,7 @@
     <ClInclude Include="DX.h" />
     <ClInclude Include="EntityTransformation.h" />
     <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="InputComponent.h" />
     <ClInclude Include="LightingValuesStructure.h" />
     <ClInclude Include="MeshStructure.h" />
     <ClInclude Include="ObjectComponent.h" />

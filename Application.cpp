@@ -15,7 +15,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
-
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
@@ -51,17 +50,10 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
 
 
-    if (!InitDirectInput(hInstance))
-    {
-        MessageBox(0, L"Direct Input Initialization - Failed",
-            L"Error", MB_OK);
-            return 0;
-    }
-
     //InitialiseDevice , Assist creating core graphical components.
     _pDX11->InitialiseDevice();
     
-    _pRenderCommands = new RenderCommands(_pDX11->_pDevice, _pDX11->_pDeviceContext, _Camera , _pDX11->_pConstantBuffer);
+    _pRenderCommands = new RenderCommands(_pDX11->_pDevice, _pDX11->_pDeviceContext, _StaticDefaultCamera, _pDX11->_pConstantBuffer);
     
     _star = new Star(_pRenderCommands, _Tex , _pDX11);
     _plane = new Plane(_pRenderCommands, _Tex, _pDX11);
@@ -75,13 +67,27 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _Terrain->CreateTexture(L"Grass.dds");
     _star->CreateTexture(L"Crate_COLOR.dds");
     _plane->CreateTexture(L"Hercules_COLOR.dds");
-    XMFLOAT3 Camera_Position = XMFLOAT3(0.0f, 0.0f, 3.0f);
-    XMFLOAT3 Camera_Target = XMFLOAT3(0.0f, 0.0f, -1.0f);
+    XMFLOAT3 DynamicCameraPostion = XMFLOAT3(0.0f, 5.0f, -3.0f);
+    XMFLOAT3 TopDownCameraPosition = XMFLOAT3(0.0f, 5.0f, 0.0f);
+    XMFLOAT3 DefaultCameraPosition = XMFLOAT3(0.0f, 0.0f, -3.0f);
+
+    XMFLOAT3 DynamicCameraDirection = XMFLOAT3(0.0f, 0.0f, 3.0f);
+    XMFLOAT3 DefaultCameraDirection = XMFLOAT3(0.0f, 0.5f, 0.0f);
+    XMFLOAT3 TopDownCameraDirection = XMFLOAT3(0.0f, -0.01f, 0.000001f);
+
     XMFLOAT3 Camera_Up = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
-  
-    _Camera = new CameraComponent(Camera_Position, Camera_Target, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
- 
+
+    _DynamicMovementCamera = new CameraComponent(DynamicCameraPostion, DynamicCameraDirection, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
+    _StaticTopDownCamera = new CameraComponent(TopDownCameraPosition, TopDownCameraDirection, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
+    _StaticDefaultCamera = new CameraComponent(DefaultCameraPosition, DefaultCameraDirection, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
+
+    //Initialise Input Device
+    _Input = new InputComponent(hInstance);
+
+    //Set Initial Camera Instance
+    _pRenderCommands->SetCamera(_StaticDefaultCamera);
+    
     return S_OK;
 }
 HRESULT Application::InitialiseWindow(HINSTANCE hInstance, int nCmdShow)
@@ -128,99 +134,45 @@ HRESULT Application::InitialiseWindow(HINSTANCE hInstance, int nCmdShow)
     ShowWindow(_hWnd, nCmdShow);
     return S_OK;
 }
-bool Application::InitDirectInput(HINSTANCE hInstance)
-{
-    DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&DirectInput, NULL);
 
-    DirectInput->CreateDevice(GUID_SysKeyboard, &DIKeyBoard, NULL);
 
-    DirectInput->CreateDevice(GUID_SysMouse, &DIMouse, NULL);
-
-    DIKeyBoard->SetDataFormat(&c_dfDIKeyboard);
-    DIKeyBoard->SetCooperativeLevel(NULL , DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
-    DIMouse->SetDataFormat(&c_dfDIMouse);
-    DIMouse->SetCooperativeLevel(NULL, DISCL_EXCLUSIVE | DISCL_NOWINKEY | DISCL_FOREGROUND);
-    return true;
-}
-void Application::DetectInput()
-{
-
-    XMFLOAT3 CameraPosition = _Camera->GetPosition();
-    XMFLOAT3 CameraDirection = _Camera->GetDirection();
-    DIMOUSESTATE mouseCurrState;
-
-    BYTE keyboardState[256];
-
-    DIKeyBoard->Acquire();
-    DIMouse->Acquire();
-
-    DIMouse->GetDeviceState(sizeof(DIMOUSESTATE), &mouseCurrState);
-
-    DIKeyBoard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
-
-    //Forward
-    if (keyboardState[DIK_W] & 0x80)
-    {
-        CameraPosition.z -= 0.001;
-    }
-
-    //Backwards
-    if (keyboardState[DIK_S] & 0x80)
-    {
-        CameraPosition.z += 0.001;
-    }
-
-    //Right
-    if (keyboardState[DIK_D] & 0x80)
-    {
-        CameraPosition.x -= 0.001;
-    }
-
-    //Left
-    if (keyboardState[DIK_A] & 0x80)
-    {
-        CameraPosition.x += 0.001;
-    }
-
-    //Up
-    if (keyboardState[DIK_SPACE] & 0x80)
-    {
-        CameraPosition.y += 0.1;
-    }
-
-    //Down
-    if (keyboardState[DIK_LSHIFT] & 0x80)
-    {
-        CameraPosition.y -= 0.1;
-    }
-
-    //Look Vertical
-    if (mouseCurrState.lY != mouseLastState.lY)
-    {
-        CameraDirection.y -= (mouseCurrState.lY * 0.01f);
-    }
-
-    //Look Horizontal
-    if (mouseCurrState.lX != mouseLastState.lX)
-    {
-        CameraDirection.x -= (mouseCurrState.lX * 0.01f);
-    }
-
-    //Update 
-    _Camera->SetDirection(CameraDirection);
-    _Camera->SetPosition(CameraPosition);
- 
- 
-}
 HRESULT Application::Update()
 {
     Timer t;
-    _pRenderCommands->SwitchCamera(_Camera);
-       DetectInput();
+    BYTE keyboardState[256];
+
+    int key_instance = 0;
+    _Input->DIKeyBoard->Acquire();
+    _Input->DIKeyBoard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
+    _Input->DetectWASDMovement(_DynamicMovementCamera);
+    //Forward
+    if (keyboardState[DIK_1] & 0x80)
+    {
+        _pRenderCommands->SwitchCamera(_StaticDefaultCamera);
+        key_instance = 1;
+    }
+    
+    if (keyboardState[DIK_2] & 0x80)
+    {
+        key_instance = 2;
+        _pRenderCommands->SwitchCamera(_DynamicMovementCamera);   
+    }
+    if (keyboardState[DIK_3] & 0x80)
+    {
+        _pRenderCommands->SwitchCamera(_StaticTopDownCamera);
+        key_instance = 3;
+    }
+    if (keyboardState[DIK_4] & 0x80)
+    {
+    }
+   
+ 
+   
     for (auto gameobject : _GameObjects)
     {
         gameobject->Update();
     }
+
     _pRenderCommands->UpdateCamera();
 
     return S_OK;

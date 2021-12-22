@@ -71,6 +71,7 @@
     <ClInclude Include="Terrain.h">
       <Filter>GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="InputComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -89,6 +90,7 @@
     <ClCompile Include="DX.cpp" />
     <ClCompile Include="RenderCommands.cpp" />
     <ClCompile Include="ObjectTranformation.cpp" />
+    <ClCompile Include="InputComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

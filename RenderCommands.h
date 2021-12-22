@@ -89,7 +89,10 @@ public:
 	{
 		_Camera = camera;	
 	}
-
+	void SetCamera(CameraComponent* camera)
+	{
+		_Camera = camera;
+	}
 	void UpdateCamera()
 	{
 		_Camera->Update();

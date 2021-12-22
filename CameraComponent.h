@@ -29,6 +29,8 @@ private:
 
 
 public:
+
+
 	//Matrices passed to shader to apply lighting ect...
 
 	XMFLOAT4X4 _View;
@@ -38,12 +40,8 @@ public:
 
 	void SetPosition(XMFLOAT3 position);
 	void SetDirection(XMFLOAT3 direction);
-
-
 	XMFLOAT3 GetPosition();
 	XMFLOAT3 GetDirection();
-
-
 	XMFLOAT4X4 GetView();
 	XMFLOAT4X4 GetProjection();
 
