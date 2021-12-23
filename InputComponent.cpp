@@ -25,6 +25,7 @@ bool InputComponent::InitDirectInput(HINSTANCE hInstance )
     return true;
 }
 
+/*
 void InputComponent::DetectWASDMovement()
 {
 
@@ -106,57 +107,4 @@ void InputComponent::DetectWASDMovement()
 
 
 }
-
-void InputComponent::DetectPlaneMovement(Plane* plane , XMFLOAT3 translate, XMFLOAT3 scale, XMFLOAT3 rotation)
-{
-    XMFLOAT3 CameraPosition = _PlaneCamera->GetPosition();
-    XMFLOAT3 ObjectTranslate = translate;
-    XMFLOAT3 ObjectScale = scale;
-    XMFLOAT3 ObjectRotation = rotation;
-
-    DIMOUSESTATE mouseCurrState;
-   
-   
-    BYTE keyboardState[256];
-
-    DIKeyBoard->Acquire();
-    DIMouse->Acquire();
-
-
-    DIKeyBoard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
-
-    //Forward
-    if (keyboardState[DIK_UP] & 0x80)
-    {
-
-        ObjectTranslate.x += cos((90 + 180) * TO_RADIANS) / 5.0;
-        ObjectTranslate.z -= sin((90 + 180) * TO_RADIANS) / 5.0;
-
-    }
-
-    //Backwards
-    if (keyboardState[DIK_DOWN] & 0x80)
-    {
-        ObjectTranslate.x += cos((90) * TO_RADIANS) / 5.0;
-        ObjectTranslate.z -= sin((90) * TO_RADIANS) / 5.0f;
-    }
-
-    //Right
-    if (keyboardState[DIK_RIGHT] & 0x80)
-    {
-        ObjectTranslate.x += cos((90 - 90) * TO_RADIANS) / 5.0;
-        ObjectTranslate.z -= sin((90 - 90) * TO_RADIANS) / 5.0;
-    }
-
-    //Left
-    if (keyboardState[DIK_LEFT] & 0x80)
-    {
-        ObjectTranslate.x += cos((90 + 90) * TO_RADIANS) / 5.0;
-        ObjectTranslate.z -= sin((90 + 90) * TO_RADIANS) / 5.0;
-    }
-
-
-    _PlaneCamera->SetPosition(CameraPosition);
-    plane->_pPlaneTransform->SetTranslation(ObjectTranslate.x, ObjectTranslate.y, ObjectTranslate.z);
-}
-
+*/

@@ -1,11 +1,12 @@
 #pragma once
 #include "Camera.h"
-
+#include "Plane.h"
 class PlaneCamera : public Camera
 {
 public:
-	PlaneCamera(XMFLOAT3 camera_position, XMFLOAT3 camera_direction) : _Camera_Position(camera_position), _Camera_Direction(camera_direction)
+	PlaneCamera(XMFLOAT3 camera_position, XMFLOAT3 camera_direction , Plane* plane) : _Camera_Position(camera_position), _Camera_Direction(camera_direction)
 	{
+		_plane = plane;
 		InitialiseView();
 		InitialiseProjection();
 	}
@@ -32,10 +33,10 @@ public:
 
 	void UpdateCamera()override
 	{
-
-
+		XMFLOAT3 position = _plane->GetPosition();
+		
 		XMVECTOR Direction, Position, UP;
-		Position = XMVectorSet(_Camera_Position.x, _Camera_Position.y, _Camera_Position.z, 0.0f);
+		Position = XMVectorSet(position.x, position.y, position.z, 0.0f);
 		Direction = XMVectorSet(_Camera_Direction.x, _Camera_Direction.y, _Camera_Direction.z, 0.0f);
 		UP = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
@@ -76,7 +77,7 @@ private:
 
 	XMFLOAT4X4 _View;
 	XMFLOAT4X4 _Projection;
-
+	Plane* _plane;
 	LigthtingValues light;
 };
 

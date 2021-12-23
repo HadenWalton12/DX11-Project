@@ -2,11 +2,8 @@
 #pragma comment (lib, "dinput8.lib")
 #pragma comment (lib, "dxguid.lib")
 
-
-#include "DynamicMovementCamera.h"
-#include "PlaneCamera.h"
-#include "Plane.h"
 #include <dinput.h>
+
 
 //Alter
 class InputComponent
@@ -25,18 +22,13 @@ public:
 
     bool InitDirectInput(HINSTANCE hInstance);
 
-    void DetectWASDMovement();
-    void DetectPlaneMovement(Plane* plane, XMFLOAT3 translate, XMFLOAT3 scale, XMFLOAT3 rotation);
  IDirectInputDevice8* DIKeyBoard;
     IDirectInputDevice8* DIMouse;
 
     DIMOUSESTATE mouseLastState;
     LPDIRECTINPUT8 DirectInput;
 
-private:
-
-    DynamicMovementCamera* _DynamicCamera;
-    PlaneCamera* _PlaneCamera;
+   
     
 };
 

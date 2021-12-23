@@ -118,7 +118,7 @@ public:
 	{
 		Timer t;
 		_pTerrainTransform->SetTranslation(0.0f, -1.0f, 0.0f);
-		_pTerrainTransform->SetScale(100.0f, 100.0f, 100.0f);
+		_pTerrainTransform->SetScale(1000.0f, 1000.0f, 1000.0f);
 		t.Update();
 		_pTerrainTransform->SetRotation(0.0f, 0.0f, 0.0f);
 		_pTerrainTransform->CalculateWorldTransformation(_TerrainWorld);

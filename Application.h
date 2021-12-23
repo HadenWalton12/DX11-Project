@@ -27,7 +27,7 @@
 #include "Sphere.h"
 
 #include "InputComponent.h"
-#include "CameraComponent.h"
+
 
 #include <vector>
 

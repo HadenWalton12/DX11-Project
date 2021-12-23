@@ -61,7 +61,6 @@
     <ClInclude Include="Sphere.h">
       <Filter>GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="VertexBuffer.h" />
@@ -75,7 +74,6 @@
       <Filter>GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="InputComponent.h" />
-    <ClInclude Include="CameraManager.h" />
     <ClInclude Include="Camera.h">
       <Filter>EngineComponent</Filter>
     </ClInclude>
@@ -105,13 +103,10 @@
     <ClCompile Include="TextureComponent.cpp">
       <Filter>EngineComponent</Filter>
     </ClCompile>
-    <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="DX.cpp" />
     <ClCompile Include="RenderCommands.cpp" />
     <ClCompile Include="ObjectTranformation.cpp" />
     <ClCompile Include="InputComponent.cpp" />
-    <ClCompile Include="CameraManager.cpp" />
-    <ClCompile Include="Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
