@@ -3,14 +3,16 @@
 #pragma comment (lib, "dxguid.lib")
 
 
-#include "CameraComponent.h"
+#include "DynamicMovementCamera.h"
+#include "PlaneCamera.h"
+#include "Plane.h"
 #include <dinput.h>
 
 //Alter
 class InputComponent
 {
 public:
-    InputComponent(HINSTANCE hInstance) 
+    InputComponent(HINSTANCE hInstance)
     {
         if (!InitDirectInput(hInstance))
         {
@@ -22,8 +24,9 @@ public:
 	~InputComponent();
 
     bool InitDirectInput(HINSTANCE hInstance);
-    //void DetectWASDMovement(CameraComponent* camera_instance);
-  //  void DetectPlaneMovement(CameraComponent* camera_instance);
+
+    void DetectWASDMovement();
+    void DetectPlaneMovement(Plane* plane, XMFLOAT3 translate, XMFLOAT3 scale, XMFLOAT3 rotation);
  IDirectInputDevice8* DIKeyBoard;
     IDirectInputDevice8* DIMouse;
 
@@ -32,8 +35,8 @@ public:
 
 private:
 
-
-   
-
+    DynamicMovementCamera* _DynamicCamera;
+    PlaneCamera* _PlaneCamera;
+    
 };
 

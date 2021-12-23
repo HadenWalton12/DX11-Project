@@ -25,7 +25,21 @@ public:
 	{
 		return _World;
 	}
+	XMFLOAT3 GetRotation()
+	{
+		return ObjectRotation;
 
+	}
+	XMFLOAT3 GetScale()
+	{
+		return ObjectScale;
+
+	}
+	XMFLOAT3 GetTranslate()
+	{
+		return ObjectTranslation;
+
+	}
 	void SetRotation(float x, float y, float z)
 	{
 		ObjectRotation = XMFLOAT3(x, y, z);

@@ -1,20 +1,22 @@
 #pragma once
 #include "ObjectComponent.h"
 #include "PixelShader.h"
+
 #include "DX.h"
 #include "VertexShader.h"
 #include "ObjectTranformation.h"
+#include "InputComponent.h"
 #include "EntityTransformation.h"
 #include "TimeStructure.h"
 class Plane : public GameObjects
 {
 public:
-	Plane::Plane(RenderCommands* render_command, TextureComponent* _Tex, DX* dx) : GameObjects(render_command) 
+	Plane::Plane(RenderCommands* render_command, TextureComponent* _Tex, DX* dx ) : GameObjects(render_command) 
 	{
 		_pDX11 = dx;
 		_pRenderCommand = render_command;
 		LoadMesh();
-		_pStarTransform = new ObjectTranformation(&_StarWorld);
+		_pPlaneTransform = new ObjectTranformation(&_PlaneWorld);
 
 	}
 	MeshData LoadMesh() 
@@ -24,15 +26,16 @@ public:
 	}
 	void WorldTransformations() override
 	{
+
 		Timer t;
 		t.Update();
-		_pStarTransform->SetTranslation(0.0f, 2.0f, 0.0f);
-		_pStarTransform->SetScale(0.10f, 0.10f, 0.10f);
+		_pPlaneTransform->SetTranslation(0.0f, 2.0f, 0.0f);
+		_pPlaneTransform->SetScale(0.10f, 0.10f, 0.10f);
 		
-		_pStarTransform->SetRotation(0.0f,0.0f, 0.0f);
-		_pStarTransform->CalculateWorldTransformation(_StarWorld);
+		_pPlaneTransform->SetRotation(0.0f,0.0f, 0.0f);
+		_pPlaneTransform->CalculateWorldTransformation(_PlaneWorld);
 
-		SetWorld(_pStarTransform->GetWorld());
+		SetWorld(_pPlaneTransform->GetWorld());
 	}
 
 	void BindShaders() override
@@ -52,10 +55,9 @@ public:
 
 
 	Timer  t;
-
-
-	XMFLOAT4X4 _StarWorld;
-	ObjectTranformation* _pStarTransform;
+	XMFLOAT4X4 _PlaneWorld;
+	ObjectTranformation* _pPlaneTransform;
+	InputComponent* _PlaneInput;
 	EntityTransformation transformation;
 	ID3D11VertexShader* _VS;
 	ID3D11PixelShader* _PS;

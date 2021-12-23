@@ -4,7 +4,7 @@ InputComponent::~InputComponent()
 {
 }
 
-bool InputComponent::InitDirectInput(HINSTANCE hInstance)
+bool InputComponent::InitDirectInput(HINSTANCE hInstance )
 {
 
     DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&DirectInput, NULL);
@@ -24,12 +24,12 @@ bool InputComponent::InitDirectInput(HINSTANCE hInstance)
     DIMouse->SetCooperativeLevel(NULL, DISCL_EXCLUSIVE | DISCL_FOREGROUND);
     return true;
 }
-/*
-void InputComponent::DetectWASDMovement(CameraComponent* camera_instance)
+
+void InputComponent::DetectWASDMovement()
 {
 
-    XMFLOAT3 CameraPosition = camera_instance->GetPosition();
-    XMFLOAT3 CameraDirection = camera_instance->GetDirection();
+    XMFLOAT3 CameraPosition = _DynamicCamera->GetPosition();
+
     DIMOUSESTATE mouseCurrState;
 
     BYTE keyboardState[256];
@@ -40,8 +40,8 @@ void InputComponent::DetectWASDMovement(CameraComponent* camera_instance)
     DIMouse->GetDeviceState(sizeof(DIMOUSESTATE), &mouseCurrState);
     DIKeyBoard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
 
-    float yaw = camera_instance->GetYaw();
-    float pitch = camera_instance->GetPitch();
+    float yaw = _DynamicCamera->GetYaw();
+    float pitch = _DynamicCamera->GetPitch();
     //Yaw & Pitch Calculations, We divide our pitch and yaw to control to sensitive of our mouse input
     
     //Forward
@@ -50,6 +50,7 @@ void InputComponent::DetectWASDMovement(CameraComponent* camera_instance)
 
         CameraPosition.x += cos((90 + 180) * TO_RADIANS) / 5.0;
         CameraPosition.z -= sin((90 + 180) * TO_RADIANS) / 5.0;
+
     }
 
     //Backwards
@@ -97,67 +98,65 @@ void InputComponent::DetectWASDMovement(CameraComponent* camera_instance)
     
 
     //Update 
-    camera_instance->SetPitch(pitch);
-    camera_instance->SetYaw(yaw);
-    camera_instance->SetDirection(CameraDirection);
-    camera_instance->SetPosition(CameraPosition);
+    _DynamicCamera->SetPitch(pitch);
+    _DynamicCamera->SetYaw(yaw);
+
+    _DynamicCamera->SetPosition(CameraPosition);
 
 
 
 }
 
-void InputComponent::DetectPlaneMovement(Camera* camera_instance)
+void InputComponent::DetectPlaneMovement(Plane* plane , XMFLOAT3 translate, XMFLOAT3 scale, XMFLOAT3 rotation)
 {
-    XMFLOAT3 CameraPosition = camera_instance->GetPosition();
-    XMFLOAT3 CameraDirection = camera_instance->GetDirection();
-    DIMOUSESTATE mouseCurrState;
+    XMFLOAT3 CameraPosition = _PlaneCamera->GetPosition();
+    XMFLOAT3 ObjectTranslate = translate;
+    XMFLOAT3 ObjectScale = scale;
+    XMFLOAT3 ObjectRotation = rotation;
 
+    DIMOUSESTATE mouseCurrState;
+   
+   
     BYTE keyboardState[256];
 
     DIKeyBoard->Acquire();
     DIMouse->Acquire();
 
-    DIMouse->GetDeviceState(sizeof(DIMOUSESTATE), &mouseCurrState);
+
     DIKeyBoard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
 
-    
     //Forward
     if (keyboardState[DIK_UP] & 0x80)
     {
-        CameraPosition.z -= 0.001;
+
+        ObjectTranslate.x += cos((90 + 180) * TO_RADIANS) / 5.0;
+        ObjectTranslate.z -= sin((90 + 180) * TO_RADIANS) / 5.0;
+
     }
 
     //Backwards
     if (keyboardState[DIK_DOWN] & 0x80)
     {
-        CameraPosition.z += 0.001;
+        ObjectTranslate.x += cos((90) * TO_RADIANS) / 5.0;
+        ObjectTranslate.z -= sin((90) * TO_RADIANS) / 5.0f;
     }
 
     //Right
-    if (keyboardState[DIK_LEFT] & 0x80)
+    if (keyboardState[DIK_RIGHT] & 0x80)
     {
-        CameraPosition.x -= 0.001;
+        ObjectTranslate.x += cos((90 - 90) * TO_RADIANS) / 5.0;
+        ObjectTranslate.z -= sin((90 - 90) * TO_RADIANS) / 5.0;
     }
 
     //Left
-    if (keyboardState[DIK_RIGHT] & 0x80)
+    if (keyboardState[DIK_LEFT] & 0x80)
     {
-        CameraPosition.x += 0.001;
+        ObjectTranslate.x += cos((90 + 90) * TO_RADIANS) / 5.0;
+        ObjectTranslate.z -= sin((90 + 90) * TO_RADIANS) / 5.0;
     }
 
-    //Look Vertical
-    if (mouseCurrState.lY != mouseLastState.lY)
-    {
-        CameraDirection.y -= (mouseCurrState.lY * 0.5f);
 
-    }
-
-    //Look Horizontal
-    if (mouseCurrState.lX != mouseLastState.lX)
-    {
-        CameraDirection.x -= (mouseCurrState.lX * 0.5f);
-    }
-
+    _PlaneCamera->SetPosition(CameraPosition);
+    plane->_pPlaneTransform->SetTranslation(ObjectTranslate.x, ObjectTranslate.y, ObjectTranslate.z);
 }
 
-*/

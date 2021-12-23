@@ -32,23 +32,15 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         return E_FAIL;
     }
 
-
     RECT rc;
-
     GetClientRect(_hWnd, &rc);
 
     //Pass calulated values , gives us window coordinates
     _WindowWidth = rc.right - rc.left;
     _WindowHeight = rc.bottom - rc.top;
     
-
-
     _pDX11 = new DX(_WindowWidth, _WindowHeight, _hWnd);
     _Tex = new TextureComponent();
-
-
-
-
 
     //InitialiseDevice , Assist creating core graphical components.
     _pDX11->InitialiseDevice();
@@ -67,26 +59,21 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _Terrain->CreateTexture(L"Grass.dds");
     _star->CreateTexture(L"Crate_COLOR.dds");
     _plane->CreateTexture(L"Hercules_COLOR.dds");
+
     XMFLOAT3 DynamicCameraPostion = XMFLOAT3(0.0f, 0.0f, -3.0f);
     XMFLOAT3 TopDownCameraPosition = XMFLOAT3(0.0f, 5.0f, 0.0f);
-    
-    XMFLOAT3 DefaultCameraPosition = XMFLOAT3(0.0f, .0f, 5.0f);
+    XMFLOAT3 DefaultCameraPosition = XMFLOAT3(0.0f, 0.0f, -5.0f);
+    XMFLOAT3 PlaneCameraPosition = XMFLOAT3(0.0f, 5.0f, 0.0f);
 
-    XMFLOAT3 PlaneCameraPosition = XMFLOAT3(0.0f, 5.0f, 1.0f);
-
-    XMFLOAT3 PlaneCameraDirection = XMFLOAT3(0.0f, 0.0f, 3.0f);
-    XMFLOAT3 DynamicCameraDirection = XMFLOAT3(0.0f, 0.0f, 3.0f);
     XMFLOAT3 DefaultCameraDirection = XMFLOAT3(0.0f, 0.0f, 3.0f);
     XMFLOAT3 TopDownCameraDirection = XMFLOAT3(0.0f, -0.01f, 0.000001f);
-
+    XMFLOAT3 PlaneCameraDirection = XMFLOAT3(0.0f, -0.01f, 0.000001f);
 
 
     _DynamicMovementCamera = new DynamicMovementCamera(DynamicCameraPostion, 0.5f, 0.1f , 0.0f);
-    _StaticTopDownCamera = new StaticTopDownCamera(TopDownCameraPosition, TopDownCameraDirection);
-
-    _StaticDefaultCamera = new StaticDefaultCamera(DefaultCameraPosition,  );
-
-    _PlaneCamera = new PlaneCamera(PlaneCameraPosition, 0.5f, 0.1f, 0.0f);
+    _StaticTopDownCamera = new StaticTopDownCamera(TopDownCameraPosition , TopDownCameraDirection);
+    _StaticDefaultCamera = new StaticDefaultCamera(DefaultCameraPosition , DefaultCameraDirection);
+    _PlaneCamera = new PlaneCamera(PlaneCameraPosition, PlaneCameraDirection);
     
     _CameraObjects.push_back(_DynamicMovementCamera);
     _CameraObjects.push_back(_StaticTopDownCamera);
@@ -94,7 +81,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _CameraObjects.push_back(_PlaneCamera);
 
     //Initialise Input Device
-    _Input = new InputComponent(hInstance);
+    _Input = new InputComponent(hInstance , _DynamicMovementCamera , _PlaneCamera);
 
 
 
@@ -158,8 +145,9 @@ HRESULT Application::Update()
     _Input->DIKeyBoard->Acquire();
     _Input->DIKeyBoard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
 
-   // _Input->DetectWASDMovement(_DynamicMovementCamera);
-
+    _Input->DetectWASDMovement();
+    _Input->DetectPlaneMovement( _plane , _plane->_pPlaneTransform->GetTranslate(), _plane->_pPlaneTransform->GetScale() , _plane->_pPlaneTransform->GetRotation());
+   
     //Forward
     if (keyboardState[DIK_1] & 0x80)
     {

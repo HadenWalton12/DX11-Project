@@ -52,21 +52,7 @@ public:
 		_Camera_Position = camera_position;
 	}
 
-	// Set Camera Direction
-	void SetPitch(FLOAT pitch)
-	{
-		_Pitch = pitch;
-	}
-	void SetYaw(FLOAT yaw)
-	{
-
-		_Yaw = yaw;
-	}
-	void SetRoll(FLOAT roll)
-	{
-		_Roll = roll;
-
-	}
+	
 	//Getters
 	XMFLOAT4X4 GetView() override
 	{
@@ -83,38 +69,13 @@ public:
 		return _Camera_Position;
 	}
 
-	//Get Camera Direction
-	FLOAT GetPitch()
-	{
-		return _Pitch;
-	}
-	FLOAT GetYaw()
-	{
 
-		return _Yaw;
-	}
-	FLOAT GetRoll()
-	{
-		return _Roll;
-
-	}
 private:
 	XMFLOAT3 _Camera_Position;
 	XMFLOAT3 _Camera_Direction;
-	//Rotation on the Z-Axis
-	FLOAT _Pitch;
-	//Rotation on the Y-Axis
-	FLOAT _Yaw;
-	//Rotation of the X-Axis - Unique for the object 
-	FLOAT _Roll;
-
-	XMVECTOR DefaultForward = XMVectorSet(0.0f, -0.00000001f, 0.0f, 0.0f);
 
 	XMFLOAT4X4 _View;
 	XMFLOAT4X4 _Projection;
-
-	//Used For Camera rotational Matrix Calculations
-	XMMATRIX CameraRotationMatrix;
 
 	LigthtingValues light;
 };
