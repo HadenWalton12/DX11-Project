@@ -69,21 +69,34 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _plane->CreateTexture(L"Hercules_COLOR.dds");
     XMFLOAT3 DynamicCameraPostion = XMFLOAT3(0.0f, 0.0f, -3.0f);
     XMFLOAT3 TopDownCameraPosition = XMFLOAT3(0.0f, 5.0f, 0.0f);
-    XMFLOAT3 DefaultCameraPosition = XMFLOAT3(0.0f, 0.0f, -3.0f);
+    
+    XMFLOAT3 DefaultCameraPosition = XMFLOAT3(0.0f, .0f, 5.0f);
 
+    XMFLOAT3 PlaneCameraPosition = XMFLOAT3(0.0f, 5.0f, 1.0f);
+
+    XMFLOAT3 PlaneCameraDirection = XMFLOAT3(0.0f, 0.0f, 3.0f);
     XMFLOAT3 DynamicCameraDirection = XMFLOAT3(0.0f, 0.0f, 3.0f);
     XMFLOAT3 DefaultCameraDirection = XMFLOAT3(0.0f, 0.0f, 3.0f);
     XMFLOAT3 TopDownCameraDirection = XMFLOAT3(0.0f, -0.01f, 0.000001f);
 
-    XMFLOAT3 Camera_Up = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
 
-    _DynamicMovementCamera = new CameraComponent(DynamicCameraPostion, DynamicCameraDirection, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
-    _StaticTopDownCamera = new CameraComponent(TopDownCameraPosition, TopDownCameraDirection, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
-    _StaticDefaultCamera = new CameraComponent(DefaultCameraPosition, DefaultCameraDirection, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
-    _PlaneCamera = new CameraComponent(DynamicCameraPostion, DynamicCameraDirection, Camera_Up, _WindowWidth, _WindowHeight, 0.01f, 100.0f);
+    _DynamicMovementCamera = new DynamicMovementCamera(DynamicCameraPostion, 0.5f, 0.1f , 0.0f);
+    _StaticTopDownCamera = new StaticTopDownCamera(TopDownCameraPosition, TopDownCameraDirection);
+
+    _StaticDefaultCamera = new StaticDefaultCamera(DefaultCameraPosition,  );
+
+    _PlaneCamera = new PlaneCamera(PlaneCameraPosition, 0.5f, 0.1f, 0.0f);
+    
+    _CameraObjects.push_back(_DynamicMovementCamera);
+    _CameraObjects.push_back(_StaticTopDownCamera);
+    _CameraObjects.push_back(_StaticDefaultCamera);
+    _CameraObjects.push_back(_PlaneCamera);
+
     //Initialise Input Device
     _Input = new InputComponent(hInstance);
+
+
 
     //Set Initial Camera Instance
     _pRenderCommands->SetCamera(_StaticDefaultCamera);
@@ -103,7 +116,7 @@ HRESULT Application::InitialiseWindow(HINSTANCE hInstance, int nCmdShow)
     wcex.cbWndExtra = 0;
     wcex.hInstance = hInstance;
     wcex.hIcon = LoadIcon(hInstance, (LPCTSTR)IDI_TUTORIAL1);
-    wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wcex.hCursor = LoadCursor(NULL, NULL);
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszMenuName = nullptr;
     wcex.lpszClassName = L"TutorialWindowClass";
@@ -141,37 +154,42 @@ HRESULT Application::Update()
     Timer t;
     BYTE keyboardState[256];
 
-    int key_instance = 0;
+ 
     _Input->DIKeyBoard->Acquire();
     _Input->DIKeyBoard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
-    _Input->DetectWASDMovement(_DynamicMovementCamera);
+
+   // _Input->DetectWASDMovement(_DynamicMovementCamera);
+
     //Forward
     if (keyboardState[DIK_1] & 0x80)
     {
         _pRenderCommands->SwitchCamera(_StaticDefaultCamera);
-        key_instance = 1;
     }
     
     if (keyboardState[DIK_2] & 0x80)
     {
-        key_instance = 2;
-        _pRenderCommands->SwitchCamera(_DynamicMovementCamera);   
+        _pRenderCommands->SwitchCamera(_DynamicMovementCamera);  
     }
     if (keyboardState[DIK_3] & 0x80)
     {
         _pRenderCommands->SwitchCamera(_StaticTopDownCamera);
-        key_instance = 3;
     }
     if (keyboardState[DIK_4] & 0x80)
     {
+        _pRenderCommands->SwitchCamera(_PlaneCamera);
     }
    
     for (auto gameobject : _GameObjects)
     {
         gameobject->Update();
+
+    }
+    for (auto cameraobject : _CameraObjects)
+    {
+        cameraobject->UpdateCamera();
+
     }
 
-    _pRenderCommands->UpdateCamera();
 
     return S_OK;
 }

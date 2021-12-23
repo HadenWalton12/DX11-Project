@@ -10,7 +10,7 @@
 #include <directxcolors.h>//Color Math Library
 #include "ConstantStructure.h"
 #include "LightingValuesStructure.h"
-#include "CameraComponent.h"
+#include "Camera.h"
 
 
 using namespace DirectX; //Use default DX11 Naming conventions
@@ -19,7 +19,7 @@ class RenderCommands
 {
 public:
 
-	RenderCommands(ID3D11Device* device , ID3D11DeviceContext* device_context , CameraComponent* camera , ID3D11Buffer* CB) : _pDevice(device) , _pDeviceContext(device_context), _Camera(camera) , _pConstantBuffer(CB)
+	RenderCommands(ID3D11Device* device , ID3D11DeviceContext* device_context , Camera* camera , ID3D11Buffer* CB) : _pDevice(device) , _pDeviceContext(device_context), _Camera(camera) , _pConstantBuffer(CB)
 	{
 
 
@@ -85,18 +85,16 @@ public:
 		_pDeviceContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
 	}
 
-	void SwitchCamera(CameraComponent* camera)
+	void SwitchCamera(Camera* camera)
 	{
 		_Camera = camera;	
 	}
-	void SetCamera(CameraComponent* camera)
+	void SetCamera(Camera* camera)
 	{
 		_Camera = camera;
 	}
-	void UpdateCamera()
-	{
-		_Camera->Update();
-	}
+
+
 
 	ID3D11Device* GetDevice()
 	{
@@ -112,7 +110,7 @@ public:
 private:
 	ID3D11Buffer* _pConstantBuffer;								//Defines ConstantBuffer Storage 
 
-	CameraComponent* _Camera;
+	Camera* _Camera;
 	ID3D11Device* _pDevice;
 	ID3D11DeviceContext* _pDeviceContext;
 	//Holds background colour value

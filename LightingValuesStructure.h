@@ -24,7 +24,7 @@ struct LigthtingValues
 
 	LigthtingValues()
 	{
-		light_direction = XMFLOAT3(2.5f, 0.0f, -4.0f);
+		light_direction = XMFLOAT3(0.0f, -1.0f, 0.0f);
 		diffuse_material = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
 		diffuse_light = XMFLOAT4(0.2f, 0.2f, 0.2f, 0.5f);
 		ambient_light = XMFLOAT4(0.1f, 0.1f, 0.0f, 1.0f);
@@ -32,7 +32,7 @@ struct LigthtingValues
 		specular_material = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
 		specular_light = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 		specular_power = 1.0f;
-		EyePosW = XMFLOAT4(0.0f, 0.0f, -5.0f, 0.0f);
+		EyePosW = XMFLOAT4(0.0f, 10.0f, 0.0f, 0.0f);
 
 
 

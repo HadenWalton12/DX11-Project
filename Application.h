@@ -34,6 +34,14 @@
 #include "DDSTextureLoader.h"
 #include "PixelShader.h"
 #include "VertexShader.h"
+
+//
+#include "PlaneCamera.h"
+#include "StaticDefaultCamera.h"
+#include "StaticTopDownCamera.h"
+#include "DynamicMovementCamera.h"
+
+
 //Allows us to easily call reference upon our DX naming conventions
 using namespace DirectX;
 
@@ -65,19 +73,19 @@ private:
 	
 	InputComponent* _Input;
 
-	CameraComponent* _DynamicMovementCamera;
-	CameraComponent* _PlaneCamera;
-	CameraComponent* _StaticTopDownCamera;
-	CameraComponent* _StaticDefaultCamera;
+	DynamicMovementCamera* _DynamicMovementCamera;	
+	PlaneCamera* _PlaneCamera;
+	StaticTopDownCamera* _StaticTopDownCamera;
+	StaticDefaultCamera* _StaticDefaultCamera;
 
 
 	std::vector<GameObjects*> _GameObjects;
+	std::vector<Camera*> _CameraObjects;
 
 public:
 
 	HINSTANCE               _hInst;								//Used to specify instance which the class is registred					
 	HWND                    _hWnd;								//Used to handle a window , part of Win32 API , crates window using window instance above.
-
 
 	UINT _WindowHeight;											//Define window height
 	UINT _WindowWidth;											//Define window width
@@ -90,15 +98,8 @@ public:
 
 	
 
+	
 
-
-	float rotx = 0;
-	float rotz = 0;
-	float scaleX = 1.0f;
-	float scaleY = 1.0f;
-
-	XMMATRIX RotationX;
-	XMMATRIX RotationZ;
 	HRESULT Update();
 	void Draw();
 	

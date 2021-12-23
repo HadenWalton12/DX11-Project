@@ -375,7 +375,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
+    <ClCompile Include="CameraManager.cpp" />
     <ClCompile Include="DX.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
@@ -391,9 +393,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraComponent.h" />
+    <ClInclude Include="CameraManager.h" />
     <ClInclude Include="ConstantStructure.h" />
     <ClInclude Include="DX.h" />
+    <ClInclude Include="DynamicMovementCamera.h" />
     <ClInclude Include="EntityTransformation.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InputComponent.h" />
@@ -404,6 +409,7 @@
     <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Plane.h" />
+    <ClInclude Include="PlaneCamera.h" />
     <ClInclude Include="RenderCommands.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="DDSTextureLoader.h" />
@@ -411,6 +417,8 @@
     <ClInclude Include="SimpleVertexStructure.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Star.h" />
+    <ClInclude Include="StaticDefaultCamera.h" />
+    <ClInclude Include="StaticTopDownCamera.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TextureComponent.h" />
     <ClInclude Include="TimeStructure.h" />

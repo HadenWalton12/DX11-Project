@@ -21,6 +21,9 @@
     <Filter Include="Dependencies">
       <UniqueIdentifier>{94945e36-9990-4c6b-92c0-8ed391121f4d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObjects\Cameras">
+      <UniqueIdentifier>{e3c959fa-5056-4c95-a7c3-05849401b7d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -72,6 +75,22 @@
       <Filter>GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="InputComponent.h" />
+    <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="Camera.h">
+      <Filter>EngineComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicMovementCamera.h">
+      <Filter>GameObjects\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticDefaultCamera.h">
+      <Filter>GameObjects\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticTopDownCamera.h">
+      <Filter>GameObjects\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="PlaneCamera.h">
+      <Filter>GameObjects\Cameras</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -91,6 +110,8 @@
     <ClCompile Include="RenderCommands.cpp" />
     <ClCompile Include="ObjectTranformation.cpp" />
     <ClCompile Include="InputComponent.cpp" />
+    <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

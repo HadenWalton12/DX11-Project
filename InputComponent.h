@@ -22,8 +22,8 @@ public:
 	~InputComponent();
 
     bool InitDirectInput(HINSTANCE hInstance);
-    void DetectWASDMovement(CameraComponent* camera_instance);
-    void DetectPlaneMovement(CameraComponent* camera_instance);
+    //void DetectWASDMovement(CameraComponent* camera_instance);
+  //  void DetectPlaneMovement(CameraComponent* camera_instance);
  IDirectInputDevice8* DIKeyBoard;
     IDirectInputDevice8* DIMouse;
 
