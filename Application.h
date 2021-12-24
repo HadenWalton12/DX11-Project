@@ -25,6 +25,7 @@
 #include "Terrain.h"
 #include "Plane.h"
 #include "Sphere.h"
+#include "Cylinder.h"
 
 #include "InputComponent.h"
 
@@ -62,7 +63,7 @@ private:
 	Star* _star;
 	Plane* _plane;
 	Sphere* _sphere;
-	
+	Cylinder* _cylinder;
 	TextureComponent* _Tex;
 	
 	PixelShader* _pPixelShader;

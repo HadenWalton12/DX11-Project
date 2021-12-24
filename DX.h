@@ -29,6 +29,10 @@ public:
 	ID3D11DeviceContext* _pDeviceContext;					//Stores reference to DeviceContext , allow us to generate rendering commands to execute within application
 	ID3D11Buffer* _pConstantBuffer;								//Defines ConstantBuffer Storage 
 	IDXGISwapChain* _pSwapChain;						//Interface object used to implement one or more buffers for storing rendered data before presenting it as an output
+
+	ID3D11RasterizerState* _SolidRasterState;					//Holds interface description for rasterizer state - to be bound to rasterizer stage
+	ID3D11RasterizerState* _WireFrameRasterState;
+	ID3D11BlendState* _BlendState;
 private:
 	
 	D3D_DRIVER_TYPE			  _driverType;
@@ -36,7 +40,8 @@ private:
 	
 	ID3D11ShaderResourceView* _pTextureRV;						//Defines shader subresource that can be accessed during rendering , e.g constant buffer,  in our case a texture buffer bound to texture data.
 	ID3D11Texture2D*        _pDepthStencilBuffer;				//2D texture interface manager , managing texel data (structured image data) , stores depth data , processed in DepthStencilView
-	ID3D11RasterizerState*  _RasterizerState;					//Holds interface description for rasterizer state - to be bound to rasterizer stage
+
+
 private:
 	
 	HRESULT InitialiseSwapchain();								//Creates SwapChain Function - Refer to notes of what this is
@@ -52,6 +57,8 @@ private:
 	void InitialiseSolid();
 
 	void InitialiseWireFrame();
+
+	void InitialiseAlphaBlending();
 
 
 

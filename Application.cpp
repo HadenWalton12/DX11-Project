@@ -54,16 +54,19 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _star = new Star(_pRenderCommands, _Tex , _pDX11);
     _plane = new Plane(_pRenderCommands, _Tex, _pDX11 , _Input);
     _Terrain = new Terrain(_pRenderCommands, _Tex, _pDX11);
-    
+    _sphere = new Sphere(_pRenderCommands, _Tex, _pDX11 , _Input);
+   _cylinder = new Cylinder(_pRenderCommands, _Tex, _pDX11, _Input);
+
     _GameObjects.push_back(_Terrain);
     _GameObjects.push_back(_star);
     _GameObjects.push_back(_plane);
-  
-
+    _GameObjects.push_back(_sphere);
+    _GameObjects.push_back(_cylinder);
     _Terrain->CreateTexture(L"Grass.dds");
     _star->CreateTexture(L"Crate_COLOR.dds");
     _plane->CreateTexture(L"Hercules_COLOR.dds");
-
+    _sphere->CreateTexture(L"Snow.dds");
+    _cylinder->CreateTexture(L"Stone.dds");
     XMFLOAT3 DynamicCameraPostion = XMFLOAT3(0.0f, 0.0f, -3.0f);
     XMFLOAT3 TopDownCameraPosition = XMFLOAT3(0.0f, 25.0f, -1.0f);
     XMFLOAT3 DefaultCameraPosition = XMFLOAT3(0.0f, 0.0f, -5.0f);
@@ -147,7 +150,7 @@ HRESULT Application::Update()
     _Input->DIKeyBoard->Acquire();
     _Input->DIKeyBoard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
 
-
+    _Input->DetectWASDMovement(_DynamicMovementCamera);
    
     //Forward
     if (keyboardState[DIK_1] & 0x80)
@@ -167,7 +170,30 @@ HRESULT Application::Update()
     {
         _pRenderCommands->SwitchCamera(_PlaneCamera);
     }
-   
+    if (keyboardState[DIK_F1] & 0x80)
+    {
+        _pRenderCommands->SetRasterState(_pDX11->_SolidRasterState);
+    }
+    if (keyboardState[DIK_F2] & 0x80)
+    {
+        _pRenderCommands->SetRasterState(_pDX11->_WireFrameRasterState);
+    }
+
+    if (keyboardState[DIK_9] & 0x80)
+    {
+
+        _pRenderCommands->ChangeBlendState1(_pDX11->_BlendState);
+
+    }
+    if (keyboardState[DIK_8] & 0x80)
+    {
+        _pRenderCommands->ChangeBlendState2(_pDX11->_BlendState);
+    }
+    if (keyboardState[DIK_7] & 0x80)
+    {
+        _pRenderCommands->ChangeBlendState3(_pDX11->_BlendState);
+    }
+
     for (auto gameobject : _GameObjects)
     {
         gameobject->Update();

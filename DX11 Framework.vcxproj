@@ -375,6 +375,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="DX.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
@@ -392,6 +393,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ConstantStructure.h" />
+    <ClInclude Include="Cylinder.h" />
     <ClInclude Include="DX.h" />
     <ClInclude Include="DynamicMovementCamera.h" />
     <ClInclude Include="EntityTransformation.h" />
@@ -422,6 +424,9 @@
     <ResourceCompile Include="DX11 Framework.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Terrain.fx">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

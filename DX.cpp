@@ -20,7 +20,10 @@ void DX::InitialiseDevice()
     InitialiseRenderTarget();
     InitialiseViewport();
     InitialiseConstantBuffer();
+    InitialiseSolid();
+    InitialiseWireFrame();
     InitialiseSampler();
+    InitialiseAlphaBlending();
 }
 void DX::Cleanup()
 {
@@ -32,7 +35,7 @@ void DX::Cleanup()
     if (_pDevice) _pDevice->Release();
     if (_pDepthStencilView) _pDepthStencilView->Release();
     if (_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
-    if (_RasterizerState) _RasterizerState->Release();
+    if (_SolidRasterState) _SolidRasterState->Release();
 
 
 }
@@ -199,7 +202,7 @@ void DX::InitialiseSolid()
     solid.CullMode = D3D11_CULL_NONE;
 
     //Create wirefram rasterizer stage
-    _pDevice->CreateRasterizerState(&solid, &_RasterizerState);
+    _pDevice->CreateRasterizerState(&solid, &_SolidRasterState);
 }
 void DX::InitialiseWireFrame()
 {
@@ -212,5 +215,35 @@ void DX::InitialiseWireFrame()
     wireframe.CullMode = D3D11_CULL_NONE;
 
     //Create wirefram rasterizer stage
-    _pDevice->CreateRasterizerState(&wireframe, &_RasterizerState);
+    _pDevice->CreateRasterizerState(&wireframe, &_WireFrameRasterState);
+}
+
+void DX::InitialiseAlphaBlending()
+{
+    D3D11_BLEND_DESC blendingdescription;
+
+    ZeroMemory(&blendingdescription, sizeof(blendingdescription));
+
+    D3D11_RENDER_TARGET_BLEND_DESC rtbd;
+
+    ZeroMemory(&rtbd, sizeof(rtbd));
+
+    rtbd.BlendEnable = true;
+    rtbd.SrcBlend = D3D11_BLEND_SRC_COLOR;
+    rtbd.DestBlend = D3D11_BLEND_BLEND_FACTOR;
+    rtbd.BlendOp = D3D11_BLEND_OP_ADD;
+    rtbd.SrcBlendAlpha = D3D11_BLEND_ONE;
+    rtbd.DestBlendAlpha = D3D11_BLEND_ZERO;
+    rtbd.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    rtbd.RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
+
+    blendingdescription.AlphaToCoverageEnable = false;
+    blendingdescription.RenderTarget[0] = rtbd;
+
+    _pDevice->CreateBlendState(&blendingdescription, &_BlendState);
+
+    float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f };
+
+
+
 }

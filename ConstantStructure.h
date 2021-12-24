@@ -24,7 +24,7 @@ struct ConstantBuffer
 	XMFLOAT3 LightVecW;
 	XMFLOAT4 EyePosW;
 
-	static float gTime;
+	 float gTime;
 
 
 

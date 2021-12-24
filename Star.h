@@ -23,7 +23,7 @@ public:
 		_pStarTransform->SetTranslation(0.0f, 0.0f, 0.0f);
 		_pStarTransform->SetScale(1.0f, 1.0f, 1.0f);
 		t.Update();
-		_pStarTransform->SetRotation(0.0f, 1.0f *t.time , 0.0f);
+		_pStarTransform->SetRotation(0.0f, 1.0f *t.gTime , 0.0f);
 		_pStarTransform->CalculateWorldTransformation(_StarWorld);
 		
 		SetWorld(_pStarTransform->GetWorld());

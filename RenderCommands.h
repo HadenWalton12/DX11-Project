@@ -11,7 +11,7 @@
 #include "ConstantStructure.h"
 #include "LightingValuesStructure.h"
 #include "Camera.h"
-
+#include "TimeStructure.h"
 
 using namespace DirectX; //Use default DX11 Naming conventions
 
@@ -30,8 +30,25 @@ public:
 
 
 	}
-
-
+		void ChangeBlendState2(ID3D11BlendState * blendstate)
+		{
+			float blendFactor[] = { 0.0f, 1.0f, 0.0f, 1.0f };
+			_pDeviceContext->OMSetBlendState(blendstate, blendFactor, 0xffffffff);
+		}
+		void ChangeBlendState1(ID3D11BlendState* blendstate)
+	{
+		float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f };
+		_pDeviceContext->OMSetBlendState(blendstate, blendFactor, 0xffffffff);
+	}
+		void ChangeBlendState3(ID3D11BlendState* blendstate)
+		{
+			float blendFactor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+			_pDeviceContext->OMSetBlendState(blendstate, blendFactor, 0xffffffff);
+		}
+	void SetRasterState(ID3D11RasterizerState* rasterstate)
+	{
+		_pDeviceContext->RSSetState(rasterstate);
+	}
 	void  ClearRenderTarget(ID3D11RenderTargetView* target_view , ID3D11DepthStencilView* depth_view)
 	{
 		_pDeviceContext->ClearRenderTargetView(target_view, ClearColor);
@@ -61,6 +78,7 @@ public:
 
 	void UpdateConstantBuffer(XMFLOAT4X4 world)
 	{
+		Timer t;
 		ConstantBuffer constantbuffer;
 		LigthtingValues lightvalue;
 		XMMATRIX _world = XMLoadFloat4x4(&world);
@@ -81,6 +99,7 @@ public:
 		constantbuffer.SpecularPower = lightvalue.specular_power;
 		constantbuffer.SpecularLight = lightvalue.specular_light;
 		constantbuffer.SpecularMtrl = lightvalue.specular_material;
+		constantbuffer.gTime = t.gTime;
 
 		_pDeviceContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
 	}

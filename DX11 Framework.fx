@@ -24,7 +24,7 @@ cbuffer ConstantBuffer : register( b0 )
 	float SpecularPower;
     float3 LightVecW;
 	float4 EyePosW;
-
+	float gTime;
 }
 
 struct VS_INPUT

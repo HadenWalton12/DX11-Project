@@ -1,4 +1,5 @@
 #include "InputComponent.h"
+
 #define TO_RADIANS 3.14/180 //Converts degrees to radians upon multiplication
 InputComponent::~InputComponent()
 {
@@ -25,11 +26,11 @@ bool InputComponent::InitDirectInput(HINSTANCE hInstance )
     return true;
 }
 
-/*
-void InputComponent::DetectWASDMovement()
+
+void InputComponent::DetectWASDMovement(DynamicMovementCamera* camera_instance)
 {
 
-    XMFLOAT3 CameraPosition = _DynamicCamera->GetPosition();
+    XMFLOAT3 CameraPosition = camera_instance->GetPosition();
 
     DIMOUSESTATE mouseCurrState;
 
@@ -41,8 +42,8 @@ void InputComponent::DetectWASDMovement()
     DIMouse->GetDeviceState(sizeof(DIMOUSESTATE), &mouseCurrState);
     DIKeyBoard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
 
-    float yaw = _DynamicCamera->GetYaw();
-    float pitch = _DynamicCamera->GetPitch();
+    float yaw = camera_instance->GetYaw();
+    float pitch = camera_instance->GetPitch();
     //Yaw & Pitch Calculations, We divide our pitch and yaw to control to sensitive of our mouse input
     
     //Forward
@@ -87,24 +88,23 @@ void InputComponent::DetectWASDMovement()
         CameraPosition.y -= cos((90 - 90) * TO_RADIANS) / 5.0;
     }
 
-    if ((mouseCurrState.lX != mouseLastState.lX) || (mouseCurrState.lY != mouseLastState.lY))
+    if ((mouseCurrState.lX != MouseLastState.lX) || (mouseCurrState.lY != MouseLastState.lY))
     {
-        yaw += mouseLastState.lX * 0.001f;
+        yaw += MouseLastState.lX * 0.001f;
 
         pitch += mouseCurrState.lY * 0.001f;
 
-        mouseLastState = mouseCurrState;
+        MouseLastState = mouseCurrState;
     }
 
     
 
     //Update 
-    _DynamicCamera->SetPitch(pitch);
-    _DynamicCamera->SetYaw(yaw);
+    camera_instance->SetPitch(pitch);
+    camera_instance->SetYaw(yaw);
 
-    _DynamicCamera->SetPosition(CameraPosition);
+    camera_instance->SetPosition(CameraPosition);
 
 
 
 }
-*/

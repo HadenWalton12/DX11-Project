@@ -13,18 +13,18 @@ using namespace DirectX; //Use default DX11 Naming conventions
 struct Timer
 {
 
-	 float time;
+	float gTime;
 
 
 	Timer()
 	{
 		// Update our time
-		time = 5.0f;
+		gTime = 5.0f;
 			static DWORD dwTimeStart = 0;
 			DWORD dwTimeCur = GetTickCount();
 
 
-			time = (dwTimeCur - dwTimeStart) / 1000.0f;
+			gTime = (dwTimeCur - dwTimeStart) / 1000.0f;
 
 	}
 	void Update()
@@ -33,7 +33,7 @@ struct Timer
 		DWORD dwTimeCur = GetTickCount();
 
 
-		time = (dwTimeCur - dwTimeStart) / 1000.0f;
+		gTime = (dwTimeCur - dwTimeStart) / 1000.0f;
 	}
 
 };

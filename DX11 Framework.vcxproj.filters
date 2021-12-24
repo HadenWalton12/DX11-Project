@@ -89,6 +89,7 @@
     <ClInclude Include="PlaneCamera.h">
       <Filter>GameObjects\Cameras</Filter>
     </ClInclude>
+    <ClInclude Include="Cylinder.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -107,6 +108,7 @@
     <ClCompile Include="RenderCommands.cpp" />
     <ClCompile Include="ObjectTranformation.cpp" />
     <ClCompile Include="InputComponent.cpp" />
+    <ClCompile Include="Cylinder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
@@ -115,6 +117,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="DX11 Framework.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Terrain.fx">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

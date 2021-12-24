@@ -118,7 +118,7 @@ public:
 	{
 		Timer t;
 		_pTerrainTransform->SetTranslation(0.0f, -1.0f, 0.0f);
-		_pTerrainTransform->SetScale(1000.0f, 1000.0f, 1000.0f);
+		_pTerrainTransform->SetScale(10.0f, 10.0f, 10.0f);
 		t.Update();
 		_pTerrainTransform->SetRotation(0.0f, 0.0f, 0.0f);
 		_pTerrainTransform->CalculateWorldTransformation(_TerrainWorld);
@@ -129,8 +129,8 @@ public:
 	void BindShaders() override
 	{
 		
-			_pVertexShader = new VertexShader(_pRenderCommand->GetDevice(), _VS, _pRenderCommand->GetDeviceContext(), L"DX11 Framework.fx");
-			_pPixelShader = new PixelShader(_pRenderCommand->GetDevice(), _PS, L"DX11 Framework.fx");
+			_pVertexShader = new VertexShader(_pRenderCommand->GetDevice(), _VS, _pRenderCommand->GetDeviceContext(), L"Terrain.fx");
+			_pPixelShader = new PixelShader(_pRenderCommand->GetDevice(), _PS, L"Terrain.fx");
 			_VS = _pVertexShader->GetShader();
 			_PS = _pPixelShader->GetShader();
 			_pRenderCommand->BindVertexShader(_VS);
