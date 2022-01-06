@@ -91,25 +91,19 @@ public:
 	UINT _WindowHeight;											//Define window height
 	UINT _WindowWidth;											//Define window width
 
-
-	Application() {};
-	~Application() {};
+	Application();
+	~Application();
+	
 
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
 
 	
 
 	
-
+	void Cleanup();
 	HRESULT Update();
 	void Draw();
 	
-
-
-
-
-
-
 	HRESULT InitialiseWindow(HINSTANCE hInstance, int nCmdShow);
 
 };

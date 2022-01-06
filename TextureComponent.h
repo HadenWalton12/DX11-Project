@@ -1,5 +1,4 @@
 #pragma once
-
 //ShaderComponent Depenencies
 #include "RenderCommands.h"
 #include "DDSTextureLoader.h"

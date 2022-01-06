@@ -21,8 +21,11 @@ public:
 	void Update();										//Used to reference instances where the object is to be updated
 	void Draw();
 
+	void Cleanup();
 
 	void SetWorld(XMFLOAT4X4 world);
+
+
 	//Draw method , to how we draw objects
 	void CreateTexture(wchar_t* path);					//Creates Texture
 

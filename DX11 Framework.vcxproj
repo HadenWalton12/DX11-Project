@@ -375,18 +375,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="DX.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="ObjectComponent.cpp" />
-    <ClCompile Include="ObjectTranformation.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
-    <ClCompile Include="RenderCommands.cpp" />
     <ClCompile Include="TextureComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Diagram.cd" />
     <None Include="DX11 Framework.fx" />
   </ItemGroup>
   <ItemGroup>

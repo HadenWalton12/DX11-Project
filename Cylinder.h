@@ -15,7 +15,7 @@ public:
 	Cylinder::Cylinder(RenderCommands* render_command, TextureComponent* _Tex, DX* dx, InputComponent* input) : GameObjects(render_command)
 	{
 		_pDX11 = dx;
-		_CylinderInput = input;
+		
 		_pRenderCommand = render_command;
 		CameraPosition = XMFLOAT3(0.0f, 5.0f, -5.0f);
 		LoadMesh();
@@ -24,24 +24,23 @@ public:
 		_pCylinderTransform->SetScale(1.0f, 1.0f, 1.0f);
 		_pCylinderTransform->SetRotation(0.0f, 0.0f, 0.0f);
 	}
+
+	Cylinder::~Cylinder()
+	{
+		Cleanup();
+	}
 	MeshData LoadMesh()
 	{
 		_mesh = OBJLoader::Load("cylinder.obj", _pRenderCommand->GetDevice());
 		return _mesh;
 	}
+
+	
 	void WorldTransformations() override
 	{
-		DIMOUSESTATE mouseCurrState;
+		
 
 		XMFLOAT3 ObjectTranslate = _pCylinderTransform->GetTranslate();
-
-		BYTE keyboardState[256];
-
-		_CylinderInput->DIKeyBoard->Acquire();
-		_CylinderInput->DIMouse->Acquire();
-
-
-		_CylinderInput->DIKeyBoard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
 
 		_pCylinderTransform->SetTranslation(ObjectTranslate.x, ObjectTranslate.y, ObjectTranslate.z);
 		_pCylinderTransform->CalculateWorldTransformation(_CylinderWorld);
@@ -72,11 +71,21 @@ public:
 		CameraPosition = pos;
 	}
 
+	void Cleanup()
+	{
+		delete(_pCylinderTransform);
+		delete(_VS);
+		delete(_PS);
+		delete(_pVertexShader);
+		delete(_pPixelShader);
+		delete(_pDX11);
+		delete(_pRenderCommand);
+	}
+
 	Timer  t;
 	XMFLOAT4X4 _CylinderWorld;
 	XMFLOAT3 CameraPosition;
 	ObjectTranformation* _pCylinderTransform;
-	InputComponent* _CylinderInput;
 	EntityTransformation transformation;
 	ID3D11VertexShader* _VS;
 	ID3D11PixelShader* _PS;

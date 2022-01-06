@@ -5,6 +5,12 @@ InputComponent::~InputComponent()
 {
 }
 
+void InputComponent::Cleanup()
+{
+    delete(DIKeyBoard);
+    delete(DIMouse);
+}
+
 bool InputComponent::InitDirectInput(HINSTANCE hInstance )
 {
 

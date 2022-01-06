@@ -12,6 +12,12 @@ public:
         CreateVertexShader(VS_PATH, vertex_shader);
     }
 
+    ~VertexShader()
+    {
+
+        Cleanup();
+
+    }
     HRESULT CreateVertexShader(WCHAR* VS_PATH, ID3D11VertexShader* vertex_shader)
     {
         HRESULT hr = S_OK;
@@ -60,6 +66,13 @@ public:
 
     }
 
+    void Cleanup()
+    {
+        delete(_VertexShader);
+        delete(_pDevice);
+        delete(_pDeviceContext);
+        delete(_pShaderCompiler);
+    }
     ID3D11VertexShader* GetShader()
     {
         return _VertexShader;

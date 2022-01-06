@@ -17,6 +17,12 @@ public:
 		_pStarTransform = new ObjectTranformation(&_StarWorld);
 	}
 
+	Star::~Star()
+	{
+		Cleanup();
+
+
+	}
 	void WorldTransformations() override
 	{
 		Timer t;
@@ -45,7 +51,17 @@ public:
 
 	}
 
-	
+	void Cleanup()
+	{
+
+		delete(_pStarTransform);
+		delete(_VS);
+		delete(_PS);
+		delete(_pVertexShader);
+		delete(_pPixelShader);
+		delete(_pDX11);
+		delete(_pRenderCommand);
+	}
 
 	Timer  t;
 	

@@ -11,7 +11,20 @@ public:
         CreatePixelShader(pixel_shader , PS_PATH);
 
     }
+    ~PixelShader()
+    {
+     
+        Cleanup();
 
+    }
+
+    void Cleanup()
+    {
+        delete(_PixelShader);
+        delete(_pDevice);
+        delete(_pShaderCompiler);
+
+    }
     HRESULT CreatePixelShader(ID3D11PixelShader* pixel_shader , WCHAR* PS_PATH)
     {
         HRESULT hr;

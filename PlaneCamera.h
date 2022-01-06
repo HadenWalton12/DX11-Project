@@ -1,6 +1,7 @@
 #pragma once
 #include "Camera.h"
 #include "Plane.h"
+
 class PlaneCamera : public Camera
 {
 public:
@@ -11,10 +12,14 @@ public:
 		InitialiseProjection();
 	}
 
+	~PlaneCamera()
+	{
+		Cleanup();
+	}
+
 	void InitialiseView() override
 	{
 		XMVECTOR Direction, Position, UP;
-
 
 		Position = XMVectorSet(_Camera_Position.x, _Camera_Position.y, _Camera_Position.z, 0.0f);
 		Direction = XMVectorSet(_Camera_Direction.x, _Camera_Direction.y, _Camera_Direction.z, 0.0f);
@@ -24,8 +29,8 @@ public:
 
 		//Initalize view matrix
 		XMStoreFloat4x4(&_View, XMMatrixLookToLH(Position, Direction, UP));
-
 	}
+
 	void InitialiseProjection() override
 	{
 		XMStoreFloat4x4(&_Projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT)_WindowHeight, _NearDepth, _FarDepth));
@@ -49,32 +54,25 @@ public:
 
 	// Setters
 	virtual void SetPosition(XMFLOAT3 camera_position)
-	{
-		_Camera_Position = camera_position;
-	}
-
+	{_Camera_Position = camera_position;}
 
 	//Getters
 	XMFLOAT4X4 GetView() override
-	{
-
-		return _View;
-	}
+	{return _View;}
 	XMFLOAT4X4 GetProjection() override
-	{
-
-		return _Projection;
-	}
+	{return _Projection;}
 	XMFLOAT3 GetPosition()
-	{
-		return _Camera_Position;
-	}
+	{return _Camera_Position;}
 
+	void Cleanup()
+	{
+		delete(_plane);
+	}
 
 private:
+
 	XMFLOAT3 _Camera_Position;
 	XMFLOAT3 _Camera_Direction;
-
 	XMFLOAT4X4 _View;
 	XMFLOAT4X4 _Projection;
 	Plane* _plane;

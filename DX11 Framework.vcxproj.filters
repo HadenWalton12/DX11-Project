@@ -21,13 +21,33 @@
     <Filter Include="Dependencies">
       <UniqueIdentifier>{94945e36-9990-4c6b-92c0-8ed391121f4d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObjects\Cameras">
+    <Filter Include="EngineComponent\Cameras">
       <UniqueIdentifier>{e3c959fa-5056-4c95-a7c3-05849401b7d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineComponent\Texture">
+      <UniqueIdentifier>{4fdcb510-cb1a-48c0-baab-0bf56ac00d90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineComponent\DX11">
+      <UniqueIdentifier>{6af90f6e-44b0-4a60-84ee-58fc5b6e044e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineComponent\Shaders">
+      <UniqueIdentifier>{ad7db6e8-cc5d-4efd-a866-1825a6529233}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineComponent\Buffer">
+      <UniqueIdentifier>{fcf1e833-28b8-439b-8e46-e2880ae31d5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineComponent\Input">
+      <UniqueIdentifier>{ca40fa5c-e522-4c75-a436-d74d3fd9a491}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineComponent\ShaderCompiler">
+      <UniqueIdentifier>{f1025512-adfa-4c44-81e1-e6d7d311bab5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineComponent\Pipeline">
+      <UniqueIdentifier>{5aa10aaa-dbb2-4412-8596-dc075d747b07}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="ObjectComponent.h">
       <Filter>GameObjects</Filter>
     </ClInclude>
@@ -49,9 +69,6 @@
     <ClInclude Include="OBJLoader.h">
       <Filter>Dependencies</Filter>
     </ClInclude>
-    <ClInclude Include="TextureComponent.h">
-      <Filter>EngineComponent</Filter>
-    </ClInclude>
     <ClInclude Include="TimeStructure.h">
       <Filter>Structures</Filter>
     </ClInclude>
@@ -61,40 +78,67 @@
     <ClInclude Include="Sphere.h">
       <Filter>GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="VertexShader.h" />
-    <ClInclude Include="PixelShader.h" />
-    <ClInclude Include="VertexBuffer.h" />
-    <ClInclude Include="ShaderCompiler.h" />
-    <ClInclude Include="IndexBuffer.h" />
-    <ClInclude Include="DX.h" />
-    <ClInclude Include="RenderCommands.h" />
-    <ClInclude Include="ObjectTranformation.h" />
-    <ClInclude Include="EntityTransformation.h" />
     <ClInclude Include="Terrain.h">
       <Filter>GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="InputComponent.h" />
-    <ClInclude Include="Camera.h">
-      <Filter>EngineComponent</Filter>
-    </ClInclude>
     <ClInclude Include="DynamicMovementCamera.h">
-      <Filter>GameObjects\Cameras</Filter>
-    </ClInclude>
-    <ClInclude Include="StaticDefaultCamera.h">
-      <Filter>GameObjects\Cameras</Filter>
-    </ClInclude>
-    <ClInclude Include="StaticTopDownCamera.h">
-      <Filter>GameObjects\Cameras</Filter>
+      <Filter>EngineComponent\Cameras</Filter>
     </ClInclude>
     <ClInclude Include="PlaneCamera.h">
-      <Filter>GameObjects\Cameras</Filter>
+      <Filter>EngineComponent\Cameras</Filter>
     </ClInclude>
-    <ClInclude Include="Cylinder.h" />
+    <ClInclude Include="StaticDefaultCamera.h">
+      <Filter>EngineComponent\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticTopDownCamera.h">
+      <Filter>EngineComponent\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="Cylinder.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureComponent.h">
+      <Filter>EngineComponent\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader.h">
+      <Filter>Dependencies</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>EngineComponent\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="DX.h">
+      <Filter>EngineComponent\DX11</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>EngineComponent\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>EngineComponent\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>EngineComponent\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>EngineComponent\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="InputComponent.h">
+      <Filter>EngineComponent\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderCommands.h">
+      <Filter>EngineComponent\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderCompiler.h">
+      <Filter>EngineComponent\ShaderCompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityTransformation.h">
+      <Filter>Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectTranformation.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
-    <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="ObjectComponent.cpp">
       <Filter>GameObjects</Filter>
     </ClCompile>
@@ -102,13 +146,17 @@
       <Filter>Dependencies</Filter>
     </ClCompile>
     <ClCompile Include="TextureComponent.cpp">
-      <Filter>EngineComponent</Filter>
+      <Filter>EngineComponent\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="DX.cpp" />
-    <ClCompile Include="RenderCommands.cpp" />
-    <ClCompile Include="ObjectTranformation.cpp" />
-    <ClCompile Include="InputComponent.cpp" />
-    <ClCompile Include="Cylinder.cpp" />
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="DX.cpp">
+      <Filter>EngineComponent\DX11</Filter>
+    </ClCompile>
+    <ClCompile Include="InputComponent.cpp">
+      <Filter>EngineComponent\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
@@ -122,6 +170,7 @@
     <None Include="Terrain.fx">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Diagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11 Framework.rc">

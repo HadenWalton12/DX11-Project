@@ -1,20 +1,17 @@
-#include "DX.h"
+
 #include "DX.h"
 DX::DX(UINT width, UINT height, HWND hWnd) : _WindowWidth(width) , _WindowHeight(height) , _hWnd(hWnd)
 {
     _driverType = D3D_DRIVER_TYPE_NULL;
     _featureLevel = D3D_FEATURE_LEVEL_11_0;
-
 }
 DX::~DX()
 {
-    //Call Cleanup function 
     Cleanup();
 }
 
 void DX::InitialiseDevice()
 {
-
     InitialiseSwapchain();
     InitialiseDepth();
     InitialiseRenderTarget();
@@ -27,18 +24,17 @@ void DX::InitialiseDevice()
 }
 void DX::Cleanup()
 {
-    if (_pDeviceContext) _pDeviceContext->ClearState();
-    if (_pConstantBuffer) _pConstantBuffer->Release();
-    if (_pRenderTargetView) _pRenderTargetView->Release();
-    if (_pSwapChain) _pSwapChain->Release();
-    if (_pDeviceContext) _pDeviceContext->Release();
-    if (_pDevice) _pDevice->Release();
-    if (_pDepthStencilView) _pDepthStencilView->Release();
-    if (_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
-    if (_SolidRasterState) _SolidRasterState->Release();
-
-
+    delete(_pDeviceContext);
+    delete(_pConstantBuffer);
+    delete(_pRenderTargetView);
+    delete(_pSwapChain);
+    delete(_pDeviceContext);
+    delete(_pDevice);
+    delete(_pDepthStencilView);
+    delete(_pDepthStencilBuffer);
+    delete(_SolidRasterState);
 }
+
 HRESULT DX::InitialiseSwapchain()
 {
     HRESULT hr = S_OK;

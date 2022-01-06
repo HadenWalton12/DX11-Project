@@ -137,15 +137,24 @@ HRESULT Application::InitialiseWindow(HINSTANCE hInstance, int nCmdShow)
     }
 
     ShowWindow(_hWnd, nCmdShow);
-    return S_OK;
+    return S_OK; 
 }
 
+Application::Application()
+{
+}
+
+Application::~Application()
+{
+    Cleanup();
+}
 
 HRESULT Application::Update()
 {
     Timer t;
     BYTE keyboardState[256];
 
+    
  
     _Input->DIKeyBoard->Acquire();
     _Input->DIKeyBoard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
@@ -219,6 +228,30 @@ void Application::Draw()
 
     }
     _pRenderCommands->SwapChainPresent(_pDX11->_pSwapChain);
+
+}
+
+void Application::Cleanup()
+{
+    delete(_pDX11);
+    delete(_pRenderCommands);
+    delete(_Terrain);
+    delete(_star);
+    delete(_plane);
+    delete(_sphere);
+    delete(_cylinder);
+    delete(_Tex);
+    delete(_pPixelShader);
+    delete(_pVertexShader);
+    delete(_PS);
+    delete(_VS);
+    delete(_Input);
+    delete(_DynamicMovementCamera);
+    delete(_PlaneCamera);
+    delete(_StaticTopDownCamera);
+
+    _GameObjects.clear();
+    _CameraObjects.clear();
 
 }
 

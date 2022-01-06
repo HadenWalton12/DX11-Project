@@ -23,8 +23,6 @@ public:
 
 	VertexBuffer(ID3D11Device* device, ID3D11DeviceContext* device_context, std::vector<SimpleVertex>&vertices, ID3D11Buffer* vertex_buffer) : _pVertexBuffer(vertex_buffer) , Vertex(vertices)
 	{
-	
-
 		D3D11_BUFFER_DESC VertexBufferDescrption;
 		ZeroMemory(&VertexBufferDescrption, sizeof(VertexBufferDescrption));
 
@@ -46,6 +44,18 @@ public:
 		VBStride = sizeof(SimpleVertex);
 	
 	}
+
+	~VertexBuffer()
+	{
+		Cleanup();
+	}
+	
+	void Cleanup()
+	{
+		delete(_pVertexBuffer);
+
+
+	}
 	ID3D11Buffer* GetVertexBuffer()
 	{
 		return _pVertexBuffer;
@@ -64,6 +74,7 @@ public:
 
 	}
 
+	
 
 private:
 

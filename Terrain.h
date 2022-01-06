@@ -21,6 +21,13 @@ public:
 		_pTerrainTransform = new ObjectTranformation(&_TerrainWorld);
 
 	}
+
+	Terrain::~Terrain()
+	{
+		Cleanup();
+
+
+	}
 	//Terrain Loading Based from Frank Lunar Book
 	MeshData LoadMesh()
 	{
@@ -138,23 +145,43 @@ public:
 			_pRenderCommand->BindSampler(_pDX11->_pSamplerLinear);
 
 	}
+
+	void Cleanup()
+	{
+		delete(_pTerrainTransform);
+		delete(_VS);
+		delete(_PS);
+		delete(_pDX11);
+		delete(_pPixelShader);
+		delete(_pVertexShader);
+		delete(_pVertexBuffer);
+		delete(_VertexBuffer);
+		delete(_pRenderCommand);
+		delete(_pIndexBuffer);
+		delete(_IndexBuffer);
+
+
+
+	}
+
 	Timer  t;
-
-
 	XMFLOAT4X4 _TerrainWorld;
 	ObjectTranformation* _pTerrainTransform;
 	EntityTransformation transformation;
 	ID3D11VertexShader* _VS;
+
 	ID3D11PixelShader* _PS;
-	ID3D11Buffer* _VertexBuffer;
+	PixelShader* _pPixelShader;
+	
 	ID3D11Buffer* _IndexBuffer;
+	IndexBuffer* _pIndexBuffer;
 
 	VertexShader* _pVertexShader;
 	VertexBuffer* _pVertexBuffer;
-	IndexBuffer* _pIndexBuffer;
+	ID3D11Buffer* _VertexBuffer;
 
 	DX* _pDX11;
-	PixelShader* _pPixelShader;
+
 	RenderCommands* _pRenderCommand;
 
 };

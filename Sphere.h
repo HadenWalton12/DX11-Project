@@ -16,6 +16,11 @@ public:
 		_pSphereTransform->SetRotation(0.0f, 0.0f, 0.0f);
 	}
 
+	Sphere::~Sphere()
+	{
+		Cleanup();
+	}
+
 	void WorldTransformations() override
 	{
 
@@ -33,11 +38,7 @@ public:
 				ObjectTranslate.x = -1.2f + cos(t.gTime) * 5;
 				ObjectTranslate.y = 0.0f;
 				ObjectTranslate.z = 0.0f + sin(t.gTime) * 5;
-	
-
 			}
-
-
 			_pSphereTransform->SetTranslation(ObjectTranslate.x, ObjectTranslate.y, ObjectTranslate.z);
 			
 			_pSphereTransform->CalculateWorldTransformation(_SphereWorld);
@@ -62,6 +63,18 @@ public:
 	}
 
 
+	void Cleanup()
+	{
+
+		delete(_pSphereTransform);
+		delete(_SphereInput);
+		delete(_VS);
+		delete(_PS);
+		delete(_pVertexShader);
+		delete(_pPixelShader);
+		delete(_pDX11);
+		delete(_pRenderCommand);
+	}
 
 	Timer  t;
 	InputComponent* _SphereInput;
@@ -74,4 +87,5 @@ public:
 	DX* _pDX11;
 	PixelShader* _pPixelShader;
 	RenderCommands* _pRenderCommand;
+
 };

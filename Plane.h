@@ -24,6 +24,10 @@ public:
 		_pPlaneTransform->SetScale(0.10f, 0.10f, 0.10f);
 		_pPlaneTransform->SetRotation(0.0f, 0.0f, 0.0f);
 	}
+	Plane::~Plane()
+	{
+		Cleanup();
+	}
 	MeshData LoadMesh() 
 	{
 		_mesh = OBJLoader::Load("Hercules.obj", _pRenderCommand->GetDevice());
@@ -108,6 +112,21 @@ public:
 	{
 
 		CameraPosition = pos;
+	}
+
+	void Cleanup()
+	{
+
+		delete(_pPlaneTransform);
+		delete(_PlaneInput);
+		delete(_VS);
+		delete(_PS);
+		delete(_pVertexShader);
+		delete(_pPixelShader);
+		delete(_pDX11);
+		delete(_pRenderCommand);
+
+
 	}
 
 	Timer  t;

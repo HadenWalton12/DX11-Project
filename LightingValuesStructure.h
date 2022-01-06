@@ -33,8 +33,5 @@ struct LigthtingValues
 		specular_light = XMFLOAT4(1.0f, 0.5f, 0.5f, 1.0f);
 		specular_power = 1.0f;
 		EyePosW = XMFLOAT4(0.0f, 5.0f, 0.0f, 0.0f);
-
-
-
 	}
 };

@@ -55,20 +55,13 @@ public:
 	
 	//Getters
 	XMFLOAT4X4 GetView() override
-	{
-
-		return _View;
-	}
+	{return _View;}
+	
 	XMFLOAT4X4 GetProjection() override
-	{
-
-		return _Projection;
-	}
+	{return _Projection;}
+	
 	XMFLOAT3 GetPosition()
-	{
-		return _Camera_Position;
-	}
-
+	{return _Camera_Position;}
 
 private:
 	XMFLOAT3 _Camera_Position;
