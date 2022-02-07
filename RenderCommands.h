@@ -9,9 +9,10 @@
 #include <directxmath.h> //DX11 Math Library 
 #include <directxcolors.h>//Color Math Library
 #include "ConstantStructure.h"
-#include "LightingValuesStructure.h"
-#include "Camera.h"
+#include "Lighting.h"
 #include "TimeStructure.h"
+#include "StaticDefaultCamera.h"
+#include "Surface.h"
 
 using namespace DirectX; //Use default DX11 Naming conventions
 
@@ -19,7 +20,7 @@ class RenderCommands
 {
 public:
 
-	RenderCommands(ID3D11Device* device , ID3D11DeviceContext* device_context , Camera* camera , ID3D11Buffer* CB) : _pDevice(device) , _pDeviceContext(device_context), _Camera(camera) , _pConstantBuffer(CB)
+	RenderCommands(ID3D11Device* device , ID3D11DeviceContext* device_context, StaticDefaultCamera* camera , ID3D11Buffer* CB) : _pDevice(device) , _pDeviceContext(device_context) , _pConstantBuffer(CB) , _MainCamera(camera)
 	{
 	}
 	
@@ -72,41 +73,36 @@ public:
 	{
 		_pDeviceContext->PSSetSamplers(0, 1, &sampler);
 	}
-	void UpdateConstantBuffer(XMFLOAT4X4 world)
+	void UpdateConstantBuffer(XMFLOAT4X4 world , Surface object_surface)
 	{
 		Timer t;
 		ConstantBuffer constantbuffer;
-		LigthtingValues lightvalue;
+		Lighting basicLight;
+		// Setup the scene's light
+
+		
+	
+
+
 		XMMATRIX _world = XMLoadFloat4x4(&world);
-		XMMATRIX view = XMLoadFloat4x4(&_Camera->GetView());
-		XMMATRIX projection = XMLoadFloat4x4(&_Camera->GetProjection());
+		XMMATRIX view = XMLoadFloat4x4(&_MainCamera->_Camera.GetView());
+		XMMATRIX projection = XMLoadFloat4x4(&_MainCamera->_Camera.GetProjection());
+		
+		constantbuffer.World = XMMatrixTranspose(_world);
+		constantbuffer.View = XMMatrixTranspose(view);
+		constantbuffer.Projection = XMMatrixTranspose(projection);
 
-
-		constantbuffer.mWorld = XMMatrixTranspose(_world);
-		constantbuffer.mView = XMMatrixTranspose(view);
-		constantbuffer.mProjection = XMMatrixTranspose(projection);
-
-		constantbuffer.LightVecW = lightvalue.light_direction;
-		constantbuffer.DiffuseLight = lightvalue.diffuse_light;
-		constantbuffer.DiffuseMtrl = lightvalue.diffuse_material;
-		constantbuffer.AmbientLight = lightvalue.ambient_light;
-		constantbuffer.AmbientMtrl = lightvalue.ambient_material;
-		constantbuffer.EyePosW = lightvalue.EyePosW;
-		constantbuffer.SpecularPower = lightvalue.specular_power;
-		constantbuffer.SpecularLight = lightvalue.specular_light;
-		constantbuffer.SpecularMtrl = lightvalue.specular_material;
-		constantbuffer.gTime = t.gTime;
-
+		constantbuffer.Mat.AmbientMtrl = object_surface.ambient;
+		constantbuffer.Mat.DiffuseMtrl = object_surface.diffuse;
+		constantbuffer.Mat.SpecularMtrl = object_surface.specular;
+		constantbuffer.Light.AmbientLight = basicLight.AmbientLight = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		constantbuffer.Light.DiffuseLight = basicLight.DiffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		constantbuffer.Light.SpecularLight = basicLight.SpecularLight = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+		constantbuffer.Light.LightVecW = basicLight.LightVecW = XMFLOAT3(2.0f, 10.0f, -1.0f);
+		constantbuffer.Light.SpecularPower = basicLight.SpecularPower = 20.0f;
 		_pDeviceContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &constantbuffer, 0, 0);
 	}
-	void SwitchCamera(Camera* camera)
-	{
-		_Camera = camera;	
-	}
-	void SetCamera(Camera* camera)
-	{
-		_Camera = camera;
-	}
+
 
 	ID3D11Device* GetDevice()
 	{
@@ -121,7 +117,7 @@ public:
 	void Cleanup()
 	{
 		delete(_pConstantBuffer);
-		delete(_Camera);
+		delete(_MainCamera);
 		delete(_pDevice);
 		delete(_pDeviceContext);
 	}
@@ -129,7 +125,7 @@ public:
 private:
 
 	ID3D11Buffer* _pConstantBuffer;								//Defines ConstantBuffer Storage 
-	Camera* _Camera;
+	StaticDefaultCamera* _MainCamera;
 	ID3D11Device* _pDevice;
 	ID3D11DeviceContext* _pDeviceContext;
 	//Holds background colour value

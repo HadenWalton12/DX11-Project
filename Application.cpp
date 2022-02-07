@@ -33,8 +33,6 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     }
 
 
-    //Initialise Input Device
-    _Input = new InputComponent(hInstance);
 
     RECT rc;
     GetClientRect(_hWnd, &rc);
@@ -48,53 +46,21 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     //InitialiseDevice , Assist creating core graphical components.
     _pDX11->InitialiseDevice();
-    
+
+    _StaticDefaultCamera = new StaticDefaultCamera();
     _pRenderCommands = new RenderCommands(_pDX11->_pDevice, _pDX11->_pDeviceContext, _StaticDefaultCamera, _pDX11->_pConstantBuffer);
     
     _star = new Star(_pRenderCommands, _Tex , _pDX11);
-    _plane = new Plane(_pRenderCommands, _Tex, _pDX11 , _Input);
-    _Terrain = new Terrain(_pRenderCommands, _Tex, _pDX11);
-    _sphere = new Sphere(_pRenderCommands, _Tex, _pDX11 , _Input);
-   _cylinder = new Cylinder(_pRenderCommands, _Tex, _pDX11, _Input);
-
-    _GameObjects.push_back(_Terrain);
     _GameObjects.push_back(_star);
-    _GameObjects.push_back(_plane);
-    _GameObjects.push_back(_sphere);
-    _GameObjects.push_back(_cylinder);
-    _Terrain->CreateTexture(L"Grass.dds");
+   
     _star->CreateTexture(L"Crate_COLOR.dds");
-    _plane->CreateTexture(L"Hercules_COLOR.dds");
-    _sphere->CreateTexture(L"Snow.dds");
-    _cylinder->CreateTexture(L"Stone.dds");
-    XMFLOAT3 DynamicCameraPostion = XMFLOAT3(0.0f, 0.0f, -3.0f);
-    XMFLOAT3 TopDownCameraPosition = XMFLOAT3(0.0f, 25.0f, -1.0f);
-    XMFLOAT3 DefaultCameraPosition = XMFLOAT3(0.0f, 0.0f, -5.0f);
-    XMFLOAT3 PlaneCameraPosition = XMFLOAT3(0.0f, 0.0f, 3.0f);
-
-    XMFLOAT3 DefaultCameraDirection = XMFLOAT3(0.0f, 0.0f, 3.0f);
-    XMFLOAT3 TopDownCameraDirection = XMFLOAT3(0.0f, -0.01f, 0.000001f);
-    XMFLOAT3 PlaneCameraDirection = XMFLOAT3(0.0f, -0.02f, 0.03f);
-
-
-    _DynamicMovementCamera = new DynamicMovementCamera(DynamicCameraPostion, 0.5f, 0.1f , 0.0f);
-    _StaticTopDownCamera = new StaticTopDownCamera(TopDownCameraPosition , TopDownCameraDirection);
-    _StaticDefaultCamera = new StaticDefaultCamera(DefaultCameraPosition , DefaultCameraDirection);
-    _PlaneCamera = new PlaneCamera(PlaneCameraPosition, PlaneCameraDirection , _plane);
-    
-    _CameraObjects.push_back(_DynamicMovementCamera);
-    _CameraObjects.push_back(_StaticTopDownCamera);
-    _CameraObjects.push_back(_StaticDefaultCamera);
-    _CameraObjects.push_back(_PlaneCamera);
 
 
 
-
-    //Set Initial Camera Instance
-    _pRenderCommands->SetCamera(_StaticDefaultCamera);
     
     return S_OK;
 }
+
 HRESULT Application::InitialiseWindow(HINSTANCE hInstance, int nCmdShow)
 {
     //Register/Window class initialisation
@@ -151,62 +117,9 @@ Application::~Application()
 
 HRESULT Application::Update()
 {
-    Timer t;
-    BYTE keyboardState[256];
-
-    
- 
-    _Input->DIKeyBoard->Acquire();
-    _Input->DIKeyBoard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
-
-    _Input->DetectWASDMovement(_DynamicMovementCamera);
-   
-    //Forward
-    if (keyboardState[DIK_1] & 0x80)
-    {
-        _pRenderCommands->SwitchCamera(_StaticDefaultCamera);
-    }
-    
-    if (keyboardState[DIK_2] & 0x80)
-    {
-        _pRenderCommands->SwitchCamera(_DynamicMovementCamera);  
-    }
-    if (keyboardState[DIK_3] & 0x80)
-    {
-        _pRenderCommands->SwitchCamera(_StaticTopDownCamera);
-    }
-    if (keyboardState[DIK_4] & 0x80)
-    {
-        _pRenderCommands->SwitchCamera(_PlaneCamera);
-    }
-    if (keyboardState[DIK_F1] & 0x80)
-    {
-        _pRenderCommands->SetRasterState(_pDX11->_SolidRasterState);
-    }
-    if (keyboardState[DIK_F2] & 0x80)
-    {
-        _pRenderCommands->SetRasterState(_pDX11->_WireFrameRasterState);
-    }
-
-    if (keyboardState[DIK_9] & 0x80)
-    {
-
-        _pRenderCommands->ChangeBlendState1(_pDX11->_BlendState);
-
-    }
-    if (keyboardState[DIK_8] & 0x80)
-    {
-        _pRenderCommands->ChangeBlendState2(_pDX11->_BlendState);
-    }
-    if (keyboardState[DIK_7] & 0x80)
-    {
-        _pRenderCommands->ChangeBlendState3(_pDX11->_BlendState);
-    }
-
     for (auto gameobject : _GameObjects)
     {
         gameobject->Update();
-
     }
 
     for (auto cameraobject : _CameraObjects)
@@ -220,12 +133,12 @@ HRESULT Application::Update()
 }
 void Application::Draw()
 {
-
+    
     _pRenderCommands->ClearRenderTarget(_pDX11->_pRenderTargetView , _pDX11->_pDepthStencilView);
-    for (auto gameobject : _GameObjects)
-    {
-        gameobject->Draw();
 
+    for each (GameObjects* object in _GameObjects)
+    {
+        object->Draw();
     }
     _pRenderCommands->SwapChainPresent(_pDX11->_pSwapChain);
 
@@ -235,20 +148,14 @@ void Application::Cleanup()
 {
     delete(_pDX11);
     delete(_pRenderCommands);
-    delete(_Terrain);
+
     delete(_star);
-    delete(_plane);
-    delete(_sphere);
-    delete(_cylinder);
+
     delete(_Tex);
     delete(_pPixelShader);
     delete(_pVertexShader);
     delete(_PS);
     delete(_VS);
-    delete(_Input);
-    delete(_DynamicMovementCamera);
-    delete(_PlaneCamera);
-    delete(_StaticTopDownCamera);
 
     _GameObjects.clear();
     _CameraObjects.clear();

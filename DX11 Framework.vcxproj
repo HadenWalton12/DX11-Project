@@ -378,50 +378,41 @@
     <ClCompile Include="DX.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
-    <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="ObjectComponent.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="TextureComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Diagram.cd" />
     <None Include="DX11 Framework.fx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="ConstantStructure.h" />
-    <ClInclude Include="Cylinder.h" />
     <ClInclude Include="DX.h" />
-    <ClInclude Include="DynamicMovementCamera.h" />
-    <ClInclude Include="EntityTransformation.h" />
-    <ClInclude Include="IndexBuffer.h" />
-    <ClInclude Include="InputComponent.h" />
-    <ClInclude Include="LightingValuesStructure.h" />
+    <ClInclude Include="GraphicInclude.h" />
+    <ClInclude Include="Lighting.h" />
+    <ClInclude Include="Materials.h" />
     <ClInclude Include="MeshStructure.h" />
     <ClInclude Include="ObjectComponent.h" />
-    <ClInclude Include="ObjectTranformation.h" />
+    <ClInclude Include="Surface.h" />
+    <ClInclude Include="Transformation.h" />
     <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="PixelShader.h" />
-    <ClInclude Include="Plane.h" />
-    <ClInclude Include="PlaneCamera.h" />
     <ClInclude Include="RenderCommands.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="ShaderCompiler.h" />
     <ClInclude Include="SimpleVertexStructure.h" />
-    <ClInclude Include="Sphere.h" />
     <ClInclude Include="Star.h" />
     <ClInclude Include="StaticDefaultCamera.h" />
-    <ClInclude Include="StaticTopDownCamera.h" />
-    <ClInclude Include="Terrain.h" />
     <ClInclude Include="TextureComponent.h" />
     <ClInclude Include="TimeStructure.h" />
-    <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexShader.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="FGAGSDiagram.cd" />
     <None Include="Terrain.fx">
       <FileType>Document</FileType>
     </None>

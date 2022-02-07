@@ -1,104 +1,130 @@
 //--------------------------------------------------------------------------------------
 // File: DX11 Framework.fx
-//
-// Copyright (c) Microsoft Corporation. All rights reserved.
 //--------------------------------------------------------------------------------------
+
 Texture2D txDiffuse : register(t0);
+
 SamplerState samLinear : register(s0);
+
 //--------------------------------------------------------------------------------------
 // Constant Buffer Variables
 //--------------------------------------------------------------------------------------
-cbuffer ConstantBuffer : register( b0 )
+
+struct Material
+{
+    float4 AmbientMtrl;
+    float4 DiffuseMtrl;
+    float4 SpecularMtrl;
+};
+
+struct Light
+{
+    float4 AmbientLight;
+    float4 DiffuseLight;
+    float4 SpecularLight;
+
+    float SpecularPower;
+    float3 LightVecW;
+};
+
+cbuffer ConstantBuffer : register(b0)
 {
     matrix World;
     matrix View;
     matrix Projection;
 
+    Material material;
+    Light light;
 
-    float4 DiffuseMtrl;
-    float4 DiffuseLight;
-    float4 AmbientMtrl;
-    float4 AmbientLight;
-	float4 SpecularMtrl;
-	float4 SpecularLight;
-	float SpecularPower;
-    float3 LightVecW;
-	float4 EyePosW;
-	float gTime;
+    float3 EyePosW;
+    float HasTexture;
 }
 
 struct VS_INPUT
 {
-	
-	float4 Pos : POSITION;
-	float2 Tex : TEXCOORD0;
-	
-	
+    float4 PosL : POSITION;
+    float3 NormL : NORMAL;
+    float2 Tex : TEXCOORD0;
 };
 
-struct PS_INPUT
-{
-	float3 normalW : NORMAL;
-	float4 Pos : SV_POSITION;
-	float2 Tex : TEXCOORD0;
-	
-};
 //--------------------------------------------------------------------------------------
-	struct VS_OUTPUT
-	{
-		float4 Pos : SV_POSITION;
-		float3 normalW : NORMAL;
-		float3 PosW : POSITION;
-		float2 Tex : TEXCOORD0;
+struct VS_OUTPUT
+{
+    float4 PosH : SV_POSITION;
+    float3 NormW : NORMAL;
+
+    float3 PosW : POSITION;
+    float2 Tex : TEXCOORD0;
 };
 
 //--------------------------------------------------------------------------------------
 // Vertex Shader
 //--------------------------------------------------------------------------------------
-	VS_OUTPUT VS(float4 Pos : POSITION, float3 NormalL : NORMAL , float2 Tex : TEXCOORD0)
-	{
-		VS_OUTPUT output = (VS_OUTPUT) 0;
+VS_OUTPUT VS(VS_INPUT input)
+{
+    VS_OUTPUT output = (VS_OUTPUT) 0;
 
-		output.Pos = mul(Pos, World);
-		output.Pos = mul(output.Pos, View);
-		output.Pos = mul(output.Pos, Projection);
-		
-		output.PosW = mul(Pos, World);
-	
-	
-		// Convert from local space to world space
-    // W component of vector is 0 as vectors cannot be translated
-		float3 normalW = mul(float4(NormalL, 0.0f), World).xyz;
-		normalW = normalize(normalW);
-		output.Tex = Tex;
-		return output;
-	}
+    float4 posW = mul(input.PosL, World);
+    output.PosW = posW.xyz;
 
+    output.PosH = mul(posW, View);
+    output.PosH = mul(output.PosH, Projection);
+    output.Tex = input.Tex;
 
+    float3 normalW = mul(float4(input.NormL, 0.0f), World).xyz;
+    output.NormW = normalize(normalW);
+
+    return output;
+}
 
 //--------------------------------------------------------------------------------------
 // Pixel Shader
 //--------------------------------------------------------------------------------------
+float4 PS(VS_OUTPUT input) : SV_Target
+{
+    float3 normalW = normalize(input.NormW);
 
-	float4 PS(VS_OUTPUT input) : SV_Target
-	{
-	
-		float3 toEye = normalize(EyePosW - input.PosW.xyz);
-		float3 r = reflect(-LightVecW, input.normalW);
-		float specularAmount = pow(max(dot(r, toEye), 0.0f), SpecularPower);
-		float3 ambient = AmbientMtrl * AmbientLight;
-		float diffuseAmount = max(dot(LightVecW, input.normalW), 0.0f);
-		float3 specular = specularAmount * (SpecularMtrl * SpecularLight).rgb;
-		float4 Color;
-	
-	
-		Color.rgb = diffuseAmount * (DiffuseMtrl * DiffuseLight).rgb;
-	    Color.rgb = Color.rgb + ambient + specular;
-		Color.a = DiffuseMtrl.a;
-		
-		float4 textureColor = txDiffuse.Sample(samLinear, input.Tex);
-		return textureColor * Color;
+    float3 toEye = normalize(EyePosW - input.PosW);
 
-		
+	// Get texture data from file
+    float4 textureColour = txDiffuse.Sample(samLinear, input.Tex);
+
+    float3 ambient = float3(0.0f, 0.0f, 0.0f);
+    float3 diffuse = float3(0.0f, 0.0f, 0.0f);
+    float3 specular = float3(0.0f, 0.0f, 0.0f);
+
+    float3 lightLecNorm = normalize(light.LightVecW);
+	// Compute Colour
+
+	// Compute the reflection vector.
+    float3 r = reflect(-lightLecNorm, normalW);
+
+	// Determine how much specular light makes it into the eye.
+    float specularAmount = pow(max(dot(r, toEye), 0.0f), light.SpecularPower);
+
+	// Determine the diffuse light intensity that strikes the vertex.
+    float diffuseAmount = max(dot(lightLecNorm, normalW), 0.0f);
+
+	// Only display specular when there is diffuse
+    if (diffuseAmount <= 0.0f)
+    {
+        specularAmount = 0.0f;
+    }
+
+	// Compute the ambient, diffuse, and specular terms separately.
+    specular += specularAmount * (material.SpecularMtrl * light.SpecularLight).rgb;
+    diffuse += diffuseAmount * (material.DiffuseMtrl * light.DiffuseLight).rgb;
+    ambient += (material.AmbientMtrl * light.AmbientLight).rgb;
+
+	// Sum all the terms together and copy over the diffuse alpha.
+    float4 finalColour;
+
+    
+        finalColour.rgb = (textureColour.rgb * (ambient + diffuse)) + specular;
+        //finalColour.rgb = specular;
+
+
+    finalColour.a = material.DiffuseMtrl.a;
+
+    return finalColour;
 }
-

@@ -3,8 +3,8 @@
 #include "PixelShader.h"
 #include "DX.h"
 #include "VertexShader.h"
-#include "ObjectTranformation.h"
-#include "EntityTransformation.h"
+#include "Transformation.h"
+#include "Surface.h"
 #include "TimeStructure.h"
 class Star : public GameObjects
 {
@@ -14,7 +14,12 @@ public:
 		_pDX11 = dx;
 		_pRenderCommand = render_command;
 		LoadMesh();
-		_pStarTransform = new ObjectTranformation(&_StarWorld);
+
+		shinyMaterial.ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
+		shinyMaterial.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		shinyMaterial.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		shinyMaterial.specularPower = 10.0f;
+
 	}
 
 	Star::~Star()
@@ -26,13 +31,16 @@ public:
 	void WorldTransformations() override
 	{
 		Timer t;
-		_pStarTransform->SetTranslation(0.0f, 0.0f, 0.0f);
-		_pStarTransform->SetScale(1.0f, 1.0f, 1.0f);
+		XMFLOAT3 translation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		XMFLOAT3 scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+		XMFLOAT3 rotation = XMFLOAT3(0.0f, 1.0f * t.gTime, 0.0f);
+		Transformation _transformation = Transformation(translation , scale , rotation);
+
+
 		t.Update();
-		_pStarTransform->SetRotation(0.0f, 1.0f *t.gTime , 0.0f);
-		_pStarTransform->CalculateWorldTransformation(_StarWorld);
-		
-		SetWorld(_pStarTransform->GetWorld());
+	
+
+		SetWorld(_transformation.GetWorld());
 	}
 	MeshData LoadMesh() 	
 	{
@@ -41,38 +49,42 @@ public:
 	}
 	void BindShaders() override
 	{
-		_pVertexShader = new VertexShader(_pRenderCommand->GetDevice(), _VS, _pRenderCommand->GetDeviceContext(), L"DX11 Framework.fx");
-		_pPixelShader = new PixelShader(_pRenderCommand->GetDevice(), _PS, L"DX11 Framework.fx");
-		_VS = _pVertexShader->GetShader();
-		_PS = _pPixelShader->GetShader();
+		_VertexShader = VertexShader(L"DX11 Framework.fx" , _pRenderCommand->GetDevice() , _pRenderCommand->GetDeviceContext());
+		_PixelShader = PixelShader(L"DX11 Framework.fx" , _pRenderCommand->GetDevice());
+		_VS = _VertexShader.GetVertexShader();
+		_PS = _PixelShader.GetPixelShader();
 		_pRenderCommand->BindVertexShader(_VS);
 		_pRenderCommand->BindPixelShader(_PS);
 		_pRenderCommand->BindSampler(_pDX11->_pSamplerLinear);
 
 	}
 
+
+	
+	Surface GetSurface() override
+	{
+		return shinyMaterial;
+	}
+
 	void Cleanup()
 	{
 
-		delete(_pStarTransform);
 		delete(_VS);
 		delete(_PS);
-		delete(_pVertexShader);
-		delete(_pPixelShader);
+
 		delete(_pDX11);
 		delete(_pRenderCommand);
 	}
 
-	Timer  t;
-	
 
+	Timer  t;
 	XMFLOAT4X4 _StarWorld;
-	ObjectTranformation* _pStarTransform;
-	EntityTransformation transformation;
+
+	Surface shinyMaterial;
 	ID3D11VertexShader* _VS;
 	ID3D11PixelShader* _PS;
-	VertexShader* _pVertexShader;
+	VertexShader _VertexShader;
 	DX* _pDX11;
-	PixelShader* _pPixelShader;
+	PixelShader _PixelShader;
 	RenderCommands* _pRenderCommand;
 };

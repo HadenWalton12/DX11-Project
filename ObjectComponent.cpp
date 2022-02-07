@@ -21,7 +21,7 @@ void GameObjects::Update()
 void GameObjects::Draw()
 {
 	BindShaders();
-	_pRenderCommand->UpdateConstantBuffer(_World);
+	_pRenderCommand->UpdateConstantBuffer(_World , GetSurface() );
 	SwitchDrawBuffers(_mesh.VertexBuffer, _mesh.IndexBuffer , _pRenderCommand);
 	_Tex->BindTextures(0, _Textures.size(), _Textures , _pRenderCommand);
 	_pRenderCommand->GetDeviceContext()->DrawIndexed(_mesh.IndexCount, 0, 0);
@@ -39,6 +39,7 @@ void GameObjects::SetWorld(XMFLOAT4X4 world)
 {
 	_World = world;
 }
+
 
 void GameObjects::CreateTexture(wchar_t* path)
 {

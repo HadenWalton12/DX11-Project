@@ -22,10 +22,7 @@
 #include "TextureComponent.h"
 
 #include "Star.h"
-#include "Terrain.h"
-#include "Plane.h"
-#include "Sphere.h"
-#include "Cylinder.h"
+
 
 #include "InputComponent.h"
 
@@ -36,11 +33,9 @@
 #include "PixelShader.h"
 #include "VertexShader.h"
 
-//
-#include "PlaneCamera.h"
+
 #include "StaticDefaultCamera.h"
-#include "StaticTopDownCamera.h"
-#include "DynamicMovementCamera.h"
+
 
 
 //Allows us to easily call reference upon our DX naming conventions
@@ -59,11 +54,7 @@ private:
 
 	DX* _pDX11;
 	RenderCommands* _pRenderCommands;
-	Terrain* _Terrain;
 	Star* _star;
-	Plane* _plane;
-	Sphere* _sphere;
-	Cylinder* _cylinder;
 	TextureComponent* _Tex;
 	
 	PixelShader* _pPixelShader;
@@ -71,12 +62,7 @@ private:
 	
 	ID3D11PixelShader* _PS;
 	ID3D11VertexShader* _VS;
-	
-	InputComponent* _Input;
 
-	DynamicMovementCamera* _DynamicMovementCamera;	
-	PlaneCamera* _PlaneCamera;
-	StaticTopDownCamera* _StaticTopDownCamera;
 	StaticDefaultCamera* _StaticDefaultCamera;
 
 

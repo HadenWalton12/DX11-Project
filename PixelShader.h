@@ -1,65 +1,38 @@
 #pragma once
+#include <d3d11_1.h>
+#include <directxmath.h>
+
+using namespace DirectX;
+
 #include "ShaderCompiler.h"
 
-class PixelShader
-{
-public:
 
-    PixelShader(ID3D11Device* device, ID3D11PixelShader* pixel_shader, WCHAR* PS_PATH) : _pDevice(device) , _PixelShader(pixel_shader)
-    {
-        _pShaderCompiler = new ShaderCompiler();
-        CreatePixelShader(pixel_shader , PS_PATH);
+	struct PixelShader
+	{
+		ID3D11PixelShader* _PixelShader;
 
-    }
-    ~PixelShader()
-    {
-     
-        Cleanup();
+		PixelShader() = default;
 
-    }
+		PixelShader(WCHAR* file, ID3D11Device* device)
+		{
+			HRESULT hr;
 
-    void Cleanup()
-    {
-        delete(_PixelShader);
-        delete(_pDevice);
-        delete(_pShaderCompiler);
+			ID3DBlob* pPSBlob = nullptr;
+			ShaderCompiler* _ShaderCompiler = new ShaderCompiler(file, "PS", "ps_4_0", &pPSBlob);
 
-    }
-    HRESULT CreatePixelShader(ID3D11PixelShader* pixel_shader , WCHAR* PS_PATH)
-    {
-        HRESULT hr;
+			// Create the pixel shader
+			hr = device->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &_PixelShader);
 
-        // Compile the pixel shader
-        ID3DBlob* pPSBlob = nullptr;
-        hr = _pShaderCompiler->CompileShaderFromFile(PS_PATH, "PS", "ps_4_0", &pPSBlob);
+			if (FAILED(hr))
+			{
+				MessageBox(nullptr,
+					L"The FX File Pixel Shader Cannot be Compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+			}
 
-        //Check Error Method - Was the CompiledShaderFromFile Above correct?
-        if (FAILED(hr))
-        {
-            MessageBox(nullptr,
-                L"The FX File Pixel Shader Cannot be Compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
-            return hr;
-        }
 
-        // Create the pixel shader
-        hr = _pDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &pixel_shader);
-        pPSBlob->Release();
-
-        if (FAILED(hr))
-        {
-            return hr;
-        }
-
-        _PixelShader = pixel_shader;
-
-    }
-    ID3D11PixelShader* GetShader()
-    {
-        return _PixelShader;
-
-    }
-private:
-    ID3D11PixelShader* _PixelShader;
-    ID3D11Device* _pDevice;
-    ShaderCompiler* _pShaderCompiler;
-};
+		}
+		ID3D11PixelShader* GetPixelShader()
+		{
+			return _PixelShader;
+		}
+	};

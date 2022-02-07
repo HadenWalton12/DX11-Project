@@ -6,7 +6,7 @@
 #include <vector>
 #include "DDSTextureLoader.h"
 #include "SimpleVertexStructure.h"
-#include "LightingValuesStructure.h"
+#include "Lighting.h"
 #include "ConstantStructure.h"
 #include "TimeStructure.h"
 #include "MeshStructure.h"
@@ -24,6 +24,13 @@ public:
 	void Cleanup();
 
 	void SetWorld(XMFLOAT4X4 world);
+
+	virtual Surface GetSurface()
+	{
+		Surface a;
+		return a;
+
+	}
 
 
 	//Draw method , to how we draw objects
