@@ -92,9 +92,9 @@ public:
 		constantbuffer.View = XMMatrixTranspose(view);
 		constantbuffer.Projection = XMMatrixTranspose(projection);
 
-		constantbuffer.Mat.AmbientMtrl = object_surface.ambient;
-		constantbuffer.Mat.DiffuseMtrl = object_surface.diffuse;
-		constantbuffer.Mat.SpecularMtrl = object_surface.specular;
+		constantbuffer.Mat.AmbientMtrl = object_surface.Ambient;
+		constantbuffer.Mat.DiffuseMtrl = object_surface.Diffuse;
+		constantbuffer.Mat.SpecularMtrl = object_surface.Specular;
 		constantbuffer.Light.AmbientLight = basicLight.AmbientLight = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 		constantbuffer.Light.DiffuseLight = basicLight.DiffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		constantbuffer.Light.SpecularLight = basicLight.SpecularLight = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);

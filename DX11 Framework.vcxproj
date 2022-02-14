@@ -389,12 +389,15 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="ConstantStructure.h" />
+    <ClInclude Include="Draw.h" />
     <ClInclude Include="DX.h" />
     <ClInclude Include="GraphicInclude.h" />
     <ClInclude Include="Lighting.h" />
     <ClInclude Include="Materials.h" />
     <ClInclude Include="MeshStructure.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectComponent.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="Transformation.h" />
     <ClInclude Include="OBJLoader.h" />

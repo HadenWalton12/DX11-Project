@@ -21,7 +21,7 @@ void GameObjects::Update()
 void GameObjects::Draw()
 {
 	BindShaders();
-	_pRenderCommand->UpdateConstantBuffer(_World , GetSurface() );
+	_pRenderCommand->UpdateConstantBuffer(_World , GetSurface());
 	SwitchDrawBuffers(_mesh.VertexBuffer, _mesh.IndexBuffer , _pRenderCommand);
 	_Tex->BindTextures(0, _Textures.size(), _Textures , _pRenderCommand);
 	_pRenderCommand->GetDeviceContext()->DrawIndexed(_mesh.IndexCount, 0, 0);
@@ -45,8 +45,9 @@ void GameObjects::CreateTexture(wchar_t* path)
 {
 	ID3D11ShaderResourceView* texture;
 	_Tex->CreateTexture(path, &texture , _pRenderCommand);
-	_Textures.push_back(texture);
+	
 }
+
 void GameObjects::SwitchDrawBuffers(ID3D11Buffer* VB, ID3D11Buffer* IB , RenderCommands* render_commands)
 {
 	UINT stride = sizeof(SimpleVertex);

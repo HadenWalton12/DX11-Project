@@ -114,6 +114,13 @@
     <ClInclude Include="Surface.h">
       <Filter>Components\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Components\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Draw.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />

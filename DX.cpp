@@ -21,6 +21,7 @@ void DX::InitialiseDevice()
     InitialiseWireFrame();
     InitialiseSampler();
     InitialiseAlphaBlending();
+
 }
 void DX::Cleanup()
 {
@@ -109,6 +110,7 @@ void DX::InitialiseSampler()
     sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
     _pDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear);
+    _pDeviceContext->PSSetSamplers(0, 1, &_pSamplerLinear);
 
 }
 void DX::InitialiseDepth()

@@ -8,12 +8,11 @@ using namespace DirectX;
 
 	struct Transformation
 	{
-
 		XMFLOAT4X4 World;
 		XMFLOAT3 Translation;
 		XMFLOAT3 Scale;
 		XMFLOAT3 Rotation;
-
+		Transformation() = default;
 
 		Transformation(XMFLOAT3 translation , XMFLOAT3 scale , XMFLOAT3 rotation)
 		{
@@ -51,18 +50,24 @@ using namespace DirectX;
 
 		}
 
-		void SetRotation(float x, float y, float z)
+		void SetRotation(XMFLOAT3 rotation)
 		{
-			Rotation = XMFLOAT3(x, y, z);
+			rotation.x = Rotation.x;
+			rotation.y = Rotation.y;
+			rotation.z = Rotation.z;
 		}
 
-		void SetTranslation(float x, float y, float z)
+		void SetTranslation(XMFLOAT3 translation)
 		{
-			Translation = XMFLOAT3(x, y, z);
+			translation.x = Translation.x;
+			translation.y = Translation.y;
+			translation.z = Translation.z;
 		}
 
-		void SetScale(float x, float y, float z)
+		void SetScale(XMFLOAT3 scale)
 		{
-			Scale = XMFLOAT3(x, y, z);
+			scale.x = Scale.x;
+			scale.y = Scale.y;
+			scale.z = Scale.z;
 		}
 	};

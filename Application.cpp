@@ -50,10 +50,9 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _StaticDefaultCamera = new StaticDefaultCamera();
     _pRenderCommands = new RenderCommands(_pDX11->_pDevice, _pDX11->_pDeviceContext, _StaticDefaultCamera, _pDX11->_pConstantBuffer);
     
-    _star = new Star(_pRenderCommands, _Tex , _pDX11);
-    _GameObjects.push_back(_star);
+    _star = new Star(_pRenderCommands, _Tex);
+
    
-    _star->CreateTexture(L"Crate_COLOR.dds");
 
 
 
@@ -117,11 +116,8 @@ Application::~Application()
 
 HRESULT Application::Update()
 {
-    for (auto gameobject : _GameObjects)
-    {
-        gameobject->Update();
-    }
 
+    _star->WorldTransformations();
     for (auto cameraobject : _CameraObjects)
     {
         cameraobject->UpdateCamera();
@@ -136,10 +132,7 @@ void Application::Draw()
     
     _pRenderCommands->ClearRenderTarget(_pDX11->_pRenderTargetView , _pDX11->_pDepthStencilView);
 
-    for each (GameObjects* object in _GameObjects)
-    {
-        object->Draw();
-    }
+    _star->_Star.Draw();
     _pRenderCommands->SwapChainPresent(_pDX11->_pSwapChain);
 
 }

@@ -6,20 +6,24 @@
 #include "Transformation.h"
 #include "Surface.h"
 #include "TimeStructure.h"
-class Star : public GameObjects
+#include "Object.h"
+class Star
 {
 public:
-	Star::Star(RenderCommands* render_command, TextureComponent* _Tex, DX* dx) : GameObjects(render_command)
-	{	
-		_pDX11 = dx;
+	Star::Star(RenderCommands* render_command, TextureComponent* _Tex)
+	{
+
 		_pRenderCommand = render_command;
-		LoadMesh();
+		_Star = Object(_pRenderCommand, L"Crate_COLOR.dds", _Tex , "Star.Obj");
+		
+		XMFLOAT4 Ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
+		XMFLOAT4 Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		XMFLOAT4 Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		FLOAT SpecularPower = 10.0f;
 
-		shinyMaterial.ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-		shinyMaterial.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		shinyMaterial.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-		shinyMaterial.specularPower = 10.0f;
-
+		_Star.SetSurface(Ambient , Diffuse , Specular , SpecularPower);
+		_Star.SetVertexShader(L"DX11 Framework.fx");
+		_Star.SetPixelShader(L"DX11 Framework.fx");
 	}
 
 	Star::~Star()
@@ -28,42 +32,21 @@ public:
 
 
 	}
-	void WorldTransformations() override
+	void WorldTransformations() 
 	{
 		Timer t;
 		XMFLOAT3 translation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		XMFLOAT3 scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
-		XMFLOAT3 rotation = XMFLOAT3(0.0f, 1.0f * t.gTime, 0.0f);
-		Transformation _transformation = Transformation(translation , scale , rotation);
-
-
-		t.Update();
+		XMFLOAT3 rotation = XMFLOAT3(0.0f, 5.0f * t.gTime, 0.0f);
+		
+		_Star.SetTransformation(translation , scale , rotation , t);
+	}
 	
-
-		SetWorld(_transformation.GetWorld());
-	}
-	MeshData LoadMesh() 	
-	{
-		_mesh = OBJLoader::Load("Star.obj", _pRenderCommand->GetDevice());
-		return _mesh;
-	}
-	void BindShaders() override
-	{
-		_VertexShader = VertexShader(L"DX11 Framework.fx" , _pRenderCommand->GetDevice() , _pRenderCommand->GetDeviceContext());
-		_PixelShader = PixelShader(L"DX11 Framework.fx" , _pRenderCommand->GetDevice());
-		_VS = _VertexShader.GetVertexShader();
-		_PS = _PixelShader.GetPixelShader();
-		_pRenderCommand->BindVertexShader(_VS);
-		_pRenderCommand->BindPixelShader(_PS);
-		_pRenderCommand->BindSampler(_pDX11->_pSamplerLinear);
-
-	}
-
-
 	
-	Surface GetSurface() override
+	
+	Surface GetSurface()
 	{
-		return shinyMaterial;
+		return _Star._ObjectMaterial;
 	}
 
 	void Cleanup()
@@ -72,19 +55,17 @@ public:
 		delete(_VS);
 		delete(_PS);
 
-		delete(_pDX11);
 		delete(_pRenderCommand);
 	}
 
 
 	Timer  t;
-	XMFLOAT4X4 _StarWorld;
-
+	
+	Object _Star;
 	Surface shinyMaterial;
 	ID3D11VertexShader* _VS;
 	ID3D11PixelShader* _PS;
 	VertexShader _VertexShader;
-	DX* _pDX11;
 	PixelShader _PixelShader;
 	RenderCommands* _pRenderCommand;
 };

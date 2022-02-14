@@ -21,8 +21,7 @@ public:
 	Camera _Camera;
 
 private:
+
 	XMFLOAT3 _Camera_Position;
 	XMFLOAT3 _Camera_Direction;
-	
-	
 };
