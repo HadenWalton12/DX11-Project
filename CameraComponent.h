@@ -19,7 +19,7 @@ using namespace DirectX;
 		XMFLOAT4X4 _Projection;
 
 		FLOAT _NearDepth;
-		FLOAT _FarDepth;
+		FLOAT _FarDepth; 
 
 		Camera() = default;
 
